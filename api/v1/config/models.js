@@ -36,10 +36,11 @@ var singleton = function singleton() {
     function init() {
         filesystem.readdirSync('./app/models').forEach(function (name) {
             var object = require('../app/models/' + name);
-            var options = object.options || {}
+            var options = object.options || {};
             var modelName = name.replace(/\.js$/i, '');
 
             models[modelName] = sequelize.define(modelName, object.model, options);
+            
             if ('relations' in object) {
                 relationships[modelName] = object.relations;
             }
