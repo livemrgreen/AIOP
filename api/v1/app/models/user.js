@@ -27,18 +27,19 @@ module.exports = {
             "allowNull": false,
             "validate": {
                 "notNull": true,
-                "notEmpty": true,
-                "len": [2, 50]
+                "notEmpty": true
             },
             "set": function (password) {
-                this.salt = this.makeSalt();
                 return this.setDataValue('password', this.encryptPassword(password));
             }
         },
 
         "salt": {
             "type": Sequelize.STRING,
-            "allowNull": false
+            "allowNull": false,
+            "set": function () {
+                return this.setDataValue('salt', this.makeSalt());
+            }
         }
     },
 
@@ -52,7 +53,7 @@ module.exports = {
 
         "instanceMethods": {
             "authenticate": function (password) {
-                return this.encryptPassword(password) === this.password;
+                return this.encryptPassword(password) === this.getDataValue('password');
             },
 
             "makeSalt": function () {
@@ -61,7 +62,8 @@ module.exports = {
 
             "encryptPassword": function (password) {
                 if (!password) return '';
-                return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
+                if (!this.getDataValue('salt')) this.setDataValue('salt', this.makeSalt());
+                return crypto.createHmac('sha1', this.getDataValue('salt')).update(password).digest('hex');
             }
         }
     }
