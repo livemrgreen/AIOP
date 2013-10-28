@@ -1,10 +1,13 @@
 {
-  "name": "api",
-  "version": "0.0.0",
-  "dependencies": {
-    "restify": "latest",
-    "passport": "latest",
-    "sequelize": "latest",
-    "mysql": "latest"
-  }
+    "name": "api",
+    "version": "0.0.0",
+    "dependencies": {
+        "restify": "latest",
+        "passport": "latest",
+        "passport-local": "latest",
+        "passport-http-bearer": "latest",
+        "jwt-simple": "latest",
+        "sequelize": "latest",
+        "mysql": "latest"
+    }
 }

@@ -1,6 +1,6 @@
-var orm = require('../../config/models');
+var orm = require("../../config/models");
 var Sequelize = orm.Sequelize();
-var crypto = require('crypto');
+var crypto = require("crypto");
 
 module.exports = {
     "model": {
@@ -28,18 +28,17 @@ module.exports = {
             "validate": {
                 "notNull": true,
                 "notEmpty": true
-            },
-            "set": function (password) {
-                return this.setDataValue('password', this.encryptPassword(password));
             }
         },
 
         "salt": {
             "type": Sequelize.STRING,
-            "allowNull": false,
-            "set": function () {
-                return this.setDataValue('salt', this.makeSalt());
-            }
+            "allowNull": false
+        },
+
+        "access_token": {
+            "type": Sequelize.STRING,
+            "allowNull": true
         }
     },
 
@@ -52,18 +51,17 @@ module.exports = {
         "paranoid": true,
 
         "instanceMethods": {
-            "authenticate": function (password) {
-                return this.encryptPassword(password) === this.getDataValue('password');
+            "authenticate": function(password) {
+                return this.encryptPassword(password) === this.password;
             },
 
-            "makeSalt": function () {
-                return Math.round((new Date().valueOf() * Math.random())) + '';
+            "makeSalt": function() {
+                return Math.round((new Date().valueOf() * Math.random())) + "";
             },
 
-            "encryptPassword": function (password) {
-                if (!password) return '';
-                if (!this.getDataValue('salt')) this.setDataValue('salt', this.makeSalt());
-                return crypto.createHmac('sha1', this.getDataValue('salt')).update(password).digest('hex');
+            encryptPassword: function(password) {
+                if (!password) return "";
+                return crypto.createHmac("sha1", this.getDataValue("salt")).update(password).digest("hex");
             }
         }
     }

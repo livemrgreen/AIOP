@@ -1,9 +1,9 @@
-var filesystem = require('fs');
+var filesystem = require("fs");
 var models = {};
 var relationships = {};
 
 var singleton = function singleton() {
-    var Sequelize = require('sequelize');
+    var Sequelize = require("sequelize");
     var sequelize = null;
 
     this.setup = function (database, username, password, obj) {
@@ -34,14 +34,14 @@ var singleton = function singleton() {
     }
 
     function init() {
-        filesystem.readdirSync('./app/models').forEach(function (name) {
-            var object = require('../app/models/' + name);
+        filesystem.readdirSync("./app/models").forEach(function (name) {
+            var object = require("../app/models/" + name);
             var options = object.options || {};
-            var modelName = name.replace(/\.js$/i, '');
+            var modelName = name.replace(/\.js$/i, "");
 
             models[modelName] = sequelize.define(modelName, object.model, options);
             
-            if ('relations' in object) {
+            if ("relations" in object) {
                 relationships[modelName] = object.relations;
             }
         });
@@ -56,7 +56,7 @@ var singleton = function singleton() {
     }
 
     if (singleton.caller != singleton.getInstance) {
-        throw new Error('This object cannot be instanciated');
+        throw new Error("This object cannot be instanciated");
     }
 }
 
