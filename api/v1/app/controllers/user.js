@@ -1,16 +1,5 @@
 var orm = require('../../config/models');
 
-/*module.exports.hello = function (request, response){
- //Getting the Hello model from the orm.
- var Hello = orm.model('Hello');
- //Doing complex stuff like getting entries from a many-to-many relationship...
- Hello.find(1).success(function (hello){
- hello.getWorlds().success(function (worlds) {
- response.send(worlds)
- });
- });
- }*/
-
 module.exports.list = function (req, res, next) {
     var user = orm.model('user');
 
