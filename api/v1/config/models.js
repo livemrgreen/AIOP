@@ -40,7 +40,7 @@ var singleton = function singleton() {
             var modelName = name.replace(/\.js$/i, "");
 
             models[modelName] = sequelize.define(modelName, object.model, options);
-            
+
             if ("relations" in object) {
                 relationships[modelName] = object.relations;
             }

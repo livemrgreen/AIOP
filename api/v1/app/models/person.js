@@ -1,7 +1,5 @@
 var orm = require("../../config/models");
 var Sequelize = orm.Sequelize();
-var crypto = require("crypto");
-var jwt = require("jwt-simple");
 
 module.exports = {
     "model": {
@@ -11,10 +9,9 @@ module.exports = {
             "autoIncrement": true
         },
 
-        "username": {
+        "first_name": {
             "type": Sequelize.STRING,
             "allowNull": false,
-            "unique": true,
             "validate": {
                 "notNull": true,
                 "notEmpty": true,
@@ -22,28 +19,20 @@ module.exports = {
             }
         },
 
-        "password": {
+        "last_name": {
             "type": Sequelize.STRING,
             "allowNull": false,
             "validate": {
                 "notNull": true,
-                "notEmpty": true
+                "notEmpty": true,
+                "len": [2, 20]
             }
-        },
-
-        "salt": {
-            "type": Sequelize.STRING,
-            "allowNull": false
-        },
-
-        "access_token": {
-            "type": Sequelize.STRING,
-            "allowNull": false
         }
     },
 
     "relations": {
-        "belongsTo": "person"
+        "hasOne": "user",
+        "hasMany": "teacher" //0..1
     },
 
     "options": {
@@ -51,29 +40,10 @@ module.exports = {
         "underscored": true,
         "paranoid": true,
 
-        "instanceMethods": {
-            "authenticate": function (password) {
-                return this.encryptPassword(password) === this.password;
-            },
-
-            "makeSalt": function () {
-                return Math.round((new Date().valueOf() * Math.random())) + "";
-            },
-
-            encryptPassword: function (password) {
-                if (!password) return "";
-                return crypto.createHmac("sha1", this.salt).update(password).digest("hex");
-            },
-
-            "makeToken": function () {
-                return jwt.encode(this.username + new Date().valueOf(), this.salt);
-            }
-        },
-
         "classMethods": {
             "structure": function () {
                 return {
-                    "username": {
+                    "first_name": {
                         "type": "string",
                         "options": {
                             "required": "required",
@@ -82,10 +52,12 @@ module.exports = {
                         }
                     },
 
-                    "password": {
+                    "last_name": {
                         "type": "string",
                         "options": {
-                            "required": "required"
+                            "required": "required",
+                            "min": 2,
+                            "max": 20
                         }
                     }
                 };
