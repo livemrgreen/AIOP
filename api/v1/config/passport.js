@@ -5,7 +5,7 @@ var user = require("./models").model("user");
 module.exports = function (passport) {
     passport.use(new LocalStrategy({"usernameField": "username", "passwordField": "password" },
         function (username, password, done) {
-            user.find({ "where": {"username": username} })
+            user.find({ "where": {"username": username, "deleted_at": null} })
                 .success(function (user) {
                     if (user == null) {
                         return done(null, false, {"message": "User not found"})
@@ -22,7 +22,7 @@ module.exports = function (passport) {
 
     passport.use(new BearerStrategy(
         function (token, done) {
-            user.find({ "where": {"access_token": token} })
+            user.find({ "where": {"access_token": token, "deleted_at": null} })
                 .success(function (user) {
                     if (user == null) {
                         return done(null, false, {"message": "User not found"})
