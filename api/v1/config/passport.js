@@ -27,7 +27,7 @@ module.exports = function (passport) {
                     if (user == null) {
                         return done(null, false, {"message": "User not found"})
                     }
-                    return done(null, user, { scope: 'all' });
+                    return done(null, user, { scope: "all" });
                 });
         }
     ));

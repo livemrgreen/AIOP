@@ -1,6 +1,7 @@
 var orm = require("../../config/models");
 var Sequelize = orm.Sequelize();
 var crypto = require("crypto");
+var jwt = require("jwt-simple");
 
 module.exports = {
     "model": {
@@ -38,7 +39,7 @@ module.exports = {
 
         "access_token": {
             "type": Sequelize.STRING,
-            "allowNull": true
+            "allowNull": false
         }
     },
 
@@ -61,7 +62,11 @@ module.exports = {
 
             encryptPassword: function(password) {
                 if (!password) return "";
-                return crypto.createHmac("sha1", this.getDataValue("salt")).update(password).digest("hex");
+                return crypto.createHmac("sha1", this.salt).update(password).digest("hex");
+            },
+
+            "makeToken": function() {
+                return jwt.encode(this.username + new Date().valueOf(), this.salt);
             }
         }
     }
