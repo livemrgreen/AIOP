@@ -11,10 +11,12 @@ module.exports = {
     },
 
     "relations": {
-        "belongsTo": "person"
+        "belongsTo": {
+            "model": "person"
+        }
     },
 
-    "options": {
+    "configuration": {
         "freezeTableName": true,
         "underscored": true,
         "paranoid": true

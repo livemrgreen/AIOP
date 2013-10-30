@@ -31,11 +31,15 @@ module.exports = {
     },
 
     "relations": {
-        "hasOne": "user",
-        "hasMany": "teacher" //0..1
+        "hasOne": {
+            "model": "teacher",
+            "options": {
+                "foreignKeyConstraint": true
+            }
+        }
     },
 
-    "options": {
+    "configuration": {
         "freezeTableName": true,
         "underscored": true,
         "paranoid": true,

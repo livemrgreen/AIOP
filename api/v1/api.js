@@ -12,7 +12,7 @@ var auth = require("./config/authorization");
  * to run the serv and initialize
  * some important things
  */
-restify.CORS.ALLOW_HEADERS.push('X-Requested-With');
+restify.CORS.ALLOW_HEADERS.push('x-requested-with');
 
 var server = restify.createServer({});
 server.use(restify.CORS());

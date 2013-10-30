@@ -43,10 +43,9 @@ module.exports = {
     },
 
     "relations": {
-        "belongsTo": "person"
     },
 
-    "options": {
+    "configuration": {
         "freezeTableName": true,
         "underscored": true,
         "paranoid": true,

@@ -36,10 +36,10 @@ var singleton = function singleton() {
     function init() {
         filesystem.readdirSync("./app/models").forEach(function (name) {
             var object = require("../app/models/" + name);
-            var options = object.options || {};
+            var config = object.configuration || {};
             var modelName = name.replace(/\.js$/i, "");
 
-            models[modelName] = sequelize.define(modelName, object.model, options);
+            models[modelName] = sequelize.define(modelName, object.model, config);
 
             if ("relations" in object) {
                 relationships[modelName] = object.relations;
@@ -47,10 +47,10 @@ var singleton = function singleton() {
         });
 
         for (var name in relationships) {
-            var relation = relationships[name];
-            for (var relName in relation) {
-                var related = relation[relName];
-                models[name][relName](models[related]);
+            var relations = relationships[name];
+            for (var relation in relations) {
+                var related = relations[relation];
+                models[name][relation](models[related.model], related.options || {});
             }
         }
     }
