@@ -12,13 +12,14 @@ var auth = require("./config/authorization");
  * to run the serv and initialize
  * some important things
  */
+restify.CORS.ALLOW_HEADERS.push('X-Requested-With');
+
 var server = restify.createServer({});
+server.use(restify.CORS());
 server.use(restify.acceptParser(server.acceptable));
 server.use(restify.authorizationParser());
 server.use(restify.queryParser({ mapParams: false }));
 server.use(restify.bodyParser({ mapParams: false }));
-server.use(restify.CORS());
-server.use(restify.fullResponse());
 server.use(passport.initialize());
 
 var orm = require("./config/models");
