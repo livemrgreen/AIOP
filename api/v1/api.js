@@ -27,7 +27,7 @@ orm.setup(database.name, database.user, database.pass, {
     "host": database.host,
     "port": database.port
 });
-orm.sequelize().sync({"force": true});
+orm.sequelize().sync();
 
 require("./config/passport")(passport);
 require("./config/routes")(server, passport, auth);

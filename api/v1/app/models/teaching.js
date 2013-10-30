@@ -12,19 +12,7 @@ module.exports = {
 
     "relations": {
         "belongsTo": {
-            "model": "person",
-            "options": {
-                "foreignKeyConstraint": true
-            }
-        },
-        "hasOne": {
-            "model": "administrator",
-            "options": {
-                "foreignKeyConstraint": true
-            }
-        },
-        "hasMany": {
-            "model": "teaching",
+            "model": "teacher",
             "options": {
                 "foreignKeyConstraint": true
             }
