@@ -46,11 +46,14 @@ var singleton = function singleton() {
             }
         });
 
-        for (var name in relationships) {
-            var relations = relationships[name];
+        for (var model in relationships) {
+            var relations = relationships[model];
             for (var relation in relations) {
                 var related = relations[relation];
-                models[name][relation](models[related.model], related.options || {});
+                for (var rel_model in related) {
+                    var rel_opt = related[rel_model];
+                    models[model][relation](models[rel_model], rel_opt);
+                }
             }
         }
     }

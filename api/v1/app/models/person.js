@@ -8,7 +8,6 @@ module.exports = {
             "primaryKey": true,
             "autoIncrement": true
         },
-
         "first_name": {
             "type": Sequelize.STRING,
             "allowNull": false,
@@ -18,7 +17,6 @@ module.exports = {
                 "len": [2, 20]
             }
         },
-
         "last_name": {
             "type": Sequelize.STRING,
             "allowNull": false,
@@ -32,8 +30,10 @@ module.exports = {
 
     "relations": {
         "hasOne": {
-            "model": "teacher",
-            "options": {
+            "user": {
+                "foreignKeyConstraint": true
+            },
+            "teacher": {
                 "foreignKeyConstraint": true
             }
         }

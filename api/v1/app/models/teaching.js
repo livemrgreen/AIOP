@@ -12,8 +12,23 @@ module.exports = {
 
     "relations": {
         "belongsTo": {
-            "model": "teacher",
-            "options": {
+            "teacher": {
+                "foreignKeyConstraint": true
+            },
+            "group": {
+                "foreignKeyConstraint": true
+            },
+            "lesson": {
+                "foreignKeyConstraint": true
+            }
+        },
+        "hasOne": {
+            "reservation": {
+                "foreignKeyConstraint": true
+            }
+        },
+        "hasMany": {
+            "reservation_request": {
                 "foreignKeyConstraint": true
             }
         }

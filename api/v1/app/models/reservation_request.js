@@ -12,7 +12,21 @@ module.exports = {
 
     "relations": {
         "belongsTo": {
-            "teacher": {
+            "time_slot": {
+                "foreignKeyConstraint": true
+            },
+            "teaching": {
+                "foreignKeyConstraint": true
+            }
+        },
+        "hasOne": {
+            "reservation": {
+                "foreignKeyConstraint": true
+            }
+        },
+        "hasMany": {
+            "caracteristic": {
+                "joinTableName": "caracteristics_for_reservation_request",
                 "foreignKeyConstraint": true
             }
         }
@@ -23,4 +37,5 @@ module.exports = {
         "underscored": true,
         "paranoid": true
     }
-};
+}
+;

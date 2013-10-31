@@ -7,25 +7,29 @@ module.exports = {
             "type": Sequelize.INTEGER,
             "primaryKey": true,
             "autoIncrement": true
+        },
+        "date": {
+            "type": Sequelize.DATE,
+            "allowNull": false,
+            "validate": {
+                "notNull": true,
+                "notEmpty": true
+            }
         }
     },
 
     "relations": {
         "belongsTo": {
-            "person": {
-                "foreignKeyConstraint": true
-            }
-        },
-        "hasOne": {
-            "administrator": {
+            "time_slot": {
                 "foreignKeyConstraint": true
             },
-            "module_manager": {
+            "room": {
                 "foreignKeyConstraint": true
-            }
-        },
-        "hasMany": {
+            },
             "teaching": {
+                "foreignKeyConstraint": true
+            },
+            "reservation_request": {
                 "foreignKeyConstraint": true
             }
         }
@@ -36,4 +40,5 @@ module.exports = {
         "underscored": true,
         "paranoid": true
     }
-};
+}
+;

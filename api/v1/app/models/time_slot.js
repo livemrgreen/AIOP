@@ -7,25 +7,31 @@ module.exports = {
             "type": Sequelize.INTEGER,
             "primaryKey": true,
             "autoIncrement": true
+        },
+        "start": {
+            "type": Sequelize.DATE,
+            "allowNull": false,
+            "validate": {
+                "notNull": true,
+                "notEmpty": true
+            }
+        },
+        "end": {
+            "type": Sequelize.DATE,
+            "allowNull": false,
+            "validate": {
+                "notNull": true,
+                "notEmpty": true
+            }
         }
     },
 
     "relations": {
-        "belongsTo": {
-            "person": {
-                "foreignKeyConstraint": true
-            }
-        },
-        "hasOne": {
-            "administrator": {
+        "hasMany": {
+            "reservation": {
                 "foreignKeyConstraint": true
             },
-            "module_manager": {
-                "foreignKeyConstraint": true
-            }
-        },
-        "hasMany": {
-            "teaching": {
+            "reservation_request": {
                 "foreignKeyConstraint": true
             }
         }

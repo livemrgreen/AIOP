@@ -15,6 +15,11 @@ module.exports = {
             "teacher": {
                 "foreignKeyConstraint": true
             }
+        },
+        "hasMany": {
+            "module": {
+                "foreignKeyConstraint": true
+            }
         }
     },
 

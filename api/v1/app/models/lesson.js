@@ -7,12 +7,30 @@ module.exports = {
             "type": Sequelize.INTEGER,
             "primaryKey": true,
             "autoIncrement": true
+        },
+
+        "label": {
+            "type": Sequelize.STRING,
+            "allowNull": false,
+            "validate": {
+                "notNull": true,
+                "notEmpty": true,
+                "len": [2, 20]
+            }
         }
     },
 
     "relations": {
         "belongsTo": {
-            "teacher": {
+            "lesson_type": {
+                "foreignKeyConstraint": true
+            },
+            "subject": {
+                "foreignKeyConstraint": true
+            }
+        },
+        "hasOne": {
+            "teaching": {
                 "foreignKeyConstraint": true
             }
         }

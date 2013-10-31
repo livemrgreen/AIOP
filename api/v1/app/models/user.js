@@ -10,7 +10,6 @@ module.exports = {
             "primaryKey": true,
             "autoIncrement": true
         },
-
         "username": {
             "type": Sequelize.STRING,
             "allowNull": false,
@@ -21,7 +20,6 @@ module.exports = {
                 "len": [2, 20]
             }
         },
-
         "password": {
             "type": Sequelize.STRING,
             "allowNull": false,
@@ -30,12 +28,10 @@ module.exports = {
                 "notEmpty": true
             }
         },
-
         "salt": {
             "type": Sequelize.STRING,
             "allowNull": false
         },
-
         "access_token": {
             "type": Sequelize.STRING,
             "allowNull": false
@@ -43,13 +39,17 @@ module.exports = {
     },
 
     "relations": {
+        "belongsTo": {
+            "person": {
+                "foreignKeyConstraint": true
+            }
+        }
     },
 
     "configuration": {
         "freezeTableName": true,
         "underscored": true,
         "paranoid": true,
-
         "instanceMethods": {
             "authenticate": function (password) {
                 return this.encryptPassword(password) === this.password;
@@ -68,12 +68,11 @@ module.exports = {
                 return jwt.encode(this.username + new Date().valueOf(), this.salt);
             }
         },
-
         "classMethods": {
             "structure": function () {
                 return {
                     "username": {
-                        "type": "string",
+                        "type": "text",
                         "options": {
                             "required": "required",
                             "min": 2,
@@ -82,7 +81,7 @@ module.exports = {
                     },
 
                     "password": {
-                        "type": "string",
+                        "type": "password",
                         "options": {
                             "required": "required"
                         }
