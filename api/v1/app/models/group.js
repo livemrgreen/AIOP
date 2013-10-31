@@ -23,11 +23,17 @@ module.exports = {
     "relations": {
         "hasMany": {
             "group": {
-                "as": "subgroup",
-                joinTableName: "subgroup",
-                "foreignKeyConstraint": true
+                "as": "children",
+                "foreignKey": "parent_id",
+                "useJunctionTable": false
             },
             "teaching": {
+                "foreignKeyConstraint": true
+            }
+        },
+        "belongsTo": {
+            "group": {
+                "as": "parent",
                 "foreignKeyConstraint": true
             }
         }

@@ -43,7 +43,6 @@ module.exports.create = function (req, res, next) {
             })
             .error(function (error) {
                 // Pour tout autre erreur lors de l'enregistrement
-                // (format non valide des données, etc)
                 res.send(400, error);
             });
     }
@@ -101,8 +100,6 @@ module.exports.update = function (req, res, next) {
                             res.send(200, {"id": user.id, "username": user.username});
                         })
                         .error(function (error) {
-                            // Pour tout autre erreur lors de l'enregistrement
-                            // (format non valide des données, etc)
                             res.send(400, error);
                         });
                 }

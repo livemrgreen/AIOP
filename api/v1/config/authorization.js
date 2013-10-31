@@ -6,7 +6,7 @@ exports.user = {
         return next();
     },
     isManager: function (req, res, next) {
-        if(!req.user.getPerson.getTeacher.getModule_manager) {
+        if(!req.user.getPerson.getTeacher.getManager) {
             res.send(401, {"message": "User not authorized"});
         }
         return next();
