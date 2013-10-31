@@ -23,6 +23,7 @@ module.exports = {
     "relations": {
         "belongsTo": {
             "module_manager": {
+                "as": "manager",
                 "foreignKeyConstraint": true
             }
         },

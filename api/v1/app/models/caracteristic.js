@@ -23,6 +23,7 @@ module.exports = {
     "relations": {
         "hasMany": {
             "reservation_request": {
+                "as": "request",
                 "joinTableName": "caracteristics_for_reservation_request",
                 "foreignKeyConstraint": true
             },

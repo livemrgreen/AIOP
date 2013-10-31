@@ -32,6 +32,7 @@ module.exports = {
                 "foreignKeyConstraint": true
             },
             "reservation_request": {
+                "as": "request",
                 "foreignKeyConstraint": true
             }
         }

@@ -23,6 +23,7 @@ module.exports = {
     "relations": {
         "belongsTo": {
             "lesson_type": {
+                "as": "type",
                 "foreignKeyConstraint": true
             },
             "subject": {

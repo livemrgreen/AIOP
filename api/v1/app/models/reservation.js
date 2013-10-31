@@ -21,6 +21,7 @@ module.exports = {
     "relations": {
         "belongsTo": {
             "time_slot": {
+                "as": "slot",
                 "foreignKeyConstraint": true
             },
             "room": {
@@ -30,6 +31,7 @@ module.exports = {
                 "foreignKeyConstraint": true
             },
             "reservation_request": {
+                "as": "request",
                 "foreignKeyConstraint": true
             }
         }

@@ -21,6 +21,7 @@ module.exports = {
                 "foreignKeyConstraint": true
             },
             "module_manager": {
+                "as": "manager",
                 "foreignKeyConstraint": true
             }
         },

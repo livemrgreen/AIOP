@@ -13,6 +13,7 @@ module.exports = {
     "relations": {
         "belongsTo": {
             "time_slot": {
+                "as": "slot",
                 "foreignKeyConstraint": true
             },
             "teaching": {

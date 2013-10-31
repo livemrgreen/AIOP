@@ -29,6 +29,7 @@ module.exports = {
         },
         "hasMany": {
             "reservation_request": {
+                "as": "request",
                 "foreignKeyConstraint": true
             }
         }
