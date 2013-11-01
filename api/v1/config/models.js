@@ -21,6 +21,10 @@ var singleton = function singleton() {
         init();
     }
 
+    this.dbCompositeIndex = function () {
+        sequelize.getQueryInterface().addIndex('reservation', ['date', 'time_slot_id', 'room_id']);
+    }
+
     this.model = function (name) {
         return models[name];
     }

@@ -59,7 +59,7 @@ module.exports = {
                 return Math.round((new Date().valueOf() * Math.random())) + "";
             },
 
-            encryptPassword: function (password) {
+            "encryptPassword": function (password) {
                 if (!password) return "";
                 return crypto.createHmac("sha1", this.salt).update(password).digest("hex");
             },

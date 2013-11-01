@@ -1,19 +1,66 @@
-exports.user = {
-    isAdministrator: function (req, res, next) {
-        if(!req.user.getPerson.getTeacher.getAdministrator) {
-            res.send(401, {"message": "User not authorized"});
-        }
-        return next();
+var models = require("./models");
+var user = models.model("user");
+
+module.exports = {
+
+    "isAdministrator": function (req, res, next) {
+        req.user.getPerson().success(function (person) {
+            if (person) {
+                person.getTeacher().success(function (teacher) {
+                    if (teacher) {
+                        teacher.getAdministrator().success(function (administrator) {
+                            if (!administrator) {
+                                res.setHeader("WWW-Authenticate", "Bearer realm=\"Users\", error=\"invalid_manager\", error_description=\"Manager not found\"");
+                                res.send(401);
+                            }
+                            return next();
+                        });
+                    }
+                    else {
+                        res.setHeader("WWW-Authenticate", "Bearer realm=\"Users\", error=\"invalid_teacher\", error_description=\"Teacher not found\"");
+                        res.send(401);
+                    }
+                });
+            }
+            else {
+                res.setHeader("WWW-Authenticate", "Bearer realm=\"Users\", error=\"invalid_person\", error_description=\"Person not found\"");
+                res.send(401);
+            }
+
+        });
     },
-    isManager: function (req, res, next) {
-        if(!req.user.getPerson.getTeacher.getManager) {
-            res.send(401, {"message": "User not authorized"});
-        }
-        return next();
+
+    "isModuleManager": function (req, res, next) {
+        req.user.getPerson().success(function (person) {
+            if (person) {
+                person.getTeacher().success(function (teacher) {
+                    if (teacher) {
+                        teacher.getManager().success(function (manager) {
+                            if (!manager) {
+                                res.setHeader("WWW-Authenticate", "Bearer realm=\"Users\", error=\"invalid_manager\", error_description=\"Manager not found\"");
+                                res.send(401);
+                            }
+                            return next();
+                        });
+                    }
+                    else {
+                        res.setHeader("WWW-Authenticate", "Bearer realm=\"Users\", error=\"invalid_teacher\", error_description=\"Teacher not found\"");
+                        res.send(401);
+                    }
+                });
+            }
+            else {
+                res.setHeader("WWW-Authenticate", "Bearer realm=\"Users\", error=\"invalid_person\", error_description=\"Person not found\"");
+                res.send(401);
+            }
+
+        });
     },
-    hasAuthorization: function (req, res, next) {
+
+    "isMe": function (req, res, next) {
         if (req.params.id != req.user.id) {
-            res.send(401, {"message": "User not authorized"});
+            res.setHeader("WWW-Authenticate", "Bearer realm=\"Users\", error=\"invalid_user\", error_description=\"Users different\"");
+            res.send(401);
         }
         return next();
     }
