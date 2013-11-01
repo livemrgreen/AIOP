@@ -22,7 +22,7 @@ var singleton = function singleton() {
     }
 
     this.dbCompositeIndex = function () {
-        //sequelize.getQueryInterface().addIndex('reservation', ['date', 'time_slot_id', 'room_id'], {"indicesType": "UNIQUE"});
+        sequelize.getQueryInterface().addIndex('reservation', ['date', 'time_slot_id', 'room_id'], {"indicesType": "UNIQUE"});
     }
 
     this.model = function (name) {

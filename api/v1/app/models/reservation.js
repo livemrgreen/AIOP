@@ -13,7 +13,8 @@ module.exports = {
             "allowNull": false,
             "validate": {
                 "notNull": true,
-                "notEmpty": true
+                "notEmpty": true,
+                "isDate": true
             }
         }
     },
