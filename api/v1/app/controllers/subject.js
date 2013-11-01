@@ -5,11 +5,10 @@ var orm = require("../../config/models");
  */
 module.exports.list = function (req, res, next) {
     var subject = orm.model("subject");
-	
-    subject.findAll()
-        .success(function (subjects) {
-            res.send(200, subjects);
-        });
+
+    subject.findAll({"where": {"deleted_at": null}}).success(function (subjects) {
+        res.send(200, subjects);
+    });
 
     return next();
 };
@@ -19,25 +18,27 @@ module.exports.list = function (req, res, next) {
  */
 module.exports.create = function (req, res, next) {
     var subject = orm.model("subject");
-	
-	if (req.body && req.body.subject) {
-		subject.findOrCreate()
-			.success(function (subject, created) {
-				if (created) {
-					res.send(201, {});
-				}
-				else {
-					res.send(409, {});
-				}
-			})
-			.error(function (error) {
-				res.send(400, error);
-			});
-	}
-    else {
-        res.send(400, {});
+
+    if (req.body && req.body.subject) {
+        var s = req.body.subject;
+        if (s.label && s.module_id) {
+            subject.create(s)
+                .success(function (subject) {
+                    res.send(201, subject);
+
+                })
+                .error(function (error) {
+                    res.send(400, error);
+                });
+        }
+        else {
+            res.send(400, {"message": "Subject found with missing params"});
+        }
     }
-	
+    else {
+        res.send(400, {"message": "Subject not found in body"});
+    }
+
     return next();
 };
 
@@ -47,15 +48,14 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var subject = orm.model("subject");
 
-    subject.find({"where": {"id": req.params.id}})
-        .success(function (subject) {
-            if (subject == null) {
-                res.send(404, {});
-            }
-            else {
-                res.send(200, {});
-            }
-        });
+    subject.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (subject) {
+        if (!subject) {
+            res.send(404, {"message": "Subject not found"});
+        }
+        else {
+            res.send(200, subject);
+        }
+    });
 
     return next();
 };
@@ -67,24 +67,32 @@ module.exports.update = function (req, res, next) {
     var subject = orm.model("subject");
 
     if (req.body && req.body.subject) {
-        subject.find({"where": {"id": req.params.id}})
-            .success(function (subject) {
-                if (subject == null) {
-                    res.send(404, {});
+        var s = req.body.subject;
+        if (s.label && s.module_id) {
+            subject.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (subject) {
+                if (!subject) {
+                    res.send(404, {"message": "Subject not found"});
                 }
                 else {
+                    subject.label = s.label;
+                    subject.module_id = s.module_id;
+
                     subject.save()
-                        .success(function () {
-                            res.send(200, {});
+                        .success(function (subject) {
+                            res.send(200, subject);
                         })
                         .error(function (error) {
                             res.send(400, error);
                         });
                 }
             });
+        }
+        else {
+            res.send(400, {"message": "Subject found with missing params"});
+        }
     }
     else {
-        res.send(400, {});
+        res.send(400, {"message": "Subject not found in body"});
     }
 
     return next();
@@ -95,19 +103,17 @@ module.exports.update = function (req, res, next) {
  */
 module.exports.delete = function (req, res, next) {
     var subject = orm.model("subject");
-	
-    subject.find({"where": {"id": req.params.id}})
-        .success(function (subject) {
-            if (subject == null) {
-                res.send(404, {});
-            }
-            else {
-                subject.destroy()
-                    .success(function () {
-                        res.send(204);
-                    });
-            }
-        });
+
+    subject.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (subject) {
+        if (!subject) {
+            res.send(404, {"message": "Subject not found"});
+        }
+        else {
+            subject.destroy().success(function () {
+                res.send(204);
+            });
+        }
+    });
 
     return next();
 };

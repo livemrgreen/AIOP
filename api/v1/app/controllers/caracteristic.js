@@ -5,11 +5,10 @@ var orm = require("../../config/models");
  */
 module.exports.list = function (req, res, next) {
     var caracteristic = orm.model("caracteristic");
-	
-    caracteristic.findAll()
-        .success(function (caracteristics) {
-            res.send(200, caracteristics);
-        });
+
+    caracteristic.findAll({"where": {"deleted_at": null}}).success(function (caracteristics) {
+        res.send(200, caracteristics);
+    });
 
     return next();
 };
@@ -19,25 +18,27 @@ module.exports.list = function (req, res, next) {
  */
 module.exports.create = function (req, res, next) {
     var caracteristic = orm.model("caracteristic");
-	
-	if (req.body && req.body.caracteristic) {
-		caracteristic.findOrCreate()
-			.success(function (caracteristic, created) {
-				if (created) {
-					res.send(201, {});
-				}
-				else {
-					res.send(409, {});
-				}
-			})
-			.error(function (error) {
-				res.send(400, error);
-			});
-	}
-    else {
-        res.send(400, {});
+
+    if (req.body && req.body.caracteristic) {
+        var c = req.body.caracteristic;
+        if (c.label) {
+            caracteristic.create(c)
+                .success(function (caracteristic) {
+                    res.send(201, caracteristic);
+
+                })
+                .error(function (error) {
+                    res.send(400, error);
+                });
+        }
+        else {
+            res.send(400, {"message": "Caracteristic found with missing params"});
+        }
     }
-	
+    else {
+        res.send(400, {"message": "Caracteristic not found in body"});
+    }
+
     return next();
 };
 
@@ -47,15 +48,14 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var caracteristic = orm.model("caracteristic");
 
-    caracteristic.find({"where": {"id": req.params.id}})
-        .success(function (caracteristic) {
-            if (caracteristic == null) {
-                res.send(404, {});
-            }
-            else {
-                res.send(200, {});
-            }
-        });
+    caracteristic.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (caracteristic) {
+        if (!caracteristic) {
+            res.send(404, {"message": "Caracteristic not found"});
+        }
+        else {
+            res.send(200, caracteristic);
+        }
+    });
 
     return next();
 };
@@ -67,24 +67,31 @@ module.exports.update = function (req, res, next) {
     var caracteristic = orm.model("caracteristic");
 
     if (req.body && req.body.caracteristic) {
-        caracteristic.find({"where": {"id": req.params.id}})
-            .success(function (caracteristic) {
-                if (caracteristic == null) {
-                    res.send(404, {});
+        var c = req.body.caracteristic;
+        if (c.label) {
+            caracteristic.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (caracteristic) {
+                if (!caracteristic) {
+                    res.send(404, {"message": "Caracteristic not found"});
                 }
                 else {
+                    caracteristic.label = c.label;
+
                     caracteristic.save()
-                        .success(function () {
-                            res.send(200, {});
+                        .success(function (caracteristic) {
+                            res.send(200, caracteristic);
                         })
                         .error(function (error) {
                             res.send(400, error);
                         });
                 }
             });
+        }
+        else {
+            res.send(400, {"message": "Caracteristic found with missing params"});
+        }
     }
     else {
-        res.send(400, {});
+        res.send(400, {"message": "Caracteristic not found in body"});
     }
 
     return next();
@@ -95,19 +102,17 @@ module.exports.update = function (req, res, next) {
  */
 module.exports.delete = function (req, res, next) {
     var caracteristic = orm.model("caracteristic");
-	
-    caracteristic.find({"where": {"id": req.params.id}})
-        .success(function (caracteristic) {
-            if (caracteristic == null) {
-                res.send(404, {});
-            }
-            else {
-                caracteristic.destroy()
-                    .success(function () {
-                        res.send(204);
-                    });
-            }
-        });
+
+    caracteristic.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (caracteristic) {
+        if (!caracteristic) {
+            res.send(404, {"message": "Caracteristic not found"});
+        }
+        else {
+            caracteristic.destroy().success(function () {
+                res.send(204);
+            });
+        }
+    });
 
     return next();
 };

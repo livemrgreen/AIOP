@@ -5,11 +5,10 @@ var orm = require("../../config/models");
  */
 module.exports.list = function (req, res, next) {
     var reservation_request = orm.model("reservation_request");
-	
-    reservation_request.findAll()
-        .success(function (reservation_requests) {
-            res.send(200, reservation_requests);
-        });
+
+    reservation_request.findAll({"where": {"deleted_at": null}}).success(function (reservation_requests) {
+        res.send(200, reservation_requests);
+    });
 
     return next();
 };
@@ -19,25 +18,27 @@ module.exports.list = function (req, res, next) {
  */
 module.exports.create = function (req, res, next) {
     var reservation_request = orm.model("reservation_request");
-	
-	if (req.body && req.body.reservation_request) {
-		reservation_request.findOrCreate()
-			.success(function (reservation_request, created) {
-				if (created) {
-					res.send(201, {});
-				}
-				else {
-					res.send(409, {});
-				}
-			})
-			.error(function (error) {
-				res.send(400, error);
-			});
-	}
-    else {
-        res.send(400, {});
+
+    if (req.body && req.body.reservation_request) {
+        var r = req.body.reservation_request;
+        if (r.date && r.time_slot_id && r.teaching_id) {
+            reservation_request.create(r)
+                .success(function (reservation_request) {
+                    res.send(201, reservation_request);
+
+                })
+                .error(function (error) {
+                    res.send(400, error);
+                });
+        }
+        else {
+            res.send(400, {"message": "Reservation_request found with missing params"});
+        }
     }
-	
+    else {
+        res.send(400, {"message": "Reservation_request not found in body"});
+    }
+
     return next();
 };
 
@@ -47,15 +48,14 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var reservation_request = orm.model("reservation_request");
 
-    reservation_request.find({"where": {"id": req.params.id}})
-        .success(function (reservation_request) {
-            if (reservation_request == null) {
-                res.send(404, {});
-            }
-            else {
-                res.send(200, {});
-            }
-        });
+    reservation_request.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (reservation_request) {
+        if (!reservation_request) {
+            res.send(404, {"message": "Reservation_request not found"});
+        }
+        else {
+            res.send(200, reservation_request);
+        }
+    });
 
     return next();
 };
@@ -67,24 +67,33 @@ module.exports.update = function (req, res, next) {
     var reservation_request = orm.model("reservation_request");
 
     if (req.body && req.body.reservation_request) {
-        reservation_request.find({"where": {"id": req.params.id}})
-            .success(function (reservation_request) {
-                if (reservation_request == null) {
-                    res.send(404, {});
+        var r = req.body.reservation_request;
+        if (r.date && r.time_slot_id && r.teaching_id) {
+            reservation_request.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (reservation_request) {
+                if (!reservation_request) {
+                    res.send(404, {"message": "Reservation_request not found"});
                 }
                 else {
+                    reservation_request.date = r.date;
+                    reservation_request.time_slot_id = r.time_slot_id;
+                    reservation_request.teaching_id = r.teaching_id;
+
                     reservation_request.save()
-                        .success(function () {
-                            res.send(200, {});
+                        .success(function (reservation_request) {
+                            res.send(200, reservation_request);
                         })
                         .error(function (error) {
                             res.send(400, error);
                         });
                 }
             });
+        }
+        else {
+            res.send(400, {"message": "Reservation_request found with missing params"});
+        }
     }
     else {
-        res.send(400, {});
+        res.send(400, {"message": "Reservation_request not found in body"});
     }
 
     return next();
@@ -95,19 +104,17 @@ module.exports.update = function (req, res, next) {
  */
 module.exports.delete = function (req, res, next) {
     var reservation_request = orm.model("reservation_request");
-	
-    reservation_request.find({"where": {"id": req.params.id}})
-        .success(function (reservation_request) {
-            if (reservation_request == null) {
-                res.send(404, {});
-            }
-            else {
-                reservation_request.destroy()
-                    .success(function () {
-                        res.send(204);
-                    });
-            }
-        });
+
+    reservation_request.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (reservation_request) {
+        if (!reservation_request) {
+            res.send(404, {"message": "Reservation_request not found"});
+        }
+        else {
+            reservation_request.destroy().success(function () {
+                res.send(204);
+            });
+        }
+    });
 
     return next();
 };

@@ -5,11 +5,10 @@ var orm = require("../../config/models");
  */
 module.exports.list = function (req, res, next) {
     var group = orm.model("group");
-	
-    group.findAll()
-        .success(function (groups) {
-            res.send(200, groups);
-        });
+
+    group.findAll({"where": {"deleted_at": null}}).success(function (groups) {
+        res.send(200, groups);
+    });
 
     return next();
 };
@@ -19,25 +18,27 @@ module.exports.list = function (req, res, next) {
  */
 module.exports.create = function (req, res, next) {
     var group = orm.model("group");
-	
-	if (req.body && req.body.group) {
-		group.findOrCreate()
-			.success(function (group, created) {
-				if (created) {
-					res.send(201, {});
-				}
-				else {
-					res.send(409, {});
-				}
-			})
-			.error(function (error) {
-				res.send(400, error);
-			});
-	}
-    else {
-        res.send(400, {});
+
+    if (req.body && req.body.group) {
+        var g = req.body.group;
+        if (g.label && g.parent_id) {
+            group.create(g)
+                .success(function (group) {
+                    res.send(201, group);
+
+                })
+                .error(function (error) {
+                    res.send(400, error);
+                });
+        }
+        else {
+            res.send(400, {"message": "Group found with missing params"});
+        }
     }
-	
+    else {
+        res.send(400, {"message": "Group not found in body"});
+    }
+
     return next();
 };
 
@@ -47,15 +48,14 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var group = orm.model("group");
 
-    group.find({"where": {"id": req.params.id}})
-        .success(function (group) {
-            if (group == null) {
-                res.send(404, {});
-            }
-            else {
-                res.send(200, {});
-            }
-        });
+    group.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (group) {
+        if (!group) {
+            res.send(404, {"message": "Group not found"});
+        }
+        else {
+            res.send(200, group);
+        }
+    });
 
     return next();
 };
@@ -67,24 +67,32 @@ module.exports.update = function (req, res, next) {
     var group = orm.model("group");
 
     if (req.body && req.body.group) {
-        group.find({"where": {"id": req.params.id}})
-            .success(function (group) {
-                if (group == null) {
-                    res.send(404, {});
+        var g = req.body.group;
+        if (g.label && g.parent_id) {
+            group.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (group) {
+                if (!group) {
+                    res.send(404, {"message": "Group not found"});
                 }
                 else {
+                    group.label = g.label;
+                    group.parent_id = g.parent_id;
+
                     group.save()
-                        .success(function () {
-                            res.send(200, {});
+                        .success(function (group) {
+                            res.send(200, group);
                         })
                         .error(function (error) {
                             res.send(400, error);
                         });
                 }
             });
+        }
+        else {
+            res.send(400, {"message": "Group found with missing params"});
+        }
     }
     else {
-        res.send(400, {});
+        res.send(400, {"message": "Group not found in body"});
     }
 
     return next();
@@ -95,19 +103,17 @@ module.exports.update = function (req, res, next) {
  */
 module.exports.delete = function (req, res, next) {
     var group = orm.model("group");
-	
-    group.find({"where": {"id": req.params.id}})
-        .success(function (group) {
-            if (group == null) {
-                res.send(404, {});
-            }
-            else {
-                group.destroy()
-                    .success(function () {
-                        res.send(204);
-                    });
-            }
-        });
+
+    group.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (group) {
+        if (!group) {
+            res.send(404, {"message": "Group not found"});
+        }
+        else {
+            group.destroy().success(function () {
+                res.send(204);
+            });
+        }
+    });
 
     return next();
 };

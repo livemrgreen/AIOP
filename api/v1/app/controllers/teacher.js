@@ -5,11 +5,10 @@ var orm = require("../../config/models");
  */
 module.exports.list = function (req, res, next) {
     var teacher = orm.model("teacher");
-	
-    teacher.findAll()
-        .success(function (teachers) {
-            res.send(200, teachers);
-        });
+
+    teacher.findAll({"where": {"deleted_at": null}}).success(function (teachers) {
+        res.send(200, teachers);
+    });
 
     return next();
 };
@@ -19,25 +18,27 @@ module.exports.list = function (req, res, next) {
  */
 module.exports.create = function (req, res, next) {
     var teacher = orm.model("teacher");
-	
-	if (req.body && req.body.teacher) {
-		teacher.findOrCreate()
-			.success(function (teacher, created) {
-				if (created) {
-					res.send(201, {});
-				}
-				else {
-					res.send(409, {});
-				}
-			})
-			.error(function (error) {
-				res.send(400, error);
-			});
-	}
-    else {
-        res.send(400, {});
+
+    if (req.body && req.body.teacher) {
+        var t = req.body.teacher;
+        if (t.person_id) {
+            teacher.create(t)
+                .success(function (teacher) {
+                    res.send(201, teacher);
+
+                })
+                .error(function (error) {
+                    res.send(400, error);
+                });
+        }
+        else {
+            res.send(400, {"message": "Teacher found with missing params"});
+        }
     }
-	
+    else {
+        res.send(400, {"message": "Teacher not found in body"});
+    }
+
     return next();
 };
 
@@ -47,15 +48,14 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var teacher = orm.model("teacher");
 
-    teacher.find({"where": {"id": req.params.id}})
-        .success(function (teacher) {
-            if (teacher == null) {
-                res.send(404, {});
-            }
-            else {
-                res.send(200, {});
-            }
-        });
+    teacher.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (teacher) {
+        if (!teacher) {
+            res.send(404, {"message": "Teacher not found"});
+        }
+        else {
+            res.send(200, teacher);
+        }
+    });
 
     return next();
 };
@@ -67,24 +67,31 @@ module.exports.update = function (req, res, next) {
     var teacher = orm.model("teacher");
 
     if (req.body && req.body.teacher) {
-        teacher.find({"where": {"id": req.params.id}})
-            .success(function (teacher) {
-                if (teacher == null) {
-                    res.send(404, {});
+        var t = req.body.teacher;
+        if (t.person_id) {
+            teacher.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (teacher) {
+                if (!teacher) {
+                    res.send(404, {"message": "Teacher not found"});
                 }
                 else {
+                    teacher.person_id = t.person_id;
+
                     teacher.save()
-                        .success(function () {
-                            res.send(200, {});
+                        .success(function (teacher) {
+                            res.send(200, teacher);
                         })
                         .error(function (error) {
                             res.send(400, error);
                         });
                 }
             });
+        }
+        else {
+            res.send(400, {"message": "Teacher found with missing params"});
+        }
     }
     else {
-        res.send(400, {});
+        res.send(400, {"message": "Teacher not found in body"});
     }
 
     return next();
@@ -95,19 +102,17 @@ module.exports.update = function (req, res, next) {
  */
 module.exports.delete = function (req, res, next) {
     var teacher = orm.model("teacher");
-	
-    teacher.find({"where": {"id": req.params.id}})
-        .success(function (teacher) {
-            if (teacher == null) {
-                res.send(404, {});
-            }
-            else {
-                teacher.destroy()
-                    .success(function () {
-                        res.send(204);
-                    });
-            }
-        });
+
+    teacher.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (teacher) {
+        if (!teacher) {
+            res.send(404, {"message": "Teacher not found"});
+        }
+        else {
+            teacher.destroy().success(function () {
+                res.send(204);
+            });
+        }
+    });
 
     return next();
 };

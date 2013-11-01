@@ -5,11 +5,10 @@ var orm = require("../../config/models");
  */
 module.exports.list = function (req, res, next) {
     var time_slot = orm.model("time_slot");
-	
-    time_slot.findAll()
-        .success(function (time_slots) {
-            res.send(200, time_slots);
-        });
+
+    time_slot.findAll({"where": {"deleted_at": null}}).success(function (time_slots) {
+        res.send(200, time_slots);
+    });
 
     return next();
 };
@@ -19,25 +18,27 @@ module.exports.list = function (req, res, next) {
  */
 module.exports.create = function (req, res, next) {
     var time_slot = orm.model("time_slot");
-	
-	if (req.body && req.body.time_slot) {
-		time_slot.findOrCreate()
-			.success(function (time_slot, created) {
-				if (created) {
-					res.send(201, {});
-				}
-				else {
-					res.send(409, {});
-				}
-			})
-			.error(function (error) {
-				res.send(400, error);
-			});
-	}
-    else {
-        res.send(400, {});
+
+    if (req.body && req.body.time_slot) {
+        var t = req.body.time_slot;
+        if (t.start && t.end) {
+            time_slot.create(t)
+                .success(function (time_slot) {
+                    res.send(201, time_slot);
+
+                })
+                .error(function (error) {
+                    res.send(400, error);
+                });
+        }
+        else {
+            res.send(400, {"message": "Time_slot found with missing params"});
+        }
     }
-	
+    else {
+        res.send(400, {"message": "Time_slot not found in body"});
+    }
+
     return next();
 };
 
@@ -47,15 +48,14 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var time_slot = orm.model("time_slot");
 
-    time_slot.find({"where": {"id": req.params.id}})
-        .success(function (time_slot) {
-            if (time_slot == null) {
-                res.send(404, {});
-            }
-            else {
-                res.send(200, {});
-            }
-        });
+    time_slot.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (time_slot) {
+        if (!time_slot) {
+            res.send(404, {"message": "Time_slot not found"});
+        }
+        else {
+            res.send(200, time_slot);
+        }
+    });
 
     return next();
 };
@@ -67,24 +67,32 @@ module.exports.update = function (req, res, next) {
     var time_slot = orm.model("time_slot");
 
     if (req.body && req.body.time_slot) {
-        time_slot.find({"where": {"id": req.params.id}})
-            .success(function (time_slot) {
-                if (time_slot == null) {
-                    res.send(404, {});
+        var t = req.body.time_slot;
+        if (t.start && t.end) {
+            time_slot.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (time_slot) {
+                if (!time_slot) {
+                    res.send(404, {"message": "Time_slot not found"});
                 }
                 else {
+                    time_slot.start = t.start;
+                    time_slot.end = t.end;
+
                     time_slot.save()
-                        .success(function () {
-                            res.send(200, {});
+                        .success(function (time_slot) {
+                            res.send(200, time_slot);
                         })
                         .error(function (error) {
                             res.send(400, error);
                         });
                 }
             });
+        }
+        else {
+            res.send(400, {"message": "Time_slot found with missing params"});
+        }
     }
     else {
-        res.send(400, {});
+        res.send(400, {"message": "Time_slot not found in body"});
     }
 
     return next();
@@ -95,19 +103,17 @@ module.exports.update = function (req, res, next) {
  */
 module.exports.delete = function (req, res, next) {
     var time_slot = orm.model("time_slot");
-	
-    time_slot.find({"where": {"id": req.params.id}})
-        .success(function (time_slot) {
-            if (time_slot == null) {
-                res.send(404, {});
-            }
-            else {
-                time_slot.destroy()
-                    .success(function () {
-                        res.send(204);
-                    });
-            }
-        });
+
+    time_slot.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (time_slot) {
+        if (!time_slot) {
+            res.send(404, {"message": "Time_slot not found"});
+        }
+        else {
+            time_slot.destroy().success(function () {
+                res.send(204);
+            });
+        }
+    });
 
     return next();
 };

@@ -5,11 +5,10 @@ var orm = require("../../config/models");
  */
 module.exports.list = function (req, res, next) {
     var person = orm.model("person");
-	
-    person.findAll()
-        .success(function (persons) {
-            res.send(200, persons);
-        });
+
+    person.findAll({"where": {"deleted_at": null}}).success(function (persons) {
+        res.send(200, persons);
+    });
 
     return next();
 };
@@ -19,25 +18,27 @@ module.exports.list = function (req, res, next) {
  */
 module.exports.create = function (req, res, next) {
     var person = orm.model("person");
-	
-	if (req.body && req.body.person) {
-		person.findOrCreate()
-			.success(function (person, created) {
-				if (created) {
-					res.send(201, {});
-				}
-				else {
-					res.send(409, {});
-				}
-			})
-			.error(function (error) {
-				res.send(400, error);
-			});
-	}
-    else {
-        res.send(400, {});
+
+    if (req.body && req.body.person) {
+        var p = req.body.person;
+        if (p.first_name && p.last_name) {
+            person.create(p)
+                .success(function (person) {
+                    res.send(201, person);
+
+                })
+                .error(function (error) {
+                    res.send(400, error);
+                });
+        }
+        else {
+            res.send(400, {"message": "Person found with missing params"});
+        }
     }
-	
+    else {
+        res.send(400, {"message": "Person not found in body"});
+    }
+
     return next();
 };
 
@@ -47,15 +48,14 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var person = orm.model("person");
 
-    person.find({"where": {"id": req.params.id}})
-        .success(function (person) {
-            if (person == null) {
-                res.send(404, {});
-            }
-            else {
-                res.send(200, {});
-            }
-        });
+    person.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (person) {
+        if (!person) {
+            res.send(404, {"message": "Person not found"});
+        }
+        else {
+            res.send(200, person);
+        }
+    });
 
     return next();
 };
@@ -67,24 +67,32 @@ module.exports.update = function (req, res, next) {
     var person = orm.model("person");
 
     if (req.body && req.body.person) {
-        person.find({"where": {"id": req.params.id}})
-            .success(function (person) {
-                if (person == null) {
-                    res.send(404, {});
+        var p = req.body.person;
+        if (p.first_name && p.last_name) {
+            person.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (person) {
+                if (!person) {
+                    res.send(404, {"message": "Person not found"});
                 }
                 else {
+                    person.first_name = p.first_name;
+                    person.last_name = p.last_name;
+
                     person.save()
-                        .success(function () {
-                            res.send(200, {});
+                        .success(function (person) {
+                            res.send(200, person);
                         })
                         .error(function (error) {
                             res.send(400, error);
                         });
                 }
             });
+        }
+        else {
+            res.send(400, {"message": "Person found with missing params"});
+        }
     }
     else {
-        res.send(400, {});
+        res.send(400, {"message": "Person not found in body"});
     }
 
     return next();
@@ -95,19 +103,17 @@ module.exports.update = function (req, res, next) {
  */
 module.exports.delete = function (req, res, next) {
     var person = orm.model("person");
-	
-    person.find({"where": {"id": req.params.id}})
-        .success(function (person) {
-            if (person == null) {
-                res.send(404, {});
-            }
-            else {
-                person.destroy()
-                    .success(function () {
-                        res.send(204);
-                    });
-            }
-        });
+
+    person.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (person) {
+        if (!person) {
+            res.send(404, {"message": "Person not found"});
+        }
+        else {
+            person.destroy().success(function () {
+                res.send(204);
+            });
+        }
+    });
 
     return next();
 };

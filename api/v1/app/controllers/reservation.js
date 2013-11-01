@@ -80,7 +80,7 @@ module.exports.update = function (req, res, next) {
                     reservation.teaching_id = r.teaching_id;
 
                     reservation.save()
-                        .success(function (user) {
+                        .success(function (reservation) {
                             res.send(200, reservation);
                         })
                         .error(function (error) {

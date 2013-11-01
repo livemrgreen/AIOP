@@ -5,11 +5,10 @@ var orm = require("../../config/models");
  */
 module.exports.list = function (req, res, next) {
     var module = orm.model("module");
-	
-    module.findAll()
-        .success(function (modules) {
-            res.send(200, modules);
-        });
+
+    module.findAll({"where": {"deleted_at": null}}).success(function (modules) {
+        res.send(200, modules);
+    });
 
     return next();
 };
@@ -19,25 +18,27 @@ module.exports.list = function (req, res, next) {
  */
 module.exports.create = function (req, res, next) {
     var module = orm.model("module");
-	
-	if (req.body && req.body.module) {
-		module.findOrCreate()
-			.success(function (module, created) {
-				if (created) {
-					res.send(201, {});
-				}
-				else {
-					res.send(409, {});
-				}
-			})
-			.error(function (error) {
-				res.send(400, error);
-			});
-	}
-    else {
-        res.send(400, {});
+
+    if (req.body && req.body.module) {
+        var m = req.body.module;
+        if (m.label && m.module_manager_id) {
+            module.create(m)
+                .success(function (module) {
+                    res.send(201, module);
+
+                })
+                .error(function (error) {
+                    res.send(400, error);
+                });
+        }
+        else {
+            res.send(400, {"message": "Module found with missing params"});
+        }
     }
-	
+    else {
+        res.send(400, {"message": "Module not found in body"});
+    }
+
     return next();
 };
 
@@ -47,15 +48,14 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var module = orm.model("module");
 
-    module.find({"where": {"id": req.params.id}})
-        .success(function (module) {
-            if (module == null) {
-                res.send(404, {});
-            }
-            else {
-                res.send(200, {});
-            }
-        });
+    module.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (module) {
+        if (!module) {
+            res.send(404, {"message": "Module not found"});
+        }
+        else {
+            res.send(200, module);
+        }
+    });
 
     return next();
 };
@@ -67,24 +67,32 @@ module.exports.update = function (req, res, next) {
     var module = orm.model("module");
 
     if (req.body && req.body.module) {
-        module.find({"where": {"id": req.params.id}})
-            .success(function (module) {
-                if (module == null) {
-                    res.send(404, {});
+        var m = req.body.module;
+        if (m.label && m.module_manager_id) {
+            module.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (module) {
+                if (!module) {
+                    res.send(404, {"message": "Module not found"});
                 }
                 else {
+                    module.label = m.label;
+                    module.module_manager_id = m.module_manager_id;
+
                     module.save()
-                        .success(function () {
-                            res.send(200, {});
+                        .success(function (module) {
+                            res.send(200, module);
                         })
                         .error(function (error) {
                             res.send(400, error);
                         });
                 }
             });
+        }
+        else {
+            res.send(400, {"message": "Module found with missing params"});
+        }
     }
     else {
-        res.send(400, {});
+        res.send(400, {"message": "Module not found in body"});
     }
 
     return next();
@@ -95,19 +103,17 @@ module.exports.update = function (req, res, next) {
  */
 module.exports.delete = function (req, res, next) {
     var module = orm.model("module");
-	
-    module.find({"where": {"id": req.params.id}})
-        .success(function (module) {
-            if (module == null) {
-                res.send(404, {});
-            }
-            else {
-                module.destroy()
-                    .success(function () {
-                        res.send(204);
-                    });
-            }
-        });
+
+    module.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (module) {
+        if (!module) {
+            res.send(404, {"message": "Module not found"});
+        }
+        else {
+            module.destroy().success(function () {
+                res.send(204);
+            });
+        }
+    });
 
     return next();
 };

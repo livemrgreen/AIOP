@@ -5,11 +5,10 @@ var orm = require("../../config/models");
  */
 module.exports.list = function (req, res, next) {
     var room = orm.model("room");
-	
-    room.findAll()
-        .success(function (rooms) {
-            res.send(200, rooms);
-        });
+
+    room.findAll({"where": {"deleted_at": null}}).success(function (rooms) {
+        res.send(200, rooms);
+    });
 
     return next();
 };
@@ -19,25 +18,27 @@ module.exports.list = function (req, res, next) {
  */
 module.exports.create = function (req, res, next) {
     var room = orm.model("room");
-	
-	if (req.body && req.body.room) {
-		room.findOrCreate()
-			.success(function (room, created) {
-				if (created) {
-					res.send(201, {});
-				}
-				else {
-					res.send(409, {});
-				}
-			})
-			.error(function (error) {
-				res.send(400, error);
-			});
-	}
-    else {
-        res.send(400, {});
+
+    if (req.body && req.body.room) {
+        var r = req.body.room;
+        if (r.label && r.capacity && r.building_id) {
+            room.create(r)
+                .success(function (room) {
+                    res.send(201, room);
+
+                })
+                .error(function (error) {
+                    res.send(400, error);
+                });
+        }
+        else {
+            res.send(400, {"message": "Room found with missing params"});
+        }
     }
-	
+    else {
+        res.send(400, {"message": "Room not found in body"});
+    }
+
     return next();
 };
 
@@ -47,15 +48,14 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var room = orm.model("room");
 
-    room.find({"where": {"id": req.params.id}})
-        .success(function (room) {
-            if (room == null) {
-                res.send(404, {});
-            }
-            else {
-                res.send(200, {});
-            }
-        });
+    room.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (room) {
+        if (!room) {
+            res.send(404, {"message": "Room not found"});
+        }
+        else {
+            res.send(200, room);
+        }
+    });
 
     return next();
 };
@@ -67,24 +67,33 @@ module.exports.update = function (req, res, next) {
     var room = orm.model("room");
 
     if (req.body && req.body.room) {
-        room.find({"where": {"id": req.params.id}})
-            .success(function (room) {
-                if (room == null) {
-                    res.send(404, {});
+        var r = req.body.room;
+        if (r.label && r.capacity && r.building_id) {
+            room.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (room) {
+                if (!room) {
+                    res.send(404, {"message": "Room not found"});
                 }
                 else {
+                    room.label = r.label;
+                    room.capacity = r.capacity;
+                    room.building_id = r.building_id;
+
                     room.save()
-                        .success(function () {
-                            res.send(200, {});
+                        .success(function (room) {
+                            res.send(200, room);
                         })
                         .error(function (error) {
                             res.send(400, error);
                         });
                 }
             });
+        }
+        else {
+            res.send(400, {"message": "Room found with missing params"});
+        }
     }
     else {
-        res.send(400, {});
+        res.send(400, {"message": "Room not found in body"});
     }
 
     return next();
@@ -95,19 +104,17 @@ module.exports.update = function (req, res, next) {
  */
 module.exports.delete = function (req, res, next) {
     var room = orm.model("room");
-	
-    room.find({"where": {"id": req.params.id}})
-        .success(function (room) {
-            if (room == null) {
-                res.send(404, {});
-            }
-            else {
-                room.destroy()
-                    .success(function () {
-                        res.send(204);
-                    });
-            }
-        });
+
+    room.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (room) {
+        if (!room) {
+            res.send(404, {"message": "Room not found"});
+        }
+        else {
+            room.destroy().success(function () {
+                res.send(204);
+            });
+        }
+    });
 
     return next();
 };
