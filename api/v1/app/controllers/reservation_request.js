@@ -7,7 +7,7 @@ module.exports.list = function (req, res, next) {
     var reservation_request = orm.model("reservation_request");
 
     reservation_request.findAll({"where": {"deleted_at": null}}).success(function (reservation_requests) {
-        res.send(200, reservation_requests);
+        res.send(200, {"reservation_requests": reservation_requests});
     });
 
     return next();
@@ -24,7 +24,7 @@ module.exports.create = function (req, res, next) {
         if (r.date && r.time_slot_id && r.teaching_id) {
             reservation_request.create(r)
                 .success(function (reservation_request) {
-                    res.send(201, reservation_request);
+                    res.send(201, {"reservation_request": reservation_request});
 
                 })
                 .error(function (error) {
@@ -53,7 +53,7 @@ module.exports.show = function (req, res, next) {
             res.send(404, {"message": "Reservation_request not found"});
         }
         else {
-            res.send(200, reservation_request);
+            res.send(200, {"reservation_request": reservation_request});
         }
     });
 
@@ -80,7 +80,7 @@ module.exports.update = function (req, res, next) {
 
                     reservation_request.save()
                         .success(function (reservation_request) {
-                            res.send(200, reservation_request);
+                            res.send(200, {"reservation_request": reservation_request});
                         })
                         .error(function (error) {
                             res.send(400, error);

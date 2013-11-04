@@ -7,7 +7,7 @@ module.exports.list = function (req, res, next) {
     var building = orm.model("building");
 
     building.findAll({"where": {"deleted_at": null}}).success(function (buildings) {
-        res.send(200, buildings);
+        res.send(200, {"buildings": buildings});
     });
 
     return next();
@@ -24,7 +24,7 @@ module.exports.create = function (req, res, next) {
         if (b.label) {
             building.create(b)
                 .success(function (building) {
-                    res.send(201, building);
+                    res.send(201, {"building": building});
 
                 })
                 .error(function (error) {
@@ -53,7 +53,7 @@ module.exports.show = function (req, res, next) {
             res.send(404, {"message": "Building not found"});
         }
         else {
-            res.send(200, building);
+            res.send(200, {"building": building});
         }
     });
 
@@ -78,7 +78,7 @@ module.exports.update = function (req, res, next) {
 
                     building.save()
                         .success(function (building) {
-                            res.send(200, building);
+                            res.send(200, {"building": building});
                         })
                         .error(function (error) {
                             res.send(400, error);

@@ -7,7 +7,7 @@ module.exports.list = function (req, res, next) {
     var room = orm.model("room");
 
     room.findAll({"where": {"deleted_at": null}}).success(function (rooms) {
-        res.send(200, rooms);
+        res.send(200, {"rooms": rooms});
     });
 
     return next();
@@ -24,7 +24,7 @@ module.exports.create = function (req, res, next) {
         if (r.label && r.capacity && r.building_id) {
             room.create(r)
                 .success(function (room) {
-                    res.send(201, room);
+                    res.send(201, {"room": room});
 
                 })
                 .error(function (error) {
@@ -53,7 +53,7 @@ module.exports.show = function (req, res, next) {
             res.send(404, {"message": "Room not found"});
         }
         else {
-            res.send(200, room);
+            res.send(200, {"room": room});
         }
     });
 
@@ -80,7 +80,7 @@ module.exports.update = function (req, res, next) {
 
                     room.save()
                         .success(function (room) {
-                            res.send(200, room);
+                            res.send(200, {"room": room});
                         })
                         .error(function (error) {
                             res.send(400, error);

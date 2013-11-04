@@ -7,7 +7,7 @@ module.exports.list = function (req, res, next) {
     var person = orm.model("person");
 
     person.findAll({"where": {"deleted_at": null}}).success(function (persons) {
-        res.send(200, persons);
+        res.send(200, {"persons": persons});
     });
 
     return next();
@@ -24,7 +24,7 @@ module.exports.create = function (req, res, next) {
         if (p.first_name && p.last_name) {
             person.create(p)
                 .success(function (person) {
-                    res.send(201, person);
+                    res.send(201, {"person": person});
 
                 })
                 .error(function (error) {
@@ -53,7 +53,7 @@ module.exports.show = function (req, res, next) {
             res.send(404, {"message": "Person not found"});
         }
         else {
-            res.send(200, person);
+            res.send(200, {"person": person});
         }
     });
 
@@ -79,7 +79,7 @@ module.exports.update = function (req, res, next) {
 
                     person.save()
                         .success(function (person) {
-                            res.send(200, person);
+                            res.send(200, {"person": person});
                         })
                         .error(function (error) {
                             res.send(400, error);

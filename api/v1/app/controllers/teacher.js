@@ -7,7 +7,7 @@ module.exports.list = function (req, res, next) {
     var teacher = orm.model("teacher");
 
     teacher.findAll({"where": {"deleted_at": null}}).success(function (teachers) {
-        res.send(200, teachers);
+        res.send(200, {"teachers": teachers});
     });
 
     return next();
@@ -24,7 +24,7 @@ module.exports.create = function (req, res, next) {
         if (t.person_id) {
             teacher.create(t)
                 .success(function (teacher) {
-                    res.send(201, teacher);
+                    res.send(201, {"teacher": teacher});
 
                 })
                 .error(function (error) {
@@ -53,7 +53,7 @@ module.exports.show = function (req, res, next) {
             res.send(404, {"message": "Teacher not found"});
         }
         else {
-            res.send(200, teacher);
+            res.send(200, {"teacher": teacher});
         }
     });
 
@@ -78,7 +78,7 @@ module.exports.update = function (req, res, next) {
 
                     teacher.save()
                         .success(function (teacher) {
-                            res.send(200, teacher);
+                            res.send(200, {"teacher": teacher});
                         })
                         .error(function (error) {
                             res.send(400, error);

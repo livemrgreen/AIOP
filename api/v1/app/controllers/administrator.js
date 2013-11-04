@@ -7,7 +7,7 @@ module.exports.list = function (req, res, next) {
     var administrator = orm.model("administrator");
 
     administrator.findAll({"where": {"deleted_at": null}}).success(function (administrators) {
-        res.send(200, administrators);
+        res.send(200, {"administrators": administrators});
     });
 
     return next();
@@ -24,7 +24,7 @@ module.exports.create = function (req, res, next) {
         if (a.teacher_id) {
             administrator.create(a)
                 .success(function (administrator) {
-                    res.send(201, administrator);
+                    res.send(201, {"administrator": administrator});
 
                 })
                 .error(function (error) {
@@ -53,7 +53,7 @@ module.exports.show = function (req, res, next) {
             res.send(404, {"message": "Administrator not found"});
         }
         else {
-            res.send(200, administrator);
+            res.send(200, {"administrator": administrator});
         }
     });
 
@@ -78,7 +78,7 @@ module.exports.update = function (req, res, next) {
 
                     administrator.save()
                         .success(function (administrator) {
-                            res.send(200, administrator);
+                            res.send(200, {"administrator": administrator});
                         })
                         .error(function (error) {
                             res.send(400, error);

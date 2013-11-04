@@ -7,7 +7,7 @@ module.exports.list = function (req, res, next) {
     var caracteristic = orm.model("caracteristic");
 
     caracteristic.findAll({"where": {"deleted_at": null}}).success(function (caracteristics) {
-        res.send(200, caracteristics);
+        res.send(200, {"caracteristics": caracteristics});
     });
 
     return next();
@@ -24,7 +24,7 @@ module.exports.create = function (req, res, next) {
         if (c.label) {
             caracteristic.create(c)
                 .success(function (caracteristic) {
-                    res.send(201, caracteristic);
+                    res.send(201, {"caracteristic": caracteristic});
 
                 })
                 .error(function (error) {
@@ -53,7 +53,7 @@ module.exports.show = function (req, res, next) {
             res.send(404, {"message": "Caracteristic not found"});
         }
         else {
-            res.send(200, caracteristic);
+            res.send(200, {"caracteristic": caracteristic});
         }
     });
 
@@ -78,7 +78,7 @@ module.exports.update = function (req, res, next) {
 
                     caracteristic.save()
                         .success(function (caracteristic) {
-                            res.send(200, caracteristic);
+                            res.send(200, {"caracteristic": caracteristic});
                         })
                         .error(function (error) {
                             res.send(400, error);

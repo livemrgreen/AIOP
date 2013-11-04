@@ -2,12 +2,13 @@
     "name": "api",
     "version": "0.0.0",
     "dependencies": {
-        "restify": "latest",
-        "passport": "latest",
-        "passport-local": "latest",
-        "passport-http-bearer": "latest",
-        "jwt-simple": "latest",
-        "sequelize": "latest",
-        "mysql": "latest"
+        "restify": "2.6.0",
+        "se7ensky-restify-preflight": "0.1.5",
+        "passport": "0.1.17",
+        "passport-local": "0.1.6",
+        "passport-http-bearer": "1.0.1",
+        "jwt-simple": "0.1.0",
+        "sequelize": "1.7.0-beta.0",
+        "mysql": "2.0.0-alpha9"
     }
 }

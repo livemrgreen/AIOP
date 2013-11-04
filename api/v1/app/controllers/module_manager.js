@@ -7,7 +7,7 @@ module.exports.list = function (req, res, next) {
     var module_manager = orm.model("module_manager");
 
     module_manager.findAll({"where": {"deleted_at": null}}).success(function (module_managers) {
-        res.send(200, module_managers);
+        res.send(200, {"module_managers": module_managers});
     });
 
     return next();
@@ -24,7 +24,7 @@ module.exports.create = function (req, res, next) {
         if (m.teacher_id) {
             module_manager.create(m)
                 .success(function (module_manager) {
-                    res.send(201, module_manager);
+                    res.send(201, {"module_manager": module_manager});
 
                 })
                 .error(function (error) {
@@ -53,7 +53,7 @@ module.exports.show = function (req, res, next) {
             res.send(404, {"message": "Module_manager not found"});
         }
         else {
-            res.send(200, module_manager);
+            res.send(200, {"module_manager": module_manager});
         }
     });
 
@@ -78,7 +78,7 @@ module.exports.update = function (req, res, next) {
 
                     module_manager.save()
                         .success(function (module_manager) {
-                            res.send(200, module_manager);
+                            res.send(200, {"module_manager": module_manager});
                         })
                         .error(function (error) {
                             res.send(400, error);

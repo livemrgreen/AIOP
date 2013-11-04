@@ -7,7 +7,7 @@ module.exports.list = function (req, res, next) {
     var reservation = orm.model("reservation");
 
     reservation.findAll({"where": {"deleted_at": null}}).success(function (reservations) {
-        res.send(200, reservations);
+        res.send(200, {"reservations": reservations});
     });
 
     return next();
@@ -24,7 +24,7 @@ module.exports.create = function (req, res, next) {
         if (r.date && r.time_slot_id && r.room_id && r.teaching_id) {
             reservation.create(r)
                 .success(function (reservation) {
-                    res.send(201, reservation);
+                    res.send(201, {"reservation": reservation});
 
                 })
                 .error(function (error) {
@@ -53,7 +53,7 @@ module.exports.show = function (req, res, next) {
             res.send(404, {"message": "Reservation not found"});
         }
         else {
-            res.send(200, reservation);
+            res.send(200, {"reservation": reservation});
         }
     });
 
@@ -81,7 +81,7 @@ module.exports.update = function (req, res, next) {
 
                     reservation.save()
                         .success(function (reservation) {
-                            res.send(200, reservation);
+                            res.send(200, {"reservation": reservation});
                         })
                         .error(function (error) {
                             res.send(400, error);

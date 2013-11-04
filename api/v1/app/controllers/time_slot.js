@@ -7,7 +7,7 @@ module.exports.list = function (req, res, next) {
     var time_slot = orm.model("time_slot");
 
     time_slot.findAll({"where": {"deleted_at": null}}).success(function (time_slots) {
-        res.send(200, time_slots);
+        res.send(200, {"time_slots": time_slots});
     });
 
     return next();
@@ -24,7 +24,7 @@ module.exports.create = function (req, res, next) {
         if (t.start && t.end) {
             time_slot.create(t)
                 .success(function (time_slot) {
-                    res.send(201, time_slot);
+                    res.send(201, {"time_slot": time_slot});
 
                 })
                 .error(function (error) {
@@ -53,7 +53,7 @@ module.exports.show = function (req, res, next) {
             res.send(404, {"message": "Time_slot not found"});
         }
         else {
-            res.send(200, time_slot);
+            res.send(200, {"time_slot": time_slot});
         }
     });
 
@@ -79,7 +79,7 @@ module.exports.update = function (req, res, next) {
 
                     time_slot.save()
                         .success(function (time_slot) {
-                            res.send(200, time_slot);
+                            res.send(200, {"time_slot": time_slot});
                         })
                         .error(function (error) {
                             res.send(400, error);

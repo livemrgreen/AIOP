@@ -7,7 +7,7 @@ module.exports.list = function (req, res, next) {
     var teaching = orm.model("teaching");
 
     teaching.findAll({"where": {"deleted_at": null}}).success(function (teachings) {
-        res.send(200, teachings);
+        res.send(200, {"teachings": teachings});
     });
 
     return next();
@@ -24,7 +24,7 @@ module.exports.create = function (req, res, next) {
         if (t.group_id && t.lesson_id && t.teacher_id) {
             teaching.create(t)
                 .success(function (teaching) {
-                    res.send(201, teaching);
+                    res.send(201, {"teaching": teaching});
 
                 })
                 .error(function (error) {
@@ -53,7 +53,7 @@ module.exports.show = function (req, res, next) {
             res.send(404, {"message": "Teaching not found"});
         }
         else {
-            res.send(200, teaching);
+            res.send(200, {"teaching": teaching});
         }
     });
 
@@ -80,7 +80,7 @@ module.exports.update = function (req, res, next) {
 
                     teaching.save()
                         .success(function (teaching) {
-                            res.send(200, teaching);
+                            res.send(200, {"teaching": teaching});
                         })
                         .error(function (error) {
                             res.send(400, error);

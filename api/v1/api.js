@@ -11,9 +11,9 @@ var database = require("./config/config").database;
  * to run the serv and initialize
  * some important things
  */
-restify.CORS.ALLOW_HEADERS.push("x-requested-with");
 
 var server = restify.createServer({});
+require('se7ensky-restify-preflight')(server); // CORS qui marchent ..
 server.use(restify.CORS());
 server.use(restify.acceptParser(server.acceptable));
 server.use(restify.authorizationParser());

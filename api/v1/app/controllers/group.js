@@ -7,7 +7,7 @@ module.exports.list = function (req, res, next) {
     var group = orm.model("group");
 
     group.findAll({"where": {"deleted_at": null}}).success(function (groups) {
-        res.send(200, groups);
+        res.send(200, {"groups": groups});
     });
 
     return next();
@@ -24,7 +24,7 @@ module.exports.create = function (req, res, next) {
         if (g.label && g.parent_id) {
             group.create(g)
                 .success(function (group) {
-                    res.send(201, group);
+                    res.send(201, {"group": group});
 
                 })
                 .error(function (error) {
@@ -53,7 +53,7 @@ module.exports.show = function (req, res, next) {
             res.send(404, {"message": "Group not found"});
         }
         else {
-            res.send(200, group);
+            res.send(200, {"group": group});
         }
     });
 
@@ -79,7 +79,7 @@ module.exports.update = function (req, res, next) {
 
                     group.save()
                         .success(function (group) {
-                            res.send(200, group);
+                            res.send(200, {"group": group});
                         })
                         .error(function (error) {
                             res.send(400, error);

@@ -7,7 +7,7 @@ module.exports.list = function (req, res, next) {
     var subject = orm.model("subject");
 
     subject.findAll({"where": {"deleted_at": null}}).success(function (subjects) {
-        res.send(200, subjects);
+        res.send(200, {"subjects": subjects});
     });
 
     return next();
@@ -24,7 +24,7 @@ module.exports.create = function (req, res, next) {
         if (s.label && s.module_id) {
             subject.create(s)
                 .success(function (subject) {
-                    res.send(201, subject);
+                    res.send(201, {"subject": subject});
 
                 })
                 .error(function (error) {
@@ -53,7 +53,7 @@ module.exports.show = function (req, res, next) {
             res.send(404, {"message": "Subject not found"});
         }
         else {
-            res.send(200, subject);
+            res.send(200, {"subject": subject});
         }
     });
 
@@ -79,7 +79,7 @@ module.exports.update = function (req, res, next) {
 
                     subject.save()
                         .success(function (subject) {
-                            res.send(200, subject);
+                            res.send(200, {"subject": subject});
                         })
                         .error(function (error) {
                             res.send(400, error);

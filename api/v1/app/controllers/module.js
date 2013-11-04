@@ -7,7 +7,7 @@ module.exports.list = function (req, res, next) {
     var module = orm.model("module");
 
     module.findAll({"where": {"deleted_at": null}}).success(function (modules) {
-        res.send(200, modules);
+        res.send(200, {"modules": modules});
     });
 
     return next();
@@ -24,7 +24,7 @@ module.exports.create = function (req, res, next) {
         if (m.label && m.module_manager_id) {
             module.create(m)
                 .success(function (module) {
-                    res.send(201, module);
+                    res.send(201, {"module": module});
 
                 })
                 .error(function (error) {
@@ -53,7 +53,7 @@ module.exports.show = function (req, res, next) {
             res.send(404, {"message": "Module not found"});
         }
         else {
-            res.send(200, module);
+            res.send(200, {"module": module});
         }
     });
 
@@ -79,7 +79,7 @@ module.exports.update = function (req, res, next) {
 
                     module.save()
                         .success(function (module) {
-                            res.send(200, module);
+                            res.send(200, {"module": module});
                         })
                         .error(function (error) {
                             res.send(400, error);

@@ -7,7 +7,7 @@ module.exports.list = function (req, res, next) {
     var lesson_type = orm.model("lesson_type");
 
     lesson_type.findAll({"where": {"deleted_at": null}}).success(function (lesson_types) {
-        res.send(200, lesson_types);
+        res.send(200, {"lesson_types": lesson_types});
     });
 
     return next();
@@ -24,7 +24,7 @@ module.exports.create = function (req, res, next) {
         if (l.label) {
             lesson_type.create(l)
                 .success(function (lesson_type) {
-                    res.send(201, lesson_type);
+                    res.send(201, {"lesson_type": lesson_type});
 
                 })
                 .error(function (error) {
@@ -53,7 +53,7 @@ module.exports.show = function (req, res, next) {
             res.send(404, {"message": "Lesson_type not found"});
         }
         else {
-            res.send(200, lesson_type);
+            res.send(200, {"lesson_type": lesson_type});
         }
     });
 
@@ -78,7 +78,7 @@ module.exports.update = function (req, res, next) {
 
                     lesson_type.save()
                         .success(function (lesson_type) {
-                            res.send(200, lesson_type);
+                            res.send(200, {"lesson_type": lesson_type});
                         })
                         .error(function (error) {
                             res.send(400, error);

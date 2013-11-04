@@ -7,7 +7,7 @@ module.exports.list = function (req, res, next) {
     var user = orm.model("user");
 
     user.findAll({"where": {"deleted_at": null}, "attributes": ["id", "username", "person_id"]}).success(function (users) {
-        res.send(200, users);
+        res.send(200, {"users": users});
     });
 
     return next();
@@ -30,7 +30,7 @@ module.exports.create = function (req, res, next) {
 
             tmp.save()
                 .success(function (user) {
-                    res.send(201, {"id": user.id, "username": user.username, "person_id": user.person_id});
+                    res.send(201, {"user": {"id": user.id, "username": user.username, "person_id": user.person_id}});
 
                 })
                 .error(function (error) {
@@ -59,7 +59,7 @@ module.exports.show = function (req, res, next) {
             res.send(404, {"message": "User not found"});
         }
         else {
-            res.send(200, {"id": user.id, "username": user.username, "person_id": user.person_id});
+            res.send(200, {"user": {"id": user.id, "username": user.username, "person_id": user.person_id}});
         }
     });
 
@@ -86,7 +86,7 @@ module.exports.update = function (req, res, next) {
 
                     user.save()
                         .success(function (user) {
-                            res.send(200, {"id": user.id, "username": user.username, "person_id": user.person_id});
+                            res.send(200, {"user": {"id": user.id, "username": user.username, "person_id": user.person_id}});
                         })
                         .error(function (error) {
                             res.send(400, error);
