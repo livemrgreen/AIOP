@@ -74,7 +74,7 @@ module.exports.update = function (req, res, next) {
                     res.send(404, {"message": "Administrator not found"});
                 }
                 else {
-                    administrator.teacher_id = r.teacher_id;
+                    administrator.teacher_id = a.teacher_id;
 
                     administrator.save()
                         .success(function (administrator) {
