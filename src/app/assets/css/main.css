@@ -2586,9 +2586,13 @@ body.error .logo h1 {
 /* END ERROR PAGES STYLES */
 /* BEGIN LOGIN PAGE STYLES */
 .login {
-  padding-top: 40px;
-  padding-bottom: 40px;
+  padding-top: 0px;
+  padding-bottom: 0px;
   background: url("../img/pattern/black_paper.png") repeat #444444;
+}
+.login .tab-content{
+    padding-top: 40px;
+    padding-bottom: 40px;
 }
 .login .form-signin {
   max-width: 330px;

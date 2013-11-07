@@ -3,22 +3,30 @@
 
 require.config({
     paths: {
+        'domReady': 'assets/lib/requirejs-domready/domReady',
+        'angular': 'bower_components/angular/angular',
         'moment': 'bower_components/moment/moment-with-langs.min',
         'main' : 'assets/js/main.js',
-        'jQuery' : 'assets/lib/jquery.min',
-        'domReady': 'assets/lib/requirejs-domready/domReady',
-        'angular': 'bower_components/angular/angular'
+        'underscore' : 'bower_components/underscore/underscore-min',
+        'jQuery' : 'assets/lib/jquery.min'
     },
     shim: {
         'jQuery': {
             exports: '$'
         },
-        angular: {
+        'underscore' : {
+            exports: '_'
+        },
+        'angular': {
             exports: 'angular'
         }
     },
 
     deps: ['./bootstrap']
+
+}, ['angular', 'underscore', ], function(app){
+
+
 
 });
 

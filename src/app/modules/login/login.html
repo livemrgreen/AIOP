@@ -1,0 +1,29 @@
+<div class="login">
+<div class="container">
+
+    <div class="tab-content">
+
+        <div class="text-center">
+            <img src="assets/img/logo.png" alt="Metis Logo">
+        </div>
+
+        <div id="login" class="tab-pane active">
+
+            <form class="form-signin"  novalidate name="form">
+                <p class="text-muted text-center">
+                    Enter your username and password
+                </p>
+                <input type="text" placeholder="Username" class="form-control" ng-model="user" required>
+                <input type="password" placeholder="Password" class="form-control" ng-model="pass" required>
+                <div ng-show="error" class="alert alert-danger">
+                    Login or password is incorrect. Please try again.
+                </div>
+
+                <button class="btn btn-lg btn-primary btn-block" ng-click="loginFuncion()" ng-disabled="form.$invalid">Sign in</button>
+            </form>
+        </div>
+    </div>
+
+
+</div> <!-- /container -->
+</div>

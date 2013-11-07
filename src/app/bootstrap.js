@@ -14,9 +14,10 @@ define([
    * using the `run` function on the top-level module
    */
 
-  require(['domReady!'], function (document) {
-    /* everything is loaded...go! */
-    ng.bootstrap(document, ['app']);
-    ng.resumeBootstrap();
-  });
+    require(['domReady'], function (domReady) {
+        domReady(function() {
+            ng.bootstrap(document, ['app']);
+        })
+    });
+
 });

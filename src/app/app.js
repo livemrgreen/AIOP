@@ -5,12 +5,14 @@
 define([
     'angular',
     './config',
-    './modules/home/index'
+    './modules/home/index',
+    './modules/login/index'
 ], function (ng) {
     'use strict';
 
     return ng.module('app', [
         'app.constants',
-        'app.home'
+        'app.home',
+        'app.login'
     ]);
 });
