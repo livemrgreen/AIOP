@@ -5,7 +5,7 @@
 define(['./module'], function (controllers) {
     'use strict';
 
-    controllers.controller('LoginController', function ($scope, $http, $location) {
+    controllers.controller('LoginController', function ($scope, $http, $location, UserService) {
 
         $scope.error = false;
 
@@ -14,8 +14,9 @@ define(['./module'], function (controllers) {
             var user = {'username': $scope.user, 'password': $scope.pass};
             $http({method: 'Post', url: 'http://162.38.113.210:8080/signin', data : user}).
                 success(function(data) {
-                    console.log(data);
-                    console.log("bon");
+                    UserService.isLogged = true;
+                    UserService.access_token = data.access_token;
+                    console.log(UserService);
                     $location.path("/");
                     // this callback will be called asynchronously
                     // when the response is available

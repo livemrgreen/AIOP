@@ -5,7 +5,11 @@
 define(['./module'], function (controllers) {
   'use strict';
 
-  controllers.controller('HomeController', function ($scope, $http) {
-    $scope.twoTimesTwo = 2 * 2;
+  controllers.controller('HomeController', function ($scope, $http, UserService) {
+
+      console.log('Home');
+      console.log(UserService);
+      $scope.twoTimesTwo = 2 * 2;
+
   });
 });
