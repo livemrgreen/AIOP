@@ -9,4 +9,4 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-Urm::Application.config.secret_key_base = 'f1f64f4a6bccae82d65e723a83e84718370506f0c3f7d7a4cde7a88ca0f869300e9168ce68d4b5f2f0826d0d7bbacd693e1db0c7016728353a64bea1e07ec0b9'
+Urm::Application.config.secret_key_base = 'ffa598d1506d1acc77541c266e757fc015d42db50c1cd7220434c2ddaec7a0183bc18c1a4fc677e1ee1073aa29fdf1180c4bbee4b068f50f3735c96c3f1774cb'
