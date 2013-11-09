@@ -33,7 +33,9 @@ requirejs(['./app'], function(services){
     services.factory('UserService', [function() {
         var sdo = {
             isLogged: false,
-            access_token: ''
+            access_token: '',
+            name: '',
+            id: ''
         };
         return sdo;
     }]);
@@ -55,7 +57,7 @@ requirejs(['./app', './config', 'angular'], function(app){
 
 
         console.log(!routeClean($location.url()));
-         $rootScope.$on('$routeChangeStart', function (event, next, current) {
+         /*$rootScope.$on('$routeChangeStart', function (event, next, current) {
 
              console.log("roooouuutage");
              console.log(UserService);
@@ -65,6 +67,6 @@ requirejs(['./app', './config', 'angular'], function(app){
                 $location.path('/login');
             }
             console.log("changement de path");
-         });
+         });*/
     });
 });

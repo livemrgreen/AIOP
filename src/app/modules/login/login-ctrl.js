@@ -9,17 +9,27 @@ define(['./module'], function (controllers) {
 
         $scope.error = false;
 
+        function capitalize( str){
+            return str.replace(/^(.{1})(.*)$/,function(m,c,d){
+                return c.toUpperCase()+d;
+            });
+        }
+
+        /**
+         * loginFunction
+         */
         $scope.loginFuncion = function(){
 
+            // creation of a user
             var user = {'username': $scope.user, 'password': $scope.pass};
+            // call /signin on the server with the user
             $http({method: 'Post', url: 'http://162.38.113.210:8080/signin', data : user}).
                 success(function(data) {
                     UserService.isLogged = true;
                     UserService.access_token = data.access_token;
-                    console.log(UserService);
+                    UserService.name = capitalize(data.user.username);
+                    UserService.id = data.user.id;
                     $location.path("/");
-                    // this callback will be called asynchronously
-                    // when the response is available
                 }).
                 error(function(data, status, headers, config) {
                     // called asynchronously if an error occurs
