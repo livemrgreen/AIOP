@@ -9,7 +9,7 @@ module.exports = {
             "autoIncrement": true
         },
         "start": {
-            "type": Sequelize.DATE,
+            "type": Sequelize.STRING,
             "allowNull": false,
             "validate": {
                 "notNull": true,
@@ -17,7 +17,7 @@ module.exports = {
             }
         },
         "end": {
-            "type": Sequelize.DATE,
+            "type": Sequelize.STRING,
             "allowNull": false,
             "validate": {
                 "notNull": true,

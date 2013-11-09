@@ -9,6 +9,7 @@
         "passport-http-bearer": "1.0.1",
         "jwt-simple": "0.1.0",
         "sequelize": "1.7.0-beta.0",
-        "mysql": "2.0.0-alpha9"
+        "mysql": "2.0.0-alpha9",
+        "async": "0.2.9"
     }
 }

@@ -1,4 +1,5 @@
 var orm = require("../../config/models");
+var async = require("async");
 
 /*
  * GET /users/
@@ -6,8 +7,14 @@ var orm = require("../../config/models");
 module.exports.list = function (req, res, next) {
     var user = orm.model("user");
 
-    user.findAll({"where": {"deleted_at": null}, "attributes": ["id", "username", "person_id"]}).success(function (users) {
-        res.send(200, {"users": users});
+    // Search for all users in db where deleted is null
+    user.findAll({"where": {"deleted_at": null}}).success(function (users) {
+
+        // use of async.js to handle asynchronus calls when getting db associations
+        async.map(users, handleUser, function (error, results) {
+            // when all is done
+            res.send(200, {"users": results});
+        });
     });
 
     return next();
@@ -30,7 +37,11 @@ module.exports.create = function (req, res, next) {
 
             tmp.save()
                 .success(function (user) {
-                    res.send(201, {"user": {"id": user.id, "username": user.username, "person_id": user.person_id}});
+                    // We use handleUser to get all associations
+                    // little trick to avoid write and write again some code
+                    async.map([user], handleUser, function (error, results) {
+                        res.send(201, {"user": results[0]});
+                    });
 
                 })
                 .error(function (error) {
@@ -59,7 +70,11 @@ module.exports.show = function (req, res, next) {
             res.send(404, {"message": "User not found"});
         }
         else {
-            res.send(200, {"user": {"id": user.id, "username": user.username, "person_id": user.person_id}});
+            // We use handleUser to get all associations
+            // little trick to avoid write and write again some code
+            async.map([user], handleUser, function (error, results) {
+                res.send(200, {"user": results[0]});
+            });
         }
     });
 
@@ -86,7 +101,11 @@ module.exports.update = function (req, res, next) {
 
                     user.save()
                         .success(function (user) {
-                            res.send(200, {"user": {"id": user.id, "username": user.username, "person_id": user.person_id}});
+                            // We use handleUser to get all associations
+                            // little trick to avoid write and write again some code
+                            async.map([user], handleUser, function (error, results) {
+                                res.send(200, {"user": results[0]});
+                            });
                         })
                         .error(function (error) {
                             res.send(400, error);
@@ -133,8 +152,92 @@ module.exports.signin = function (req, res, next) {
 
     user.access_token = user.makeToken();
     user.save(["access_token"]).success(function () {
-        res.send(200, {"access_token": user.access_token});
+        // We use handleUser to get all associations
+        // little trick to avoid write and write again some code
+        async.map([user], handleUser, function (error, results) {
+            res.send(200, {"access_token": user.access_token, "user": results[0]});
+        });
     });
 
     return next();
+};
+
+/*
+ * HELPERS
+ */
+var handleUser = function (user, done) {
+    // get the user in a tmp var
+    // to deal just with main properties
+    var tmp = user.values;
+
+    // delete sensible ones
+    delete tmp.password;
+    delete tmp.salt;
+    delete tmp.access_token;
+    delete tmp.person_id;
+
+    // try to get the related person
+    user.getPerson().success(function (person) {
+
+        // if there is a person related
+        if (person) {
+            tmp.person = person.values
+
+            // now the teacher
+            person.getTeacher().success(function (teacher) {
+
+                // if there is a teacher
+                if (teacher) {
+                    tmp.person.teacher = teacher.values;
+
+                    // check the rights for the teacher
+                    // async to handle asynchronus calls to db
+                    // but in parallel
+                    async.parallel(
+                        // first arg = tasks to do
+                        {
+                            // try to reach the administrator
+                            "administrator": function (done) {
+                                teacher.getAdministrator().success(function (administrator) {
+                                    if (administrator) {
+                                        done(null, administrator.values);
+                                    }
+                                    else {
+                                        done(null);
+                                    }
+                                });
+                            },
+
+                            // try to reach the manager
+                            "manager": function (done) {
+                                teacher.getManager().success(function (manager) {
+                                    if (manager) {
+                                        done(null, manager.values);
+                                    }
+                                    else {
+                                        done(null);
+                                    }
+                                });
+                            }
+                        },
+
+                        // second arg = final func
+                        function (err, results) {
+                            // when done, we can use the object-key
+                            // to get the object-value
+                            tmp.person.teacher.administrator = results.administrator;
+                            tmp.person.teacher.manager = results.manager;
+                            done(null, tmp);
+                        }
+                    );
+                }
+                else {
+                    done(null);
+                }
+            });
+        }
+        else {
+            done(null);
+        }
+    });
 };
