@@ -11,7 +11,8 @@ require.config({
         'moment': 'bower_components/moment/moment-with-langs.min',
         'main' : 'assets/js/main.js',
         'underscore' : 'bower_components/underscore/underscore-min',
-        'jQuery' : 'assets/lib/jquery.min'
+        'jQuery' : 'assets/lib/jquery.min',
+        'localStorageModule' : 'assets/js/localStorageModule'
     },
     shim: {
         'jQuery': {
@@ -22,6 +23,9 @@ require.config({
         },
         'angular': {
             exports: 'angular'
+        },
+        'localStorageModule': {
+            deps: ['angular']
         }
     },
 
@@ -29,27 +33,55 @@ require.config({
 
 });
 
-requirejs(['./app'], function(services){
-    services.factory('UserService', [function() {
-        var sdo = {
-            isLogged: false,
-            access_token: '',
-            name: '',
-            id: ''
-        };
-        return sdo;
-    }]);
-});
+requirejs(['./app', 'angular'],
+    function (services) {
+        services.factory('LocalStorageService', [
+            function () {
+                return {
+                    isSupported: function () {
+                        try {
+                            return 'localStorage' in window && window['localStorage'] !== null;
+                        } catch (e) {
+                            return false;
+                        }
+                    },
+                    save: function (key, value) {
+                        localStorage[key] = JSON.stringify(value);
+                    },
+                    fetch: function (key) {
+                        return localStorage[key];
+                    },
+                    parse: function(value) {
+                        return JSON.parse(value);
+                    },
+                    clear: function (key) {
+                        localStorage.removeItem(key);
+                    }
+                };
+            }
+        ]);
+    }
+);
 
 /*
  define Authentication function to find
  */
-requirejs(['./app', './config', 'angular'], function(app){
+require(['./app', './config', 'angular'], function(app){
 
-    app.run(function ($rootScope, $location, UserService) {
-        console.log(UserService);
+    app.run(function ($rootScope, $location, LocalStorageService) {
 
-        // routes that don't need authentication
+        /**
+         * define user information saved in $rootScope
+         * @type {{isLogged: boolean, access_token: string, user: string, id: string}}
+         */
+        $rootScope.userDetails= {
+            isLogged: false,
+            access_token: '',
+            user: '',
+            id: ''
+        };
+
+         // routes that don't need authentication
          // check if current location matches route
          var routeClean = function (route) {
             return route == '/login';
@@ -57,16 +89,21 @@ requirejs(['./app', './config', 'angular'], function(app){
 
 
         console.log(!routeClean($location.url()));
-         /*$rootScope.$on('$routeChangeStart', function (event, next, current) {
+         $rootScope.$on('$routeChangeStart', function (event, next, current) {
 
-             console.log("roooouuutage");
-             console.log(UserService);
-         // if route requires auth and user is not logged in
-            if (!routeClean($location.url()) && !UserService.isLogged) {
-            // redirect back to login
-                $location.path('/login');
-            }
-            console.log("changement de path");
-         });*/
+             if(LocalStorageService.fetch('user') != null ){
+                 $rootScope.userDetails = LocalStorageService.parse(LocalStorageService.fetch('user'));
+             }
+
+             // if route requires auth and user is not logged in
+             if (!routeClean($location.url()) && !$rootScope.userDetails.isLogged) {
+             // redirect back to login
+                 $location.path('/login');
+             }
+             else if($location.url() == '/login' && $rootScope.userDetails.isLogged){
+                 $location.path('/');
+             }
+             console.log("changement de path");
+         });
     });
 });

@@ -4,13 +4,23 @@
 
         <nav class="navbar navbar-inverse navbar-static-top">
             <header class="navbar-header">
-                <a href="index.html" class="navbar-brand ">Schedule Manager</a>
+                <a href="index.html" class="navbar-brand "><img class="small" src="assets/img/logo.png" alt=""></a>
                 <a class="btn-primary visible-xs " data-toggle="collapse" href="#menu" id="menu-toggle">
                     <i class="icon-bar"></i>
                     <i class="icon-bar"></i>
                     <i class="icon-bar"></i>
                 </a>
             </header>
+
+            <div class="topnav">
+                <div class="btn-toolbar">
+                    <div class="btn-group">
+                        <a data-toggle="tooltip" data-original-title="Logout" data-placement="bottom" class="btn btn-metis-1 btn-sm" ng-click="logout()">
+                            <i class="fa fa-power-off"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </nav>
 
         <header class="head">
@@ -30,7 +40,7 @@
             </a>
 
             <div class="media-body">
-                <h5 class="media-heading">{{name}}</h5>
+                <h5 class="media-heading">{{firstName}} {{lastName}}</h5>
                 <ul class="list-unstyled user-info">
                     <li>&nbsp;</li>
                     <li>Today's date<br/>

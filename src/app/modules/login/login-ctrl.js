@@ -5,15 +5,16 @@
 define(['./module'], function (controllers) {
     'use strict';
 
-    controllers.controller('LoginController', function ($scope, $http, $location, UserService) {
+    controllers.controller('LoginController', function ($rootScope, $scope, $http, $location, LocalStorageService) {
 
         $scope.error = false;
 
+        /*
         function capitalize( str){
             return str.replace(/^(.{1})(.*)$/,function(m,c,d){
                 return c.toUpperCase()+d;
             });
-        }
+        }*/
 
         /**
          * loginFunction
@@ -25,10 +26,14 @@ define(['./module'], function (controllers) {
             // call /signin on the server with the user
             $http({method: 'Post', url: 'http://162.38.113.210:8080/signin', data : user}).
                 success(function(data) {
-                    UserService.isLogged = true;
-                    UserService.access_token = data.access_token;
-                    UserService.name = capitalize(data.user.username);
-                    UserService.id = data.user.id;
+                    console.log(data);
+                    $rootScope.userDetails.isLogged = true;
+                    $rootScope.userDetails.access_token = data.access_token;
+                    $rootScope.userDetails.user = data.user.person;
+                    $rootScope.userDetails.id = data.user.id;
+
+                    console.log($rootScope.userDetails);
+                    LocalStorageService.save('user', $rootScope.userDetails);
                     $location.path("/");
                 }).
                 error(function(data, status, headers, config) {
