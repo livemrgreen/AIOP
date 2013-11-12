@@ -174,7 +174,7 @@ var handleUser = function (user, done) {
     delete tmp.password;
     delete tmp.salt;
     delete tmp.access_token;
-    delete tmp.person_id;
+	delete tmp.person_id;
 
     // try to get the related person
     user.getPerson().success(function (person) {
@@ -189,6 +189,7 @@ var handleUser = function (user, done) {
                 // if there is a teacher
                 if (teacher) {
                     tmp.person.teacher = teacher.values;
+					delete tmp.person.teacher.person_id
 
                     // check the rights for the teacher
                     // async to handle asynchronus calls to db
@@ -200,7 +201,9 @@ var handleUser = function (user, done) {
                             "administrator": function (done) {
                                 teacher.getAdministrator().success(function (administrator) {
                                     if (administrator) {
-                                        done(null, administrator.values);
+										var a = administrator.values;
+										delete a.teacher_id;
+                                        done(null, a);
                                     }
                                     else {
                                         done(null);
@@ -212,7 +215,9 @@ var handleUser = function (user, done) {
                             "manager": function (done) {
                                 teacher.getManager().success(function (manager) {
                                     if (manager) {
-                                        done(null, manager.values);
+										var m = administrator.values;
+										delete m.teacher_id;
+                                        done(null, m);
                                     }
                                     else {
                                         done(null);
@@ -226,7 +231,7 @@ var handleUser = function (user, done) {
                             // when done, we can use the object-key
                             // to get the object-value
                             tmp.person.teacher.administrator = results.administrator;
-                            tmp.person.teacher.manager = results.manager;
+                            tmp.person.teacher.module_manager = results.manager;
                             done(null, tmp);
                         }
                     );
