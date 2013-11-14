@@ -122,6 +122,9 @@ module.exports.delete = function (req, res, next) {
     return next();
 };
 
+/*
+ * HELPERS
+ */
 var handleTeacher = function (teacher, done) {
     var tmp = teacher.values;
     delete tmp.person_id;

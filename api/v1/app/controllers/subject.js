@@ -1,4 +1,5 @@
 var orm = require("../../config/models");
+var async = require("async");
 
 /*
  * GET /subjects/
@@ -7,7 +8,9 @@ module.exports.list = function (req, res, next) {
     var subject = orm.model("subject");
 
     subject.findAll({"where": {"deleted_at": null}}).success(function (subjects) {
-        res.send(200, {"subjects": subjects});
+        async.map(subjects, handleSubject, function (error, results) {
+            res.send(200, {"subjects": results});
+        });
     });
 
     return next();
@@ -116,4 +119,23 @@ module.exports.delete = function (req, res, next) {
     });
 
     return next();
+};
+
+/*
+ * HELPERS
+ */
+var handleSubject = function (subject, done) {
+    var tmp = subject.values;
+    delete tmp.module_id;
+
+    subject.getModule().success(function (module) {
+
+        if (module) {
+            tmp.module = module.values;
+            done(null, tmp);
+        }
+        else {
+            done(null);
+        }
+    });
 };
