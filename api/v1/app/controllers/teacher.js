@@ -1,5 +1,4 @@
 var orm = require("../../config/models");
-var async = require("async");
 
 /*
  * GET /teachers/
@@ -8,11 +7,7 @@ module.exports.list = function (req, res, next) {
     var teacher = orm.model("teacher");
 
     teacher.findAll({}).success(function (teachers) {
-        // use of async.js to handle asynchronus calls when getting db associations
-        async.map(teachers, handleTeacher, function (error, results) {
-            // when all is done
-            res.send(200, {"teachers": results});
-        });
+        res.send(200, {"teachers": teachers});
     });
 
     return next();
@@ -29,10 +24,7 @@ module.exports.create = function (req, res, next) {
         if (t.person_id) {
             teacher.create(t)
                 .success(function (teacher) {
-                    async.map([teacher], handleTeacher, function (error, results) {
-                        // when all is done
-                        res.send(201, {"teacher": results[0]});
-                    });
+                    res.send(201, {"teacher": teacher});
 
                 })
                 .error(function (error) {
@@ -61,10 +53,7 @@ module.exports.show = function (req, res, next) {
             res.send(404, {"message": "Teacher not found"});
         }
         else {
-            async.map([teacher], handleTeacher, function (error, results) {
-                // when all is done
-                res.send(200, {"teacher": results[0]});
-            });
+            res.send(200, {"teacher": teacher});
         }
     });
 
@@ -89,10 +78,7 @@ module.exports.update = function (req, res, next) {
 
                     teacher.save()
                         .success(function (teacher) {
-                            async.map([teacher], handleTeacher, function (error, results) {
-                                // when all is done
-                                res.send(200, {"teacher": results[0]});
-                            });
+                            res.send(200, {"teacher": teacher});
                         })
                         .error(function (error) {
                             res.send(400, error);
@@ -129,25 +115,4 @@ module.exports.delete = function (req, res, next) {
     });
 
     return next();
-};
-
-/*
- * HELPERS
- */
-var handleTeacher = function (teacher, done) {
-    var tmp = teacher.values;
-    delete tmp.person_id;
-
-    // try to get the related person
-    teacher.getPerson().success(function (person) {
-
-        // if there is a person related
-        if (person) {
-            tmp.person = person.values;
-            done(null, tmp);
-        }
-        else {
-            done(null);
-        }
-    });
 };
