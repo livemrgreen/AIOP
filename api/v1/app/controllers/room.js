@@ -1,4 +1,5 @@
 var orm = require("../../config/models");
+var async = require("async");
 
 /*
  * GET /rooms/
@@ -7,7 +8,9 @@ module.exports.list = function (req, res, next) {
     var room = orm.model("room");
 
     room.findAll({"where": {"deleted_at": null}}).success(function (rooms) {
-        res.send(200, {"rooms": rooms});
+        async.map(rooms, handleRoom, function (error, results) {
+            res.send(200, {"rooms": results});
+        });
     });
 
     return next();
@@ -117,4 +120,22 @@ module.exports.delete = function (req, res, next) {
     });
 
     return next();
+};
+
+/*
+ * HELPERS
+ */
+var handleRoom = function (room, done) {
+    var tmp = room.values;
+    delete tmp.building_id;
+
+    room.getBuilding().success(function (building) {
+        if (building) {
+            tmp.building = building.values;
+            done(null, tmp);
+        }
+        else {
+            done(null);
+        }
+    });
 };
