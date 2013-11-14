@@ -181,7 +181,7 @@ var handleUser = function (user, done) {
 
         // if there is a person related
         if (person) {
-            tmp.person = person.values
+            tmp.person = person.values;
 
             // now the teacher
             person.getTeacher().success(function (teacher) {
@@ -189,7 +189,7 @@ var handleUser = function (user, done) {
                 // if there is a teacher
                 if (teacher) {
                     tmp.person.teacher = teacher.values;
-					delete tmp.person.teacher.person_id
+					delete tmp.person.teacher.person_id;
 
                     // check the rights for the teacher
                     // async to handle asynchronus calls to db
@@ -215,7 +215,7 @@ var handleUser = function (user, done) {
                             "manager": function (done) {
                                 teacher.getManager().success(function (manager) {
                                     if (manager) {
-										var m = administrator.values;
+										var m = manager.values;
 										delete m.teacher_id;
                                         done(null, m);
                                     }

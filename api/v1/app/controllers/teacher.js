@@ -1,4 +1,5 @@
 var orm = require("../../config/models");
+var async = require("async");
 
 /*
  * GET /teachers/
@@ -7,7 +8,11 @@ module.exports.list = function (req, res, next) {
     var teacher = orm.model("teacher");
 
     teacher.findAll({"where": {"deleted_at": null}}).success(function (teachers) {
-        res.send(200, {"teachers": teachers});
+        // use of async.js to handle asynchronus calls when getting db associations
+        async.map(teachers, handleTeacher, function (error, results) {
+            // when all is done
+            res.send(200, {"teachers": results});
+        });
     });
 
     return next();
@@ -115,4 +120,22 @@ module.exports.delete = function (req, res, next) {
     });
 
     return next();
+};
+
+var handleTeacher = function (teacher, done) {
+    var tmp = teacher.values;
+    delete tmp.person_id;
+
+    // try to get the related person
+    teacher.getPerson().success(function (person) {
+
+        // if there is a person related
+        if (person) {
+            tmp.person = person.values;
+            done(null, tmp);
+        }
+        else {
+            done(null);
+        }
+    });
 };
