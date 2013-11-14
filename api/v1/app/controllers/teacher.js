@@ -29,7 +29,10 @@ module.exports.create = function (req, res, next) {
         if (t.person_id) {
             teacher.create(t)
                 .success(function (teacher) {
-                    res.send(201, {"teacher": teacher});
+                    async.map([teacher], handleTeacher, function (error, results) {
+                        // when all is done
+                        res.send(201, {"teacher": results[0]});
+                    });
 
                 })
                 .error(function (error) {
@@ -58,7 +61,10 @@ module.exports.show = function (req, res, next) {
             res.send(404, {"message": "Teacher not found"});
         }
         else {
-            res.send(200, {"teacher": teacher});
+            async.map([teacher], handleTeacher, function (error, results) {
+                // when all is done
+                res.send(200, {"teacher": results[0]});
+            });
         }
     });
 
@@ -83,7 +89,10 @@ module.exports.update = function (req, res, next) {
 
                     teacher.save()
                         .success(function (teacher) {
-                            res.send(200, {"teacher": teacher});
+                            async.map([teacher], handleTeacher, function (error, results) {
+                                // when all is done
+                                res.send(200, {"teacher": results[0]});
+                            });
                         })
                         .error(function (error) {
                             res.send(400, error);

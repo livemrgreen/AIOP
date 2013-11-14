@@ -27,8 +27,9 @@ module.exports.create = function (req, res, next) {
         if (r.label && r.capacity && r.building_id) {
             room.create(r)
                 .success(function (room) {
-                    res.send(201, {"room": room});
-
+                    async.map([room], handleRoom, function (error, results) {
+                        res.send(201, {"room": results[0]});
+                    });
                 })
                 .error(function (error) {
                     res.send(400, error);
@@ -56,7 +57,9 @@ module.exports.show = function (req, res, next) {
             res.send(404, {"message": "Room not found"});
         }
         else {
-            res.send(200, {"room": room});
+            async.map([room], handleRoom, function (error, results) {
+                res.send(200, {"room": results[0]});
+            });
         }
     });
 
@@ -83,7 +86,9 @@ module.exports.update = function (req, res, next) {
 
                     room.save()
                         .success(function (room) {
-                            res.send(200, {"room": room});
+                            async.map([room], handleRoom, function (error, results) {
+                                res.send(200, {"room": results[0]});
+                            });
                         })
                         .error(function (error) {
                             res.send(400, error);

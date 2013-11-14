@@ -27,7 +27,9 @@ module.exports.create = function (req, res, next) {
         if (r.date && r.time_slot_id && r.room_id && r.teaching_id) {
             reservation.create(r)
                 .success(function (reservation) {
-                    res.send(201, {"reservation": reservation});
+                    async.map([reservation], handleReservation, function (error, results) {
+                        res.send(201, {"reservation": results[0]});
+                    });
 
                 })
                 .error(function (error) {
@@ -56,7 +58,9 @@ module.exports.show = function (req, res, next) {
             res.send(404, {"message": "Reservation not found"});
         }
         else {
-            res.send(200, {"reservation": reservation});
+            async.map([reservation], handleReservation, function (error, results) {
+                res.send(200, {"reservation": results[0]});
+            });
         }
     });
 
@@ -84,7 +88,9 @@ module.exports.update = function (req, res, next) {
 
                     reservation.save()
                         .success(function (reservation) {
-                            res.send(200, {"reservation": reservation});
+                            async.map([reservation], handleReservation, function (error, results) {
+                                res.send(200, {"reservation": results[0]});
+                            });
                         })
                         .error(function (error) {
                             res.send(400, error);

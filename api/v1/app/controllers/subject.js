@@ -27,7 +27,9 @@ module.exports.create = function (req, res, next) {
         if (s.label && s.module_id) {
             subject.create(s)
                 .success(function (subject) {
-                    res.send(201, {"subject": subject});
+                    async.map([subject], handleSubject, function (error, results) {
+                        res.send(201, {"subject": results[0]});
+                    });
 
                 })
                 .error(function (error) {
@@ -56,7 +58,9 @@ module.exports.show = function (req, res, next) {
             res.send(404, {"message": "Subject not found"});
         }
         else {
-            res.send(200, {"subject": subject});
+            async.map([subject], handleSubject, function (error, results) {
+                res.send(200, {"subject": results[0]});
+            });
         }
     });
 
@@ -82,7 +86,9 @@ module.exports.update = function (req, res, next) {
 
                     subject.save()
                         .success(function (subject) {
-                            res.send(200, {"subject": subject});
+                            async.map([subject], handleSubject, function (error, results) {
+                                res.send(200, {"subject": results[0]});
+                            });
                         })
                         .error(function (error) {
                             res.send(400, error);
