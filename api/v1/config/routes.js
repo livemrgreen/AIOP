@@ -1,32 +1,25 @@
 module.exports = function (server, passport, auth) {
 
-    var administrator = require("../app/controllers/administrator");
-    server.get("/administrators", passport.authenticate("bearer", { session: false }), administrator.list);
-    server.post("/administrators", passport.authenticate("bearer", { session: false }), administrator.create);
-    server.get("/administrators/:id", passport.authenticate("bearer", { session: false }), administrator.show);
-    server.put("/administrators/:id", passport.authenticate("bearer", { session: false }), administrator.update);
-    server.del("/administrators/:id", passport.authenticate("bearer", { session: false }), administrator.delete);
-
     var building = require("../app/controllers/building");
     server.get("/buildings", passport.authenticate("bearer", { session: false }), building.list);
-    server.post("/buildings", passport.authenticate("bearer", { session: false }), building.create);
+    server.post("/buildings", passport.authenticate("bearer", { session: false }), auth.isAdministrator, building.create);
     server.get("/buildings/:id", passport.authenticate("bearer", { session: false }), building.show);
-    server.put("/buildings/:id", passport.authenticate("bearer", { session: false }), building.update);
-    server.del("/buildings/:id", passport.authenticate("bearer", { session: false }), building.delete);
+    server.put("/buildings/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, building.update);
+    server.del("/buildings/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, building.delete);
 
     var caracteristic = require("../app/controllers/caracteristic");
     server.get("/caracteristics", passport.authenticate("bearer", { session: false }), caracteristic.list);
-    server.post("/caracteristics", passport.authenticate("bearer", { session: false }), caracteristic.create);
+    server.post("/caracteristics", passport.authenticate("bearer", { session: false }), auth.isAdministrator, caracteristic.create);
     server.get("/caracteristics/:id", passport.authenticate("bearer", { session: false }), caracteristic.show);
-    server.put("/caracteristics/:id", passport.authenticate("bearer", { session: false }), caracteristic.update);
-    server.del("/caracteristics/:id", passport.authenticate("bearer", { session: false }), caracteristic.delete);
+    server.put("/caracteristics/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, caracteristic.update);
+    server.del("/caracteristics/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, caracteristic.delete);
 
     var group = require("../app/controllers/group");
     server.get("/groups", passport.authenticate("bearer", { session: false }), group.list);
-    server.post("/groups", passport.authenticate("bearer", { session: false }), group.create);
+    server.post("/groups", passport.authenticate("bearer", { session: false }), auth.isAdministrator, group.create);
     server.get("/groups/:id", passport.authenticate("bearer", { session: false }), group.show);
-    server.put("/groups/:id", passport.authenticate("bearer", { session: false }), group.update);
-    server.del("/groups/:id", passport.authenticate("bearer", { session: false }), group.delete);
+    server.put("/groups/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, group.update);
+    server.del("/groups/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, group.delete);
 
     var lesson = require("../app/controllers/lesson");
     server.get("/lessons", passport.authenticate("bearer", { session: false }), lesson.list);
@@ -37,31 +30,17 @@ module.exports = function (server, passport, auth) {
 
     var lesson_type = require("../app/controllers/lesson_type");
     server.get("/lesson_types", passport.authenticate("bearer", { session: false }), lesson_type.list);
-    server.post("/lesson_types", passport.authenticate("bearer", { session: false }), lesson_type.create);
+    server.post("/lesson_types", passport.authenticate("bearer", { session: false }), auth.isAdministrator, lesson_type.create);
     server.get("/lesson_types/:id", passport.authenticate("bearer", { session: false }), lesson_type.show);
-    server.put("/lesson_types/:id", passport.authenticate("bearer", { session: false }), lesson_type.update);
-    server.del("/lesson_types/:id", passport.authenticate("bearer", { session: false }), lesson_type.delete);
+    server.put("/lesson_types/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, lesson_type.update);
+    server.del("/lesson_types/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, lesson_type.delete);
 
     var module = require("../app/controllers/module");
     server.get("/modules", passport.authenticate("bearer", { session: false }), module.list);
-    server.post("/modules", passport.authenticate("bearer", { session: false }), module.create);
+    server.post("/modules", passport.authenticate("bearer", { session: false }), auth.isAdministrator, module.create);
     server.get("/modules/:id", passport.authenticate("bearer", { session: false }), module.show);
-    server.put("/modules/:id", passport.authenticate("bearer", { session: false }), module.update);
-    server.del("/modules/:id", passport.authenticate("bearer", { session: false }), module.delete);
-
-    var module_manager = require("../app/controllers/module_manager");
-    server.get("/module_managers", passport.authenticate("bearer", { session: false }), module_manager.list);
-    server.post("/module_managers", passport.authenticate("bearer", { session: false }), module_manager.create);
-    server.get("/module_managers/:id", passport.authenticate("bearer", { session: false }), module_manager.show);
-    server.put("/module_managers/:id", passport.authenticate("bearer", { session: false }), module_manager.update);
-    server.del("/module_managers/:id", passport.authenticate("bearer", { session: false }), module_manager.delete);
-
-    var person = require("../app/controllers/person");
-    server.get("/persons", passport.authenticate("bearer", { session: false }), person.list);
-    server.post("/persons", passport.authenticate("bearer", { session: false }), person.create);
-    server.get("/persons/:id", passport.authenticate("bearer", { session: false }), person.show);
-    server.put("/persons/:id", passport.authenticate("bearer", { session: false }), person.update);
-    server.del("/persons/:id", passport.authenticate("bearer", { session: false }), person.delete);
+    server.put("/modules/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, module.update);
+    server.del("/modules/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, module.delete);
 
     var reservation = require("../app/controllers/reservation");
     server.get("/reservations", passport.authenticate("bearer", { session: false }), reservation.list);
@@ -79,44 +58,44 @@ module.exports = function (server, passport, auth) {
 
     var room = require("../app/controllers/room");
     server.get("/rooms", passport.authenticate("bearer", { session: false }), room.list);
-    server.post("/rooms", passport.authenticate("bearer", { session: false }), room.create);
+    server.post("/rooms", passport.authenticate("bearer", { session: false }), auth.isAdministrator, room.create);
     server.get("/rooms/:id", passport.authenticate("bearer", { session: false }), room.show);
-    server.put("/rooms/:id", passport.authenticate("bearer", { session: false }), room.update);
-    server.del("/rooms/:id", passport.authenticate("bearer", { session: false }), room.delete);
+    server.put("/rooms/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, room.update);
+    server.del("/rooms/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, room.delete);
 
     var subject = require("../app/controllers/subject");
     server.get("/subjects", passport.authenticate("bearer", { session: false }), subject.list);
-    server.post("/subjects", passport.authenticate("bearer", { session: false }), subject.create);
+    server.post("/subjects", passport.authenticate("bearer", { session: false }), auth.isAdministrator, subject.create);
     server.get("/subjects/:id", passport.authenticate("bearer", { session: false }), subject.show);
-    server.put("/subjects/:id", passport.authenticate("bearer", { session: false }), subject.update);
-    server.del("/subjects/:id", passport.authenticate("bearer", { session: false }), subject.delete);
+    server.put("/subjects/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, subject.update);
+    server.del("/subjects/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, subject.delete);
 
     var teacher = require("../app/controllers/teacher");
     server.get("/teachers", passport.authenticate("bearer", { session: false }), teacher.list);
-    server.post("/teachers", passport.authenticate("bearer", { session: false }), teacher.create);
+    server.post("/teachers", passport.authenticate("bearer", { session: false }), auth.isAdministrator, teacher.create);
     server.get("/teachers/:id", passport.authenticate("bearer", { session: false }), teacher.show);
-    server.put("/teachers/:id", passport.authenticate("bearer", { session: false }), teacher.update);
-    server.del("/teachers/:id", passport.authenticate("bearer", { session: false }), teacher.delete);
+    server.put("/teachers/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, teacher.update);
+    server.del("/teachers/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, teacher.delete);
 
     var teaching = require("../app/controllers/teaching");
     server.get("/teachings", passport.authenticate("bearer", { session: false }), teaching.list);
-    server.post("/teachings", passport.authenticate("bearer", { session: false }), teaching.create);
+    server.post("/teachings", passport.authenticate("bearer", { session: false }), auth.isAdministrator, teaching.create);
     server.get("/teachings/:id", passport.authenticate("bearer", { session: false }), teaching.show);
-    server.put("/teachings/:id", passport.authenticate("bearer", { session: false }), teaching.update);
-    server.del("/teachings/:id", passport.authenticate("bearer", { session: false }), teaching.delete);
+    server.put("/teachings/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, teaching.update);
+    server.del("/teachings/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, teaching.delete);
 
     var time_slot = require("../app/controllers/time_slot");
     server.get("/time_slots", passport.authenticate("bearer", { session: false }), time_slot.list);
-    server.post("/time_slots", passport.authenticate("bearer", { session: false }), time_slot.create);
+    server.post("/time_slots", passport.authenticate("bearer", { session: false }), auth.isAdministrator, time_slot.create);
     server.get("/time_slots/:id", passport.authenticate("bearer", { session: false }), time_slot.show);
-    server.put("/time_slots/:id", passport.authenticate("bearer", { session: false }), time_slot.update);
-    server.del("/time_slots/:id", passport.authenticate("bearer", { session: false }), time_slot.delete);
+    server.put("/time_slots/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, time_slot.update);
+    server.del("/time_slots/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, time_slot.delete);
 
     var user = require("../app/controllers/user");
     server.get("/users", passport.authenticate("bearer", { session: false }), user.list);
-    server.post("/users", passport.authenticate("bearer", { session: false }), user.create);
-    server.get("/users/:id", passport.authenticate("bearer", { session: false }), user.show);
-    server.put("/users/:id", passport.authenticate("bearer", { session: false }), user.update);
-    server.del("/users/:id", passport.authenticate("bearer", { session: false }), user.delete);
+    server.post("/users", passport.authenticate("bearer", { session: false }), auth.isAdministrator, user.create);
+    server.get("/users/:id", passport.authenticate("bearer", { session: false }), auth.isMe, user.show);
+    server.put("/users/:id", passport.authenticate("bearer", { session: false }), auth.isMe, user.update);
+    server.del("/users/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, user.delete);
     server.post("/signin", passport.authenticate("local", { session: false }), user.signin);
 };

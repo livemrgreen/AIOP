@@ -16,6 +16,14 @@ module.exports = {
                 "notEmpty": true,
                 "isDate": true
             }
+        },
+        "capacity": {
+            "type": Sequelize.INTEGER,
+            "allowNull": false,
+            "validate": {
+                "notNull": true,
+                "notEmpty": true
+            }
         }
     },
 
@@ -45,7 +53,7 @@ module.exports = {
     "configuration": {
         "freezeTableName": true,
         "underscored": true,
-        "paranoid": true
+        "timestamps": false
     }
 }
 ;

@@ -8,7 +8,7 @@ module.exports.list = function (req, res, next) {
     var user = orm.model("user");
 
     // Search for all users in db where deleted is null
-    user.findAll({"where": {"deleted_at": null}}).success(function (users) {
+    user.findAll({}).success(function (users) {
 
         // use of async.js to handle asynchronus calls when getting db associations
         async.map(users, handleUser, function (error, results) {
@@ -65,7 +65,7 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var user = orm.model("user");
 
-    user.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (user) {
+    user.find({"where": {"id": req.params.id}}).success(function (user) {
         if (!user) {
             res.send(404, {"message": "User not found"});
         }
@@ -90,7 +90,7 @@ module.exports.update = function (req, res, next) {
     if (req.body && req.body.user) {
         var u = req.body.user;
         if (u.username && u.password && u.person_id) {
-            user.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (user) {
+            user.find({"where": {"id": req.params.id}}).success(function (user) {
                 if (!user) {
                     res.send(404, {"message": "User not found"});
                 }
@@ -130,7 +130,7 @@ module.exports.update = function (req, res, next) {
 module.exports.delete = function (req, res, next) {
     var user = orm.model("user");
 
-    user.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (user) {
+    user.find({"where": {"id": req.params.id}}).success(function (user) {
         if (!user) {
             res.send(404, {"message": "User not found"});
         }
@@ -174,75 +174,19 @@ var handleUser = function (user, done) {
     delete tmp.password;
     delete tmp.salt;
     delete tmp.access_token;
-	delete tmp.person_id;
+    delete tmp.teacher_id;
 
-    // try to get the related person
-    user.getPerson().success(function (person) {
+    // now the teacher
+    user.getTeacher().success(function (teacher) {
 
-        // if there is a person related
-        if (person) {
-            tmp.person = person.values;
-
-            // now the teacher
-            person.getTeacher().success(function (teacher) {
-
-                // if there is a teacher
-                if (teacher) {
-                    tmp.person.teacher = teacher.values;
-					delete tmp.person.teacher.person_id;
-
-                    // check the rights for the teacher
-                    // async to handle asynchronus calls to db
-                    // but in parallel
-                    async.parallel(
-                        // first arg = tasks to do
-                        {
-                            // try to reach the administrator
-                            "administrator": function (done) {
-                                teacher.getAdministrator().success(function (administrator) {
-                                    if (administrator) {
-										var a = administrator.values;
-										delete a.teacher_id;
-                                        done(null, a);
-                                    }
-                                    else {
-                                        done(null);
-                                    }
-                                });
-                            },
-
-                            // try to reach the manager
-                            "manager": function (done) {
-                                teacher.getManager().success(function (manager) {
-                                    if (manager) {
-										var m = manager.values;
-										delete m.teacher_id;
-                                        done(null, m);
-                                    }
-                                    else {
-                                        done(null);
-                                    }
-                                });
-                            }
-                        },
-
-                        // second arg = final func
-                        function (err, results) {
-                            // when done, we can use the object-key
-                            // to get the object-value
-                            tmp.person.teacher.administrator = results.administrator;
-                            tmp.person.teacher.module_manager = results.manager;
-                            done(null, tmp);
-                        }
-                    );
-                }
-                else {
-                    done(null);
-                }
-            });
+        // if there is a teacher
+        if (teacher) {
+            tmp.teacher = teacher.values;
+            done(null, tmp);
         }
         else {
             done(null);
         }
     });
+
 };

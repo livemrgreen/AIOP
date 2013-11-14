@@ -26,7 +26,7 @@ orm.setup(database.name, database.user, database.pass, {
     "host": database.host,
     "port": database.port
 });
-orm.sequelize().sync().success(orm.dbCompositeIndex);
+orm.sequelize().sync();
 
 require("./config/passport")(passport);
 require("./config/routes")(server, passport, require("./config/authorization"));

@@ -6,7 +6,7 @@ var orm = require("../../config/models");
 module.exports.list = function (req, res, next) {
     var building = orm.model("building");
 
-    building.findAll({"where": {"deleted_at": null}}).success(function (buildings) {
+    building.findAll({}).success(function (buildings) {
         res.send(200, {"buildings": buildings});
     });
 
@@ -48,7 +48,7 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var building = orm.model("building");
 
-    building.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (building) {
+    building.find({"where": {"id": req.params.id}}).success(function (building) {
         if (!building) {
             res.send(404, {"message": "Building not found"});
         }
@@ -69,7 +69,7 @@ module.exports.update = function (req, res, next) {
     if (req.body && req.body.building) {
         var b = req.body.building;
         if (b.label) {
-            building.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (building) {
+            building.find({"where": {"id": req.params.id}}).success(function (building) {
                 if (!building) {
                     res.send(404, {"message": "Building not found"});
                 }
@@ -103,7 +103,7 @@ module.exports.update = function (req, res, next) {
 module.exports.delete = function (req, res, next) {
     var building = orm.model("building");
 
-    building.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (building) {
+    building.find({"where": {"id": req.params.id}}).success(function (building) {
         if (!building) {
             res.send(404, {"message": "Building not found"});
         }

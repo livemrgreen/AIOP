@@ -7,7 +7,7 @@ var async = require("async");
 module.exports.list = function (req, res, next) {
     var reservation = orm.model("reservation");
 
-    reservation.findAll({"where": {"deleted_at": null}}).success(function (reservations) {
+    reservation.findAll({}).success(function (reservations) {
         async.map(reservations, handleReservation, function (error, results) {
             res.send(200, {"reservations": results});
         });
@@ -53,7 +53,7 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var reservation = orm.model("reservation");
 
-    reservation.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (reservation) {
+    reservation.find({"where": {"id": req.params.id}}).success(function (reservation) {
         if (!reservation) {
             res.send(404, {"message": "Reservation not found"});
         }
@@ -76,7 +76,7 @@ module.exports.update = function (req, res, next) {
     if (req.body && req.body.reservation) {
         var r = req.body.reservation;
         if (r.date && r.time_slot_id && r.room_id && r.teaching_id) {
-            reservation.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (reservation) {
+            reservation.find({"where": {"id": req.params.id}}).success(function (reservation) {
                 if (!reservation) {
                     res.send(404, {"message": "Reservation not found"});
                 }
@@ -115,7 +115,7 @@ module.exports.update = function (req, res, next) {
 module.exports.delete = function (req, res, next) {
     var reservation = orm.model("reservation");
 
-    reservation.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (reservation) {
+    reservation.find({"where": {"id": req.params.id}}).success(function (reservation) {
         if (!reservation) {
             res.send(404, {"message": "Reservation not found"});
         }

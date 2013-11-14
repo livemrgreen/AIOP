@@ -6,7 +6,7 @@ var orm = require("../../config/models");
 module.exports.list = function (req, res, next) {
     var reservation_request = orm.model("reservation_request");
 
-    reservation_request.findAll({"where": {"deleted_at": null}}).success(function (reservation_requests) {
+    reservation_request.findAll({}).success(function (reservation_requests) {
         res.send(200, {"reservation_requests": reservation_requests});
     });
 
@@ -48,7 +48,7 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var reservation_request = orm.model("reservation_request");
 
-    reservation_request.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (reservation_request) {
+    reservation_request.find({"where": {"id": req.params.id}}).success(function (reservation_request) {
         if (!reservation_request) {
             res.send(404, {"message": "Reservation_request not found"});
         }
@@ -69,7 +69,7 @@ module.exports.update = function (req, res, next) {
     if (req.body && req.body.reservation_request) {
         var r = req.body.reservation_request;
         if (r.date && r.time_slot_id && r.teaching_id) {
-            reservation_request.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (reservation_request) {
+            reservation_request.find({"where": {"id": req.params.id}}).success(function (reservation_request) {
                 if (!reservation_request) {
                     res.send(404, {"message": "Reservation_request not found"});
                 }
@@ -105,7 +105,7 @@ module.exports.update = function (req, res, next) {
 module.exports.delete = function (req, res, next) {
     var reservation_request = orm.model("reservation_request");
 
-    reservation_request.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (reservation_request) {
+    reservation_request.find({"where": {"id": req.params.id}}).success(function (reservation_request) {
         if (!reservation_request) {
             res.send(404, {"message": "Reservation_request not found"});
         }

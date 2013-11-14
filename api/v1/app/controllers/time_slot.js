@@ -6,7 +6,7 @@ var orm = require("../../config/models");
 module.exports.list = function (req, res, next) {
     var time_slot = orm.model("time_slot");
 
-    time_slot.findAll({"where": {"deleted_at": null}}).success(function (time_slots) {
+    time_slot.findAll({}).success(function (time_slots) {
         res.send(200, {"time_slots": time_slots});
     });
 
@@ -48,7 +48,7 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var time_slot = orm.model("time_slot");
 
-    time_slot.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (time_slot) {
+    time_slot.find({"where": {"id": req.params.id}}).success(function (time_slot) {
         if (!time_slot) {
             res.send(404, {"message": "Time_slot not found"});
         }
@@ -69,7 +69,7 @@ module.exports.update = function (req, res, next) {
     if (req.body && req.body.time_slot) {
         var t = req.body.time_slot;
         if (t.start && t.end) {
-            time_slot.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (time_slot) {
+            time_slot.find({"where": {"id": req.params.id}}).success(function (time_slot) {
                 if (!time_slot) {
                     res.send(404, {"message": "Time_slot not found"});
                 }
@@ -104,7 +104,7 @@ module.exports.update = function (req, res, next) {
 module.exports.delete = function (req, res, next) {
     var time_slot = orm.model("time_slot");
 
-    time_slot.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (time_slot) {
+    time_slot.find({"where": {"id": req.params.id}}).success(function (time_slot) {
         if (!time_slot) {
             res.send(404, {"message": "Time_slot not found"});
         }

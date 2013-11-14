@@ -21,18 +21,6 @@ var singleton = function singleton() {
         init();
     }
 
-    this.dbCompositeIndex = function () {
-        /*sequelize.getQueryInterface().addIndex('administrator', ['teacher_id'], {"indicesType": "UNIQUE"});
-        sequelize.getQueryInterface().addIndex('module_manager', ['teacher_id'], {"indicesType": "UNIQUE"});
-        sequelize.getQueryInterface().addIndex('teacher', ['person_id'], {"indicesType": "UNIQUE"});
-        sequelize.getQueryInterface().addIndex('user', ['person_id'], {"indicesType": "UNIQUE"});
-
-        sequelize.getQueryInterface().addIndex('lesson', ['lesson_type_id', 'subject_id'], {"indicesType": "UNIQUE"});
-        sequelize.getQueryInterface().addIndex('reservation', ['date', 'time_slot_id', 'room_id'], {"indicesType": "UNIQUE"});
-        sequelize.getQueryInterface().addIndex('reservation_request', ['date', 'time_slot_id', 'teaching_id'], {"indicesType": "UNIQUE"});
-        sequelize.getQueryInterface().addIndex('time_slot', ['start', 'end'], {"indicesType": "UNIQUE"});*/
-    }
-
     this.model = function (name) {
         return models[name];
     }

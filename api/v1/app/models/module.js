@@ -23,7 +23,7 @@ module.exports = {
 
     "relations": {
         "belongsTo": {
-            "module_manager": {
+            "teacher": {
                 "as": "manager",
                 "foreignKeyConstraint": true
             }
@@ -38,6 +38,6 @@ module.exports = {
     "configuration": {
         "freezeTableName": true,
         "underscored": true,
-        "paranoid": true
+        "timestamps": false
     }
 };

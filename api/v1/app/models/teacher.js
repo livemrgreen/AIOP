@@ -7,26 +7,38 @@ module.exports = {
             "type": Sequelize.INTEGER,
             "primaryKey": true,
             "autoIncrement": true
+        },
+        "first_name": {
+            "type": Sequelize.STRING,
+            "allowNull": false,
+            "validate": {
+                "notNull": true,
+                "notEmpty": true,
+                "len": [2, 20]
+            }
+        },
+        "last_name": {
+            "type": Sequelize.STRING,
+            "allowNull": false,
+            "validate": {
+                "notNull": true,
+                "notEmpty": true,
+                "len": [2, 20]
+            }
         }
     },
 
     "relations": {
-        "belongsTo": {
-            "person": {
-                "foreignKeyConstraint": true
-            }
-        },
         "hasOne": {
-            "administrator": {
-                "foreignKeyConstraint": true
-            },
-            "module_manager": {
-                "as": "manager",
+            "user": {
                 "foreignKeyConstraint": true
             }
         },
         "hasMany": {
             "teaching": {
+                "foreignKeyConstraint": true
+            },
+            "module": {
                 "foreignKeyConstraint": true
             }
         }
@@ -35,6 +47,6 @@ module.exports = {
     "configuration": {
         "freezeTableName": true,
         "underscored": true,
-        "paranoid": true
+        "timestamps": false
     }
 };

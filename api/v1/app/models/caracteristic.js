@@ -38,6 +38,6 @@ module.exports = {
     "configuration": {
         "freezeTableName": true,
         "underscored": true,
-        "paranoid": true
+        "timestamps": false
     }
 };

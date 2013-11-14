@@ -6,7 +6,7 @@ var orm = require("../../config/models");
 module.exports.list = function (req, res, next) {
     var module = orm.model("module");
 
-    module.findAll({"where": {"deleted_at": null}}).success(function (modules) {
+    module.findAll({}).success(function (modules) {
         res.send(200, {"modules": modules});
     });
 
@@ -48,7 +48,7 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var module = orm.model("module");
 
-    module.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (module) {
+    module.find({"where": {"id": req.params.id}}).success(function (module) {
         if (!module) {
             res.send(404, {"message": "Module not found"});
         }
@@ -69,7 +69,7 @@ module.exports.update = function (req, res, next) {
     if (req.body && req.body.module) {
         var m = req.body.module;
         if (m.label && m.module_manager_id) {
-            module.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (module) {
+            module.find({"where": {"id": req.params.id}}).success(function (module) {
                 if (!module) {
                     res.send(404, {"message": "Module not found"});
                 }
@@ -104,7 +104,7 @@ module.exports.update = function (req, res, next) {
 module.exports.delete = function (req, res, next) {
     var module = orm.model("module");
 
-    module.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (module) {
+    module.find({"where": {"id": req.params.id}}).success(function (module) {
         if (!module) {
             res.send(404, {"message": "Module not found"});
         }

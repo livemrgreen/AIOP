@@ -7,7 +7,7 @@ var async = require("async");
 module.exports.list = function (req, res, next) {
     var room = orm.model("room");
 
-    room.findAll({"where": {"deleted_at": null}}).success(function (rooms) {
+    room.findAll({}).success(function (rooms) {
         async.map(rooms, handleRoom, function (error, results) {
             res.send(200, {"rooms": results});
         });
@@ -52,7 +52,7 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var room = orm.model("room");
 
-    room.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (room) {
+    room.find({"where": {"id": req.params.id}}).success(function (room) {
         if (!room) {
             res.send(404, {"message": "Room not found"});
         }
@@ -75,7 +75,7 @@ module.exports.update = function (req, res, next) {
     if (req.body && req.body.room) {
         var r = req.body.room;
         if (r.label && r.capacity && r.building_id) {
-            room.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (room) {
+            room.find({"where": {"id": req.params.id}}).success(function (room) {
                 if (!room) {
                     res.send(404, {"message": "Room not found"});
                 }
@@ -113,7 +113,7 @@ module.exports.update = function (req, res, next) {
 module.exports.delete = function (req, res, next) {
     var room = orm.model("room");
 
-    room.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (room) {
+    room.find({"where": {"id": req.params.id}}).success(function (room) {
         if (!room) {
             res.send(404, {"message": "Room not found"});
         }

@@ -11,7 +11,6 @@ module.exports = {
         "label": {
             "type": Sequelize.STRING,
             "allowNull": false,
-            "unique": true,
             "validate": {
                 "notNull": true,
                 "notEmpty": true,
@@ -50,6 +49,6 @@ module.exports = {
     "configuration": {
         "freezeTableName": true,
         "underscored": true,
-        "paranoid": true
+        "timestamps": false
     }
 };

@@ -7,7 +7,7 @@ var async = require("async");
 module.exports.list = function (req, res, next) {
     var subject = orm.model("subject");
 
-    subject.findAll({"where": {"deleted_at": null}}).success(function (subjects) {
+    subject.findAll({}).success(function (subjects) {
         async.map(subjects, handleSubject, function (error, results) {
             res.send(200, {"subjects": results});
         });
@@ -53,7 +53,7 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var subject = orm.model("subject");
 
-    subject.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (subject) {
+    subject.find({"where": {"id": req.params.id}}).success(function (subject) {
         if (!subject) {
             res.send(404, {"message": "Subject not found"});
         }
@@ -76,7 +76,7 @@ module.exports.update = function (req, res, next) {
     if (req.body && req.body.subject) {
         var s = req.body.subject;
         if (s.label && s.module_id) {
-            subject.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (subject) {
+            subject.find({"where": {"id": req.params.id}}).success(function (subject) {
                 if (!subject) {
                     res.send(404, {"message": "Subject not found"});
                 }
@@ -113,7 +113,7 @@ module.exports.update = function (req, res, next) {
 module.exports.delete = function (req, res, next) {
     var subject = orm.model("subject");
 
-    subject.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (subject) {
+    subject.find({"where": {"id": req.params.id}}).success(function (subject) {
         if (!subject) {
             res.send(404, {"message": "Subject not found"});
         }

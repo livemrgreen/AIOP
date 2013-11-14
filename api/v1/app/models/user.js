@@ -28,6 +28,14 @@ module.exports = {
                 "notEmpty": true
             }
         },
+        "administrator": {
+            "type": Sequelize.BOOLEAN,
+            "allowNull": false,
+            "validate": {
+                "notNull": true,
+                "notEmpty": true
+            }
+        },
         "salt": {
             "type": Sequelize.STRING,
             "allowNull": false
@@ -40,7 +48,7 @@ module.exports = {
 
     "relations": {
         "belongsTo": {
-            "person": {
+            "teacher": {
                 "foreignKeyConstraint": true
             }
         }
@@ -49,7 +57,7 @@ module.exports = {
     "configuration": {
         "freezeTableName": true,
         "underscored": true,
-        "paranoid": true,
+        "timestamps": false,
         "instanceMethods": {
             "authenticate": function (password) {
                 return this.encryptPassword(password) === this.password;
@@ -66,27 +74,6 @@ module.exports = {
 
             "makeToken": function () {
                 return jwt.encode(this.username + new Date().valueOf(), this.salt);
-            }
-        },
-        "classMethods": {
-            "structure": function () {
-                return {
-                    "username": {
-                        "type": "text",
-                        "options": {
-                            "required": "required",
-                            "min": 2,
-                            "max": 20
-                        }
-                    },
-
-                    "password": {
-                        "type": "password",
-                        "options": {
-                            "required": "required"
-                        }
-                    }
-                };
             }
         }
     }

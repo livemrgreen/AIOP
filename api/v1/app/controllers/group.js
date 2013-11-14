@@ -6,7 +6,7 @@ var orm = require("../../config/models");
 module.exports.list = function (req, res, next) {
     var group = orm.model("group");
 
-    group.findAll({"where": {"deleted_at": null}}).success(function (groups) {
+    group.findAll({}).success(function (groups) {
         res.send(200, {"groups": groups});
     });
 
@@ -48,7 +48,7 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var group = orm.model("group");
 
-    group.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (group) {
+    group.find({"where": {"id": req.params.id}}).success(function (group) {
         if (!group) {
             res.send(404, {"message": "Group not found"});
         }
@@ -69,7 +69,7 @@ module.exports.update = function (req, res, next) {
     if (req.body && req.body.group) {
         var g = req.body.group;
         if (g.label && g.parent_id) {
-            group.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (group) {
+            group.find({"where": {"id": req.params.id}}).success(function (group) {
                 if (!group) {
                     res.send(404, {"message": "Group not found"});
                 }
@@ -104,7 +104,7 @@ module.exports.update = function (req, res, next) {
 module.exports.delete = function (req, res, next) {
     var group = orm.model("group");
 
-    group.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (group) {
+    group.find({"where": {"id": req.params.id}}).success(function (group) {
         if (!group) {
             res.send(404, {"message": "Group not found"});
         }

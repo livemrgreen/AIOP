@@ -7,7 +7,7 @@ var async = require("async");
 module.exports.list = function (req, res, next) {
     var teacher = orm.model("teacher");
 
-    teacher.findAll({"where": {"deleted_at": null}}).success(function (teachers) {
+    teacher.findAll({}).success(function (teachers) {
         // use of async.js to handle asynchronus calls when getting db associations
         async.map(teachers, handleTeacher, function (error, results) {
             // when all is done
@@ -56,7 +56,7 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var teacher = orm.model("teacher");
 
-    teacher.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (teacher) {
+    teacher.find({"where": {"id": req.params.id}}).success(function (teacher) {
         if (!teacher) {
             res.send(404, {"message": "Teacher not found"});
         }
@@ -80,7 +80,7 @@ module.exports.update = function (req, res, next) {
     if (req.body && req.body.teacher) {
         var t = req.body.teacher;
         if (t.person_id) {
-            teacher.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (teacher) {
+            teacher.find({"where": {"id": req.params.id}}).success(function (teacher) {
                 if (!teacher) {
                     res.send(404, {"message": "Teacher not found"});
                 }
@@ -117,7 +117,7 @@ module.exports.update = function (req, res, next) {
 module.exports.delete = function (req, res, next) {
     var teacher = orm.model("teacher");
 
-    teacher.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (teacher) {
+    teacher.find({"where": {"id": req.params.id}}).success(function (teacher) {
         if (!teacher) {
             res.send(404, {"message": "Teacher not found"});
         }

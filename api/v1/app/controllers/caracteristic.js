@@ -6,7 +6,7 @@ var orm = require("../../config/models");
 module.exports.list = function (req, res, next) {
     var caracteristic = orm.model("caracteristic");
 
-    caracteristic.findAll({"where": {"deleted_at": null}}).success(function (caracteristics) {
+    caracteristic.findAll({}).success(function (caracteristics) {
         res.send(200, {"caracteristics": caracteristics});
     });
 
@@ -48,7 +48,7 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var caracteristic = orm.model("caracteristic");
 
-    caracteristic.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (caracteristic) {
+    caracteristic.find({"where": {"id": req.params.id}}).success(function (caracteristic) {
         if (!caracteristic) {
             res.send(404, {"message": "Caracteristic not found"});
         }
@@ -69,7 +69,7 @@ module.exports.update = function (req, res, next) {
     if (req.body && req.body.caracteristic) {
         var c = req.body.caracteristic;
         if (c.label) {
-            caracteristic.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (caracteristic) {
+            caracteristic.find({"where": {"id": req.params.id}}).success(function (caracteristic) {
                 if (!caracteristic) {
                     res.send(404, {"message": "Caracteristic not found"});
                 }
@@ -103,7 +103,7 @@ module.exports.update = function (req, res, next) {
 module.exports.delete = function (req, res, next) {
     var caracteristic = orm.model("caracteristic");
 
-    caracteristic.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (caracteristic) {
+    caracteristic.find({"where": {"id": req.params.id}}).success(function (caracteristic) {
         if (!caracteristic) {
             res.send(404, {"message": "Caracteristic not found"});
         }

@@ -30,7 +30,7 @@ module.exports = {
                 "foreignKeyConstraint": true
             }
         },
-        "hasOne": {
+        "hasMany": {
             "teaching": {
                 "foreignKeyConstraint": true
             }
@@ -40,6 +40,6 @@ module.exports = {
     "configuration": {
         "freezeTableName": true,
         "underscored": true,
-        "paranoid": true
+        "timestamps": false
     }
 };

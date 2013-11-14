@@ -6,7 +6,7 @@ var orm = require("../../config/models");
 module.exports.list = function (req, res, next) {
     var lesson_type = orm.model("lesson_type");
 
-    lesson_type.findAll({"where": {"deleted_at": null}}).success(function (lesson_types) {
+    lesson_type.findAll({}).success(function (lesson_types) {
         res.send(200, {"lesson_types": lesson_types});
     });
 
@@ -48,7 +48,7 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var lesson_type = orm.model("lesson_type");
 
-    lesson_type.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (lesson_type) {
+    lesson_type.find({"where": {"id": req.params.id}}).success(function (lesson_type) {
         if (!lesson_type) {
             res.send(404, {"message": "Lesson_type not found"});
         }
@@ -69,7 +69,7 @@ module.exports.update = function (req, res, next) {
     if (req.body && req.body.lesson_type) {
         var l = req.body.lesson_type;
         if (l.label) {
-            lesson_type.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (lesson_type) {
+            lesson_type.find({"where": {"id": req.params.id}}).success(function (lesson_type) {
                 if (!lesson_type) {
                     res.send(404, {"message": "Lesson_type not found"});
                 }
@@ -103,7 +103,7 @@ module.exports.update = function (req, res, next) {
 module.exports.delete = function (req, res, next) {
     var lesson_type = orm.model("lesson_type");
 
-    lesson_type.find({"where": {"id": req.params.id, "deleted_at": null}}).success(function (lesson_type) {
+    lesson_type.find({"where": {"id": req.params.id}}).success(function (lesson_type) {
         if (!lesson_type) {
             res.send(404, {"message": "Lesson_type not found"});
         }
