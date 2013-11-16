@@ -4,3 +4,6 @@ node_modules
 # IDE
 .idea
 nbproject
+
+# bower
+*/bower_components
