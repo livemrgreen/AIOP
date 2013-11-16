@@ -8,7 +8,9 @@ define([
     'use strict';
 
     app.register.controller('HomeController', function ($rootScope, $scope, $http, $filter, $location, LocalStorageService, UserService) {
-        $scope.twoTimesTwo = 2 * 2;
+        $scope.twoTimesTwo = 2 * 2;s
+
+        console.log($rootScope);
 
         $scope.open = function(){
             var $icon = $('.accordion-toggle').children('span').children('i');
@@ -43,6 +45,7 @@ define([
                 console.log(status);
                 console.log(data);
             });
+
 
         $scope.logout = function(){
             LocalStorageService.clear('user');

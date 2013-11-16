@@ -8,6 +8,7 @@ define([
     'use strict';
 
     app.register.controller('ReservationController', function ($rootScope, $scope, $http, $filter, $location, LocalStorageService, UserService) {
+        console.log($rootScope);
         $scope.open = function(){
 
             var $icon = $('.accordion-toggle').children('span').children('i');
@@ -40,6 +41,8 @@ define([
             UserService.initialize();
             $location.path('/login');
         }
+        $scope.module = {name:'test'};
+
 
     });
 });
