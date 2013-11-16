@@ -6,4 +6,5 @@ node_modules
 nbproject
 
 # bower
-*/bower_components
+src/app/bower_components
+src/app/bower_components/*
