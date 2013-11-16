@@ -3,16 +3,14 @@
  * @scope Controllers
  */
 define([
-    'app',
+    'app'
 ], function (app) {
     'use strict';
 
     app.register.controller('HomeController', function ($rootScope, $scope, $http, $filter, $location, LocalStorageService, UserService) {
-        //$scope.classReservations = 'colllapse';
         $scope.twoTimesTwo = 2 * 2;
 
         $scope.open = function(){
-
             var $icon = $('.accordion-toggle').children('span').children('i');
             //open or close submenu of reservation
             if($scope.classReservations == 'collapse'){
@@ -25,7 +23,12 @@ define([
                 $scope.classReservations = 'collapse';
             }
         };
-        /*$scope.firstName = $rootScope.userDetails.user.first_name;
+
+        $scope.changeLocation = function(view){
+            $location.path('/'+view);
+        };
+
+        $scope.firstName = $rootScope.userDetails.user.first_name;
         $scope.lastName = $rootScope.userDetails.user.last_name;
         $scope.todayDate = $filter('date')(new Date(), 'dd/MM/y');
 
@@ -46,7 +49,7 @@ define([
             UserService.initialize();
             $location.path('/login');
         }
-*/
+
 
         var date = new Date();
         var d = date.getDate();
@@ -130,7 +133,7 @@ define([
         $scope.uiConfig = {
             calendar:{
                 height: 600,
-                editable: true,
+                editable: false,
                 header:{
                     left: 'title',
                     center: '',
