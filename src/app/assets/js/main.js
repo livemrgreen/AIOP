@@ -25,6 +25,16 @@ $(function () {
             $icon.removeClass('icon-chevron-up').addClass('icon-chevron-down');
         }
     });
+
+    $('.accordion-toggle').on('click', function (e) {
+        e.preventDefault();
+        var $icon = $(this).children('span').children('i');
+        if ($icon.hasClass('fa fa-angle-left')) {
+            $icon.removeClass('fa fa-angle-left').addClass('fa fa-angle-down');
+        } else if ($icon.hasClass('fa fa-angle-down')) {
+            $icon.removeClass('fa fa-angle-down').addClass('fa fa-angle-left');
+        }
+    });
     $('.close-box').click(function () {
         $(this).closest('.box').hide('slow');
     });
@@ -48,7 +58,6 @@ function metisButton() {
         });
     });
 }
-
 function metisChart() {
     "use strict";
     var d2 = [
@@ -995,7 +1004,6 @@ function metisSortable() {
   });
   
 }
-
 function metisTable() {
     "use strict";
 

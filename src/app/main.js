@@ -7,47 +7,23 @@
 
 require.config({
     paths: {
+        'jquery' : 'bower_components/jquery/jquery.min',
+        'jquery-ui' : 'bower_components/jquery-ui/ui/minified/jquery-ui.min',
         'angular': 'bower_components/angular/angular.min',
         'angularAMD': 'bower_components/angularAMD/angularAMD.min',
         'angular-route': 'bower_components/angular-route/angular-route.min',
         'angular-calendar': 'bower_components/angular-ui-calendar/src/calendar',
         'metis' : 'assets/js/main',
-        'jquery' : 'bower_components/jquery/jquery.min',
-        'jquery-ui' : 'bower_components/jquery-ui/ui/minified/jquery-ui.min',
         'fullcalendar': 'bower_components/fullcalendar/fullcalendar'
     },
     shim: {
-        'angularAMD': ['angular'],
+        'angularAMD': ['jquery', 'metis', 'angular'],
         'angular-route': ['angular'],
-        'angular-calendar' : ['angular', 'jquery', 'jquery-ui','fullcalendar']
+        'angular-calendar' : ['jquery', 'jquery-ui', 'angular' ,'fullcalendar'],
+        'metis': ['jquery', 'jquery-ui']
     },
     deps: ['app']
 });
-//
-//require.config({
-//    paths: {
-//        'domReady': 'assets/lib/requirejs-domready/domReady',
-//        'angular': 'bower_components/angular/angular',
-//        'moment': 'assets/js/moment/moment-with-langs.min',
-//        'metis' : 'assets/js/main',
-//        'underscore' : 'bower_components/underscore/underscore-min',
-//        'jQuery' : 'assets/lib/jquery.min',
-//        'jQueryUI' : 'bower_components/jquery-ui/ui/jquery-ui',
-//        'calendar' : 'assets/js/calendar',
-//        'fullCalendar' : 'bower_components/fullcalendar/fullcalendar.min'
-//    },
-//    shim: {
-//        jQuery : {exports: '$'},
-//        underscore : {exports: '_'},
-//        angular: {deps:['jQuery'], exports : 'angular'},
-//        jQueryUI: {deps:['jQuery']},
-//        fullCalendar : {deps:['jQuery', 'jQueryUI', 'angular']},
-//        calendar: {deps:['jQuery', 'jQueryUI', 'angular', 'fullCalendar']}
-//
-//    },
-//    deps: ['app']
-//
-//});
 
 
 ///**

@@ -2,10 +2,12 @@
  * Home controller definition
  * @scope Controllers
  */
-define(['./module'], function (controllers) {
+define([
+    'app'
+], function (app) {
     'use strict';
 
-    controllers.controller('LoginController', function ($rootScope, $scope, $http, $location, LocalStorageService, UserService) {
+    app.register.controller('LoginController', function ($rootScope, $scope, $http, $location, LocalStorageService, UserService) {
 
         $scope.error = false;
 

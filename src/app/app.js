@@ -8,45 +8,20 @@ define([
 
     app.config(function ($routeProvider) {
         $routeProvider.when("/", angularAMD.route({
-            templateUrl: 'modules/home/home.html',
-            controller: 'HomeController',
-            controllerUrl: 'modules/home/home-ctrl'
-        }));
-//        $routeProvider.when("/login", angularAMD.route({
-//            templateUrl: 'modules/login/login.html',
-//            controller: 'LoginController',
-//            controllerUrl: 'modules/login/login-ctrl'
-//        }));
-        $routeProvider.otherwise({
-            redirectTo: '/'
-        });
+                templateUrl: 'modules/home/home.html',
+                controller: 'HomeController',
+                controllerUrl: 'modules/home/home-ctrl'
+            }))
+            .when("/login", angularAMD.route({
+                templateUrl: 'modules/login/login.html',
+                controller: 'LoginController',
+                controllerUrl: 'modules/login/login-ctrl'
+            }))
+            .otherwise({
+                redirectTo: '/'
+            });
     });
 
-    app.factory('LocalStorageService', [
-        function () {
-            return {
-                isSupported: function () {
-                    try {
-                        return 'localStorage' in window && window['localStorage'] !== null;
-                    } catch (e) {
-                        return false;
-                    }
-                },
-                save: function (key, value) {
-                    localStorage[key] = JSON.stringify(value);
-                },
-                fetch: function (key) {
-                    return localStorage[key];
-                },
-                parse: function(value) {
-                    return JSON.parse(value);
-                },
-                clear: function (key) {
-                    localStorage.removeItem(key);
-                }
-            };
-        }
-    ]);
 
     app.factory( 'UserService', ['$rootScope', function($rootScope){
         var loginService = {
@@ -85,6 +60,31 @@ define([
 
     }]);
 
+    app.factory('LocalStorageService', [
+            function () {
+                return {
+                    isSupported: function () {
+                        try {
+                            return 'localStorage' in window && window['localStorage'] !== null;
+                        } catch (e) {
+                            return false;
+                        }
+                    },
+                    save: function (key, value) {
+                        localStorage[key] = JSON.stringify(value);
+                    },
+                    fetch: function (key) {
+                        return localStorage[key];
+                    },
+                    parse: function(value) {
+                        return JSON.parse(value);
+                    },
+                    clear: function (key) {
+                        localStorage.removeItem(key);
+                    }
+                };
+            }
+        ]);
 
     app.run(function ($rootScope, $location, LocalStorageService, UserService) {
 
@@ -96,8 +96,6 @@ define([
             return route == '/login';
         };
 
-
-        console.log(!routeClean($location.url()));
         $rootScope.$on('$routeChangeStart', function (event, next, current) {
 
             if(LocalStorageService.fetch('user') != null ){
@@ -121,36 +119,3 @@ define([
     angularAMD.bootstrap(app);
     return app;
 });
-
-//
-//define(['app'], function (app) {
-//    'use strict';
-//    app.config(function ($routeProvider) {
-//        $routeProvider.when('/', {
-//            templateUrl: 'modules/home/home.html',
-//            controller : 'HomeController'
-//        });
-//
-//        $routeProvider.when('/login', {
-//            templateUrl: 'modules/login/login.html',
-//            controller : 'LoginController'
-//        });
-//
-//        $routeProvider.otherwise({
-//            redirectTo: '/'
-//        });
-//
-//        //$locationProvider.html5Mode(true);
-//    });
-//});
-//
-//define([
-//    'angular',
-//    'config'/*,
-//    './modules/home/index',
-//    './modules/login/index'*/
-//], function (ng) {
-//    'use strict';
-//
-//    return ng.module('app');
-//});
