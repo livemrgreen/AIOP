@@ -4,31 +4,49 @@
  */
 define([
     'app'
-], function (app) {
+], function(app) {
     'use strict';
 
-    app.register.controller('ReservationController', function ($rootScope, $scope, $http, $filter, $location, LocalStorageService, UserService) {
-        $scope.UEs = [{name : 'test' }];
-            $scope.colors = [
-                {name:'black', shade:'dark'},
-                {name:'white', shade:'light'},
-                {name:'red', shade:'dark'},
-                {name:'blue', shade:'dark'},
-                {name:'yellow', shade:'light'}
-            ];
-            $scope.color = $scope.colors[2]; // red
+    app.register.controller('ReservationController', function($rootScope, $scope, $http, $filter, $location, LocalStorageService, UserService) {
+        $scope.ues = [
+            {name: 'Programmation Web'},
+            {name: 'Communication'},
+            {name: 'Gestion'},
+            {name: 'Base de données'},
+            {name: 'Réseaux'}
+        ];
 
+        $scope.getLessonsList = function(ue) {
+            //TODO: retrieve lessonList according to ue provided
+            console.log(ue);
+            if (ue.name === "Programmation Web") {
+                $scope.lessons = [
+                    {name: 'CSS'},
+                    {name: 'PHP'},
+                    {name: 'JavaScript'},
+                    {name: 'HTML5'}
+                ];
+            }
+            else {
+                $scope.lessons = [
+                    {name: 'Cours chiant 1'},
+                    {name: 'Cours chiant 2'},
+                    {name: 'Cours méga chiant'},
+                    {name: 'Ester'}
+                ];
+            }
+        };
 
-        $scope.open = function(){
+        $scope.open = function() {
 
             var $icon = $('.accordion-toggle').children('span').children('i');
             //open or close submenu of reservation
-            if($scope.classReservations == 'collapse'){
+            if ($scope.classReservations == 'collapse') {
                 //change arrow value of Reservations
                 $icon.removeClass('fa fa-angle-left').addClass('fa fa-angle-down');
                 $scope.classReservations = '';
             }
-            else{
+            else {
                 $icon.removeClass('fa fa-angle-down').addClass('fa fa-angle-left');
                 $scope.classReservations = 'collapse';
             }
@@ -36,22 +54,20 @@ define([
 
         //define datepiker
         $(function() {
-            $( "#datepicker" ).datepicker().datepicker({minDate:-1,maxDate:-2}).attr('readonly','readonly');
+            $("#datepicker").datepicker().datepicker({minDate: -1, maxDate: -2}).attr('readonly', 'readonly');
         });
 
-        $scope.changeLocation = function(view){
-            $location.path('/'+view);
+        $scope.changeLocation = function(view) {
+            $location.path('/' + view);
         };
         $scope.firstName = $rootScope.userDetails.user.first_name;
         $scope.lastName = $rootScope.userDetails.user.last_name;
         $scope.todayDate = $filter('date')(new Date(), 'dd/MM/y');
 
-        $scope.logout = function(){
+        $scope.logout = function() {
             LocalStorageService.clear('user');
             UserService.initialize();
             $location.path('/login');
-        }
-
-
+        };
     });
 });

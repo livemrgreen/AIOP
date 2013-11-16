@@ -1,7 +1,5 @@
 <div id="wrap">
-
     <div id="top">
-
         <nav class="navbar navbar-inverse navbar-static-top">
             <header class="navbar-header">
                 <a href="index.html" class="navbar-brand "><img class="small" src="assets/img/logo.png" alt=""></a>
@@ -11,7 +9,6 @@
                     <i class="icon-bar"></i>
                 </a>
             </header>
-
             <div class="topnav">
                 <div class="btn-toolbar">
                     <div class="btn-group">
@@ -22,23 +19,18 @@
                 </div>
             </div>
         </nav>
-
         <header class="head">
             <div class="main-bar">
-                <h3><i class="fa fa-table"></i> Calendar</h3>
+                <h3><i class="fa fa-table"></i> Agenda</h3>
             </div>
         </header>
-
     </div>
-
     <div id="left">
-
         <div class="media user-media">
             <a href="#" class="quick-btn pull-right">
                 <i class="fa fa-user fa-3x"></i>
                 <span class="label label-danger">2</span>
             </a>
-
             <div class="media-body">
                 <h5 class="media-heading">{{firstName}} {{lastName}}</h5>
                 <ul class="list-unstyled user-info">
@@ -48,39 +40,35 @@
                 </ul>
             </div>
         </div>
-
         <ul id="menu" class="collapse" ng-init="classReservations='collapse'">
             <li class="nav-header">Menu</li>
-            <li><a href="" ><i class="fa fa-table"></i> Calendar</a></li>
+            <li><a href="" ><i class="fa fa-table"></i> Agenda</a></li>
             <li class="panel ">
                 <a href="" data-parent="#menu" data-toggle="collapse" class="accordion-toggle" ng-click="open()" data-target="#dashboard-nav">
-                    <i class="fa fa-folder-open"></i> Reservations
-                     <span class="pull-right">
-                         <i class="fa fa-angle-left"></i>
-                     </span>
+                    <i class="fa fa-pencil-square-o"></i> Reservations
+                    <span class="pull-right">
+                        <i class="fa fa-angle-left"></i>
+                    </span>
                 </a>
                 <ul class="{{classReservations}}" id="dashboard-nav">
-                    <li class=""><a href="" ng-click="changeLocation('reservation')">Request</a></li>
-                    <li class=""><a href="">Validation</a></li>
+                    <li class=""><a href="" ng-click="changeLocation('reservation')">New request</a></li>
+                    <li class=""><a href="">Pending requests</a></li>
                 </ul>
             </li>
         </ul>
-
     </div>
-
     <div id="content">
         <div class="outer">
             <div class="inner" >
-
                 <div class="span8">
                     <div class="alert-success calAlert" ng-show="alertMessage != undefined && alertMessage != ''">
                         <h4>{{alertMessage}}</h4>
                     </div>
                     <div class="btn-toolbar">
-                        <p class="pull-right lead">Calendar One View Options</p>
+                        <p class="pull-right lead">Agenda</p>
                         <div class="btn-group">
-                            <button class="btn btn-success" ng-click="changeView('agendaDay', myCalendar)">AgendaDay</button>
-                            <button class="btn btn-success" ng-click="changeView('agendaWeek', myCalendar)">AgendaWeek</button>
+                            <button class="btn btn-success" ng-click="changeView('agendaDay', myCalendar)">Day</button>
+                            <button class="btn btn-success" ng-click="changeView('agendaWeek', myCalendar)">Week</button>
                             <button class="btn btn-success" ng-click="changeView('month', myCalendar)">Month</button>
                         </div>
                     </div>
@@ -90,7 +78,6 @@
         </div>
     </div>
 </div>
-
 <div id="footer">
     <p>2013 &copy; Schedule Manager</p>
 </div>
