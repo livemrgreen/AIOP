@@ -17,6 +17,11 @@ define([
                 controller: 'LoginController',
                 controllerUrl: 'modules/login/login-ctrl'
             }))
+            .when("/reservation", angularAMD.route({
+                templateUrl: 'modules/reservation/reservation.html',
+                controller: 'ReservationController',
+                controllerUrl: 'modules/reservation/reservation-ctrl'
+            }))
             .otherwise({
                 redirectTo: '/'
             });
@@ -61,61 +66,61 @@ define([
     }]);
 
     app.factory('LocalStorageService', [
-            function () {
-                return {
-                    isSupported: function () {
-                        try {
-                            return 'localStorage' in window && window['localStorage'] !== null;
-                        } catch (e) {
-                            return false;
-                        }
-                    },
-                    save: function (key, value) {
-                        localStorage[key] = JSON.stringify(value);
-                    },
-                    fetch: function (key) {
-                        return localStorage[key];
-                    },
-                    parse: function(value) {
-                        return JSON.parse(value);
-                    },
-                    clear: function (key) {
-                        localStorage.removeItem(key);
+        function () {
+            return {
+                isSupported: function () {
+                    try {
+                        return 'localStorage' in window && window['localStorage'] !== null;
+                    } catch (e) {
+                        return false;
                     }
-                };
-            }
-        ]);
+                },
+                save: function (key, value) {
+                    localStorage[key] = JSON.stringify(value);
+                },
+                fetch: function (key) {
+                    return localStorage[key];
+                },
+                parse: function(value) {
+                    return JSON.parse(value);
+                },
+                clear: function (key) {
+                    localStorage.removeItem(key);
+                }
+            };
+        }
+    ]);
+    /*
+     app.run(function ($rootScope, $location, LocalStorageService, UserService) {
 
-    app.run(function ($rootScope, $location, LocalStorageService, UserService) {
+     UserService.initialize();
 
-        UserService.initialize();
+     // routes that don't need authentication
+     // check if current location matches route
+     var routeClean = function (route) {
+     return route == '/login';
+     };
 
-        // routes that don't need authentication
-        // check if current location matches route
-        var routeClean = function (route) {
-            return route == '/login';
-        };
+     $rootScope.$on('$routeChangeStart', function (event, next, current) {
 
-        $rootScope.$on('$routeChangeStart', function (event, next, current) {
+     if(LocalStorageService.fetch('user') != null ){
+     $rootScope.userDetails = LocalStorageService.parse(LocalStorageService.fetch('user'));
+     }
 
-            if(LocalStorageService.fetch('user') != null ){
-                $rootScope.userDetails = LocalStorageService.parse(LocalStorageService.fetch('user'));
-            }
+     // if route requires auth and user is not logged in
+     if (!routeClean($location.url()) && !$rootScope.userDetails.isLogged) {
+     // redirect back to login
+     //event.preventDefault()
+     $location.path('/login');
+     }
+     else if($location.url() == '/login' && $rootScope.userDetails.isLogged){
+     //event.preventDefault()
+     $location.path('/');
+     }
 
-            // if route requires auth and user is not logged in
-            if (!routeClean($location.url()) && !$rootScope.userDetails.isLogged) {
-                // redirect back to login
-                //event.preventDefault()
-                $location.path('/login');
-            }
-            else if($location.url() == '/login' && $rootScope.userDetails.isLogged){
-                //event.preventDefault()
-                $location.path('/');
-            }
-
-        });
-    });
-
+     });
+     });
+     */
     angularAMD.bootstrap(app);
     return app;
 });

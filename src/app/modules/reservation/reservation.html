@@ -25,7 +25,7 @@
 
         <header class="head">
             <div class="main-bar">
-                <h3><i class="fa fa-table"></i> Calendar</h3>
+                <h3><i class="fa fa-folder-open"></i> Reservations</h3>
             </div>
         </header>
 
@@ -51,7 +51,7 @@
 
         <ul id="menu" class="collapse" ng-init="classReservations='collapse'">
             <li class="nav-header">Menu</li>
-            <li><a href="" ><i class="fa fa-table"></i> Calendar</a></li>
+            <li><a href="" ng-click="changeLocation('home')"><i class="fa fa-table"></i> Calendar</a></li>
             <li class="panel ">
                 <a href="" data-parent="#menu" data-toggle="collapse" class="accordion-toggle" ng-click="open()" data-target="#dashboard-nav">
                     <i class="fa fa-folder-open"></i> Reservations
@@ -60,7 +60,7 @@
                      </span>
                 </a>
                 <ul class="{{classReservations}}" id="dashboard-nav">
-                    <li class=""><a href="" ng-click="changeLocation('reservation')">Request</a></li>
+                    <li class=""><a href="">Request</a></li>
                     <li class=""><a href="">Validation</a></li>
                 </ul>
             </li>
@@ -72,20 +72,45 @@
         <div class="outer">
             <div class="inner" >
 
-                <div class="span8">
-                    <div class="alert-success calAlert" ng-show="alertMessage != undefined && alertMessage != ''">
-                        <h4>{{alertMessage}}</h4>
+                <form class="form-horizontal"  novalidate name="form">
+
+                    <p class="text-center">
+                        Reservation request
+                    </p>
+                    <div class="form-group">
+                        <label class="control-label col-lg-4">UE : </label>
+                        <select class="col-lg-4" ng-model="module">
+
+                        </select>
                     </div>
-                    <div class="btn-toolbar">
-                        <p class="pull-right lead">Calendar One View Options</p>
-                        <div class="btn-group">
-                            <button class="btn btn-success" ng-click="changeView('agendaDay', myCalendar)">AgendaDay</button>
-                            <button class="btn btn-success" ng-click="changeView('agendaWeek', myCalendar)">AgendaWeek</button>
-                            <button class="btn btn-success" ng-click="changeView('month', myCalendar)">Month</button>
-                        </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-4">Lesson : </label>
+                        <select class="col-lg-4" ng-model="lesson">
+
+                        </select>
                     </div>
-                    <div id="calendar" class="calendar" ui-calendar="uiConfig.calendar" ng-model="eventSources" calendar="myCalendar"></div>
-                </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-4">Lesson type : </label>
+                        <select class="col-lg-4" ng-model="lessonType">
+
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-lg-4">Teacher : </label>
+                        <select class="col-lg-4" ng-model="teacher">
+
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-lg-4">Date : </label>
+                        <input type="text" class="col-lg-4" id="datepicker">
+                    </div>
+
+
+                    <button class="btn btn-lg btn-primary btn-block" ng-click="loginFuncion()" ng-disabled="form.$invalid">Send request</button>
+                </form>
             </div>
         </div>
     </div>
