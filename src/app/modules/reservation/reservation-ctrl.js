@@ -8,6 +8,17 @@ define([
     'use strict';
 
     app.register.controller('ReservationController', function ($rootScope, $scope, $http, $filter, $location, LocalStorageService, UserService) {
+        $scope.UEs = [{name : 'test' }];
+            $scope.colors = [
+                {name:'black', shade:'dark'},
+                {name:'white', shade:'light'},
+                {name:'red', shade:'dark'},
+                {name:'blue', shade:'dark'},
+                {name:'yellow', shade:'light'}
+            ];
+            $scope.color = $scope.colors[2]; // red
+
+
         $scope.open = function(){
 
             var $icon = $('.accordion-toggle').children('span').children('i');
@@ -40,8 +51,6 @@ define([
             UserService.initialize();
             $location.path('/login');
         }
-
-        $scope.module = [{name:'test'}];
 
 
     });

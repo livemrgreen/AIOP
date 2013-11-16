@@ -79,9 +79,11 @@
                     </p>
                     <div class="form-group">
                         <label class="control-label col-lg-4">UE : </label>
-                        <select class="col-lg-4" ng-model="module" >
+                        <div class="col-lg-4">
+                            <select class="form-control" ng-model="ue" ng-options="c.name for c in UEs">
 
-                        </select>
+                            </select>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-lg-4">Lesson : </label>
