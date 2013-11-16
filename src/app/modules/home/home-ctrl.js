@@ -8,7 +8,7 @@ define([
     'use strict';
 
     app.register.controller('HomeController', function ($rootScope, $scope, $http, $filter, $location, LocalStorageService, UserService) {
-        $scope.twoTimesTwo = 2 * 2;s
+        $scope.twoTimesTwo = 2 * 2;
 
         console.log($rootScope);
 
