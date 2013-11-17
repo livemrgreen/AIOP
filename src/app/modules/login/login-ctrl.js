@@ -22,15 +22,11 @@ define([
             $http({method: 'Post', url: 'http://162.38.113.210:8080/signin', data: user}).
                     success(function(data) {
 
-                console.log(data);
-
                 //Set user information
                 UserService.setLogged();
                 UserService.setAccessToken(data.access_token);
                 UserService.setUser(data.user);
                 UserService.setId(data.user.id);
-
-                console.log(UserService);
 
                 //save user in LocalStorage
                 LocalStorageService.save('user', $rootScope.userDetails);

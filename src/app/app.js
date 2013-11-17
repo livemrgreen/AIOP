@@ -56,6 +56,19 @@ define([
             },
             setUser : function(user){
                 $rootScope.userDetails.user = user;
+            },
+            getLogged : function(){
+                return $rootScope.userDetails.isLogged;
+
+            },
+            getId : function(){
+                return $rootScope.userDetails.id;
+            },
+            getAccessToken : function(){
+                return $rootScope.userDetails.access_token;
+            },
+            getUser : function(){
+                return $rootScope.userDetails.user;
             }
 
 
@@ -104,18 +117,16 @@ define([
         $rootScope.$on('$routeChangeStart', function (event, next, current) {
 
             if(LocalStorageService.fetch('user') != null ){
-                console.log("local storage == user register");
                 $rootScope.userDetails = LocalStorageService.parse(LocalStorageService.fetch('user'));
-                console.log($rootScope);
             }
 
             // if route requires auth and user is not logged in
-            if (!routeClean($location.url()) && !$rootScope.userDetails.isLogged) {
+            if (!routeClean($location.url()) && !UserService.getLogged()) {
                 // redirect back to login
                 //event.preventDefault()
                 $location.path('/login');
             }
-            else if($location.url() == '/login' && $rootScope.userDetails.isLogged){
+            else if($location.url() == '/login' && UserService.getLogged()){
                 //event.preventDefault()
                 $location.path('/');
             }
