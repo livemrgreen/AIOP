@@ -159,6 +159,7 @@ var handleReservation = function (reservation, done) {
                 reservation.getRoom().success(function (room) {
                     if (room) {
                         var r = room.values;
+                        delete r.building_id;
                         room.getBuilding().success(function (building) {
                             if (building) {
                                 r.building = building.values;

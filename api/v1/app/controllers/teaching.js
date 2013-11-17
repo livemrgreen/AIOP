@@ -118,3 +118,49 @@ module.exports.delete = function (req, res, next) {
 
     return next();
 };
+
+/*
+ * HELPERS
+ */
+var handleTeaching = function (teaching, done) {
+    var tmp = teaching.values;
+    delete tmp.group_id;
+    delete tmp.lesson_id;
+
+    teaching.getLesson().success(function (lesson) {
+        if (lesson) {
+            async.parallel(
+                {
+                    "subject": function (done) {
+                        lesson.getSubject().success(function (subject) {
+                            if (subject) {
+                                var s = subject.values;
+                                done(null, s);
+                            }
+                            else {
+                                done(null);
+                            }
+                        });
+                    },
+                    "lesson_type": function (done) {
+                        lesson.getType().success(function (lesson_type) {
+                            if (lesson_type) {
+                                var l = lesson_type.values;
+                                done(null, l);
+                            }
+                            else {
+                                done(null);
+                            }
+                        });
+                    }
+                },
+                function (err, results) {
+                    tmp.subject = results.subject;
+                    tmp.lesson_type = results.lesson_type;
+                    done(null, tmp);
+                }
+            );
+        }
+    });
+};
+module.exports.handleTeaching = handleTeaching;

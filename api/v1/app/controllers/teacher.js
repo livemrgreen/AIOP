@@ -1,6 +1,6 @@
 var orm = require("../../config/models");
 var async = require("async");
-var res_ctrl = require("./reservation");
+var reservation_ctrl = require("./reservation");
 
 /*
  * GET /teachers/
@@ -65,7 +65,7 @@ module.exports.show = function (req, res, next) {
 /*
  * GET /teachers/:id/reservations
  */
-module.exports.show_reserations = function (req, res, next) {
+module.exports.reservations = function (req, res, next) {
     var teacher = orm.model("teacher");
 
     teacher.find({"where": {"id": req.params.id}}).success(function (teacher) {
@@ -75,10 +75,10 @@ module.exports.show_reserations = function (req, res, next) {
         else {
             teacher.getTeachings().success(function (teachings) {
                 async.map(teachings, handleTeachingForReservations, function (error, results) {
-                    var reservations = results.filter(function(reservation) { return reservation != null });
-                    async.map(reservations, res_ctrl.handleReservation, function (error, results) {
-                        res.send(200, {"reservations": results});
+                    var reservations = results.filter(function (reservation) {
+                        return reservation != null
                     });
+                    res.send(200, {"reservations": reservations});
                 });
             });
         }
@@ -149,8 +149,10 @@ module.exports.delete = function (req, res, next) {
  */
 var handleTeachingForReservations = function (teaching, done) {
     teaching.getReservation().success(function (reservation) {
-        if(reservation) {
-            done(null, reservation);
+        if (reservation) {
+            async.map([reservation], reservation_ctrl.handleReservation, function (error, results) {
+                done(null, results[0]);
+            });
         }
         else {
             done(null);

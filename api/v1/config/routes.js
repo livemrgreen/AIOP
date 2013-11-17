@@ -18,6 +18,7 @@ module.exports = function (server, passport, auth) {
     server.get("/groups", passport.authenticate("bearer", { session: false }), group.list);
     server.post("/groups", passport.authenticate("bearer", { session: false }), auth.isAdministrator, group.create);
     server.get("/groups/:id", passport.authenticate("bearer", { session: false }), group.show);
+    server.get("/groups/:id/teachings", passport.authenticate("bearer", { session: false }), group.teachings);
     server.put("/groups/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, group.update);
     server.del("/groups/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, group.delete);
 
@@ -74,7 +75,7 @@ module.exports = function (server, passport, auth) {
     server.get("/teachers", passport.authenticate("bearer", { session: false }), teacher.list);
     server.post("/teachers", passport.authenticate("bearer", { session: false }), auth.isAdministrator, teacher.create);
     server.get("/teachers/:id", passport.authenticate("bearer", { session: false }), teacher.show);
-    server.get("/teachers/:id/reservations", passport.authenticate("bearer", { session: false }), auth.isMeTeacher, teacher.show_reserations);
+    server.get("/teachers/:id/reservations", passport.authenticate("bearer", { session: false }), auth.isMeTeacher, teacher.reservations);
     server.put("/teachers/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, teacher.update);
     server.del("/teachers/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, teacher.delete);
 

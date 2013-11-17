@@ -24,7 +24,7 @@ module.exports = {
     "isMeTeacher": function (req, res, next) {
         req.user.getTeacher().success(function (teacher) {
             if (teacher) {
-                if (teacher.id == req.params.id){
+                if (teacher.id == req.params.id) {
                     return next();
                 }
                 else {

@@ -1,4 +1,6 @@
 var orm = require("../../config/models");
+var async = require("async");
+var teaching_ctrl = require("./teaching");
 
 /*
  * GET /groups/
@@ -54,6 +56,28 @@ module.exports.show = function (req, res, next) {
         }
         else {
             res.send(200, {"group": group});
+        }
+    });
+
+    return next();
+};
+
+/*
+ * GET /groups/:id/teachings
+ */
+module.exports.teachings = function (req, res, next) {
+    var group = orm.model("group");
+
+    group.find({"where": {"id": req.params.id}}).success(function (group) {
+        if (!group) {
+            res.send(404, {"message": "Group not found"});
+        }
+        else {
+            group.getTeachings({"where": {"reservation": null}}).success(function (teachings) {
+                async.map(teachings, teaching_ctrl.handleTeaching, function (error, results) {
+                    res.send(200, {"teachings": results});
+                });
+            });
         }
     });
 
