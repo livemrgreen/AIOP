@@ -189,7 +189,7 @@ var handleReservation = function (reservation, done) {
 
             // try to reach the manager
             "reservation_request": function (done) {
-                teacher.getRequest().success(function (reservation_request) {
+                reservation.getRequest().success(function (reservation_request) {
                     if (reservation_request) {
                         var r = reservation_request.values;
                         done(null, r);
@@ -213,3 +213,4 @@ var handleReservation = function (reservation, done) {
         }
     );
 };
+module.exports.handleReservation = handleReservation;

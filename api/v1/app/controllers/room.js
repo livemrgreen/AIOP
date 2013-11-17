@@ -137,10 +137,10 @@ var handleRoom = function (room, done) {
     room.getBuilding().success(function (building) {
         if (building) {
             tmp.building = building.values;
-            done(null, tmp);
         }
         else {
-            done(null);
+            tmp.building = null;
         }
+        done(null, tmp);
     });
 };

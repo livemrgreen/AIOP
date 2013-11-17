@@ -138,10 +138,10 @@ var handleSubject = function (subject, done) {
 
         if (module) {
             tmp.module = module.values;
-            done(null, tmp);
         }
         else {
-            done(null);
+            tmp.module = null;
         }
+        done(null, tmp);
     });
 };

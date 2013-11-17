@@ -28,7 +28,7 @@ module.exports.create = function (req, res, next) {
 
     if (req.body && req.body.user) {
         var u = req.body.user;
-        if (u.username && u.password && u.person_id) {
+        if (u.username && u.password && u.administrator && u.teacher_id) {
             var tmp = user.build(u);
 
             tmp.salt = tmp.makeSalt();
@@ -89,7 +89,7 @@ module.exports.update = function (req, res, next) {
 
     if (req.body && req.body.user) {
         var u = req.body.user;
-        if (u.username && u.password && u.person_id) {
+        if (u.username && u.password && u.administrator && u.teacher_id) {
             user.find({"where": {"id": req.params.id}}).success(function (user) {
                 if (!user) {
                     res.send(404, {"message": "User not found"});
@@ -97,7 +97,8 @@ module.exports.update = function (req, res, next) {
                 else {
                     user.username = u.username;
                     user.password = user.encryptPassword(u.password);
-                    user.person_id = u.person_id;
+                    user.administrator = u.administrator;
+                    user.teacher_id = u.teacher_id;
 
                     user.save()
                         .success(function (user) {
@@ -182,11 +183,11 @@ var handleUser = function (user, done) {
         // if there is a teacher
         if (teacher) {
             tmp.teacher = teacher.values;
-            done(null, tmp);
         }
         else {
-            done(null);
+            tmp.teacher = null;
         }
+        done(null, tmp);
     });
 
 };
