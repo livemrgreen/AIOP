@@ -39,8 +39,8 @@ module.exports = {
             "reservation": {
                 "foreignKeyConstraint": true
             },
-            "caracteristic": {
-                "joinTableName": "caracteristics_for_room",
+            "characteristic": {
+                "joinTableName": "characteristics_for_room",
                 "foreignKeyConstraint": true
             }
         }

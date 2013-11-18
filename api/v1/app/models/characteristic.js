@@ -25,11 +25,11 @@ module.exports = {
         "hasMany": {
             "reservation_request": {
                 "as": "request",
-                "joinTableName": "caracteristics_for_reservation_request",
+                "joinTableName": "characteristics_for_reservation_request",
                 "foreignKeyConstraint": true
             },
             "room": {
-                "joinTableName": "caracteristics_for_room",
+                "joinTableName": "characteristics_for_room",
                 "foreignKeyConstraint": true
             }
         }

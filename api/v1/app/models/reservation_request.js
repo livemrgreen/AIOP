@@ -43,8 +43,8 @@ module.exports = {
             }
         },
         "hasMany": {
-            "caracteristic": {
-                "joinTableName": "caracteristics_for_reservation_request",
+            "characteristic": {
+                "joinTableName": "characteristics_for_reservation_request",
                 "foreignKeyConstraint": true
             }
         }

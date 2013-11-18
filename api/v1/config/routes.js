@@ -7,12 +7,12 @@ module.exports = function (server, passport, auth) {
     server.put("/buildings/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, building.update);
     server.del("/buildings/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, building.delete);
 
-    var caracteristic = require("../app/controllers/caracteristic");
-    server.get("/caracteristics", passport.authenticate("bearer", { session: false }), caracteristic.list);
-    server.post("/caracteristics", passport.authenticate("bearer", { session: false }), auth.isAdministrator, caracteristic.create);
-    server.get("/caracteristics/:id", passport.authenticate("bearer", { session: false }), caracteristic.show);
-    server.put("/caracteristics/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, caracteristic.update);
-    server.del("/caracteristics/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, caracteristic.delete);
+    var characteristic = require("../app/controllers/characteristic");
+    server.get("/characteristics", passport.authenticate("bearer", { session: false }), characteristic.list);
+    server.post("/characteristics", passport.authenticate("bearer", { session: false }), auth.isAdministrator, characteristic.create);
+    server.get("/characteristics/:id", passport.authenticate("bearer", { session: false }), characteristic.show);
+    server.put("/characteristics/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, characteristic.update);
+    server.del("/characteristics/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, characteristic.delete);
 
     var group = require("../app/controllers/group");
     server.get("/groups", passport.authenticate("bearer", { session: false }), group.list);
