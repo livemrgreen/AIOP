@@ -116,6 +116,8 @@ define([
 
         $rootScope.$on('$routeChangeStart', function (event, next, current) {
 
+            event.preventDefault();
+
             if(LocalStorageService.fetch('user') != null ){
                 $rootScope.userDetails = LocalStorageService.parse(LocalStorageService.fetch('user'));
             }

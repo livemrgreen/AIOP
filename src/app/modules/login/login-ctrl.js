@@ -15,6 +15,7 @@ define([
          */
         $scope.loginFuncion = function() {
 
+
             // Create a User for sign in request
             var user = {'username': $scope.user, 'password': $scope.pass};
 

@@ -2,7 +2,7 @@
     <div id="top">
         <nav class="navbar navbar-inverse navbar-static-top">
             <header class="navbar-header">
-                <a href="index.html" class="navbar-brand "><img class="small" src="assets/img/logo.png" alt=""></a>
+                <a ng-click="changeLocation('')" class="navbar-brand "><img class="small" src="assets/img/logo.png" alt=""></a>
                 <a class="btn-primary visible-xs " data-toggle="collapse" href="#menu" id="menu-toggle">
                     <i class="icon-bar"></i>
                     <i class="icon-bar"></i>
@@ -65,20 +65,20 @@
                         Create a new reservation request
                     </h4>
                     <div class="form-group">
-                        <label class="control-label col-lg-4">UE:</label>
+                        <label class="control-label col-lg-4">Group:</label>
                         <div class="col-lg-4">
                             <select class="form-control"
-                                    ng-model="ue"
-                                    ng-options="ue.name for ue in ues"
-                                    ng-change="getLessonsList(ue)"></select>
+                                    ng-model="group"
+                                    ng-options="group.name for group in groups"
+                                    ng-change="getLessonList(group)"></select>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-lg-4">Lesson:</label>
+                        <label class="control-label col-lg-4">Subject:</label>
                         <div class="col-lg-4">
                             <select class="form-control"
                                     ng-model="lesson"
-                                    ng-options="lesson.name for lesson in lessons"
+                                    ng-options="teaching for teaching in teachingValues"
                                     ng-change="getLessonTypesList(lesson)"></select>
                         </div>
                     </div>
@@ -88,10 +88,18 @@
                             <select class="form-control" ng-model="lessonType"></select>
                         </div>
                     </div>
+
                     <div class="form-group">
-                        <label class="control-label col-lg-4">Teacher:</label>
+                        <label class="control-label col-lg-4">Capacity:</label>
                         <div class="col-lg-4">
-                            <select class="form-control" ng-model="teacher"></select>
+                            <input class="form-control" ng-model="capacity"></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-lg-4">Characteristics:</label>
+                        <div class="col-lg-4">
+
                         </div>
                     </div>
                     <div class="form-group">
@@ -105,8 +113,25 @@
                             </div>
                         </div>
                     </div>
-                    <a type="button" class="btn btn-lg btn-primary btn-block" ng-click="sendReservationRequest()" ng-disabled="form.$invalid">Send request</a>
-                </form>
+                    <div class="form-group">
+                        <label class="control-label col-lg-4">Time:</label>
+                        <div class="col-lg-4">
+                            <div class="input-group input-append date">
+                                <select class="form-control"
+                                        ng-model="timeSlot"
+                                        ng-options="time.concat for time in timeSlots"
+                                        ></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-lg-4"></label>
+                        <div class="col-lg-4">
+                            <a type="button" class="btn btn-lg btn-primary btn-block" ng-click="sendReservationRequest()" ng-disabled="form.$invalid">Send request</a>
+                        </div>
+                    </div>
+                    </form>
             </div>
         </div>
     </div>
