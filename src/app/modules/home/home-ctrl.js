@@ -40,7 +40,7 @@ define([
 
                    $scope.events.push(
                        {
-                           title: value.teaching.subject.label + ' ' +value.teaching.group.label+' '+ value.room.label, start: start, end: end, allDay: false
+                           title: value.teaching.lesson.subject.label + '\n' +value.teaching.group.label+' '+ value.room.label, start: start, end: end, allDay: false
                        }
                    );
                 });

@@ -49,9 +49,27 @@ define([
         $http({method: 'Get', url: 'http://162.38.113.210:8080/groups', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
             success(function (data) {
                 //todo:set ues with received data
-                angular.forEach(data.groups, function (value, key) {
-                    $scope.groups.push({name: value.label, id: value.id});
-                });
+                console.log(data);
+                $scope.groups = data;
+            }).
+            error(function (data, status, headers, config) {
+                // called asynchronously if an error occurs
+                // or server returns response with an error status.
+                //todo:trtaiter l'erreur
+                console.log(status);
+                console.log(data);
+            });
+
+        $scope.charateristics =[];
+        $scope.selectedCharacteristics = [];
+        //get groups
+        $http({method: 'Get', url: 'http://162.38.113.210:8080/characteristics', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
+            success(function (data) {
+                //todo:set ues with received data
+                console.log("chara");
+                console.log(data);
+                $scope.charateristics = data.characteristics;
+
             }).
             error(function (data, status, headers, config) {
                 // called asynchronously if an error occurs
@@ -74,28 +92,35 @@ define([
             error(function (data, status, headers, config) {
                 // called asynchronously if an error occurs
                 // or server returns response with an error status.
-                //todo:trtaiter l'erreur
+                //todo:traiter l'erreur
                 console.log(status);
                 console.log(data);
             });
 
-        $scope.teachingValues = new Array();
-        $scope.getLessonList = function (group) {
-            $http({method: 'Get', url: 'http://162.38.113.210:8080/groups/'+ group.id+'/teachings', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
+
+        $scope.showTeachings = false;
+        var teachings = [];
+        $scope.getSubjectList = function (group) {
+            $scope.teachingValues = [];
+            $scope.showTeachings = false;
+            $http({method: 'Get', url: 'http://162.38.113.210:8080/groups/'+ group.id+'/teachings_available', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
                 success(function (data) {
-                    //todo:set ues with received data
-                    console.log('success');
-                    console.log(data);
-
-                    var tmp = Object.create(null);
+                    teachings = data;
+                    var tmp = [];
                     angular.forEach(data.teachings, function (value, key) {
-                        $scope.teachingValues[value.subject.label]=new Array();
+                        if(tmp.hasOwnProperty(value.lesson.subject.label) == false){
+                            tmp[value.lesson.subject.label]=new Array(value);
+                        }
+                        else{
+                            tmp[value.lesson.subject.label].push(value);
+                        }
                     });
 
-                    angular.forEach(data.teachings, function (value, key) {
-                        $scope.teachingValues[value.subject.label].push({subject: value.subject.label, type: value.subject.lessonType})
-                    });
+                    for (var subject in tmp){
+                        $scope.teachingValues.push({name : subject, object:tmp[subject]});
+                    };
                     console.log($scope.teachingValues);
+                    $scope.showTeachings = true;
                 }).
                 error(function (data, status, headers, config) {
                     // called asynchronously if an error occurs
@@ -105,25 +130,40 @@ define([
                 });
         };
 
-        $scope.getLessonsList = function (ue) {
+        $scope.lessonTypes = [];
+        $scope.getLessonTypesList = function (lesson) {
             //TODO: retrieve lessonList according to ue provided
-            console.log(ue);
-            if (ue.name === "Programmation Web") {
-                $scope.lessons = [
-                    {name: 'CSS'},
-                    {name: 'PHP'},
-                    {name: 'JavaScript'},
-                    {name: 'HTML5'}
-                ];
-            }
-            else {
-                $scope.lessons = [
-                    {name: 'Cours chiant 1'},
-                    {name: 'Cours chiant 2'},
-                    {name: 'Cours méga chiant'},
-                    {name: 'Ester'}
-                ];
-            }
+            var tmp = [];
+            angular.forEach(teachings.teachings, function (value, key) {
+                if(value.lesson.subject.label.localeCompare(lesson.name) == 0){
+                    if(tmp.hasOwnProperty(value.lesson.subject.label) == false){
+                        tmp[value.lesson.lesson_type.label]=new Array(value);
+                    }
+                    else{
+                        tmp[value.lesson.lesson_type.label].push(value);
+                    }
+                }
+            });
+
+            for (var subject in tmp){
+                $scope.lessonTypes.push({name : subject, object:tmp[subject]});
+            };
+            console.log('fin');
+            console.log($scope.lessonTypes);
         };
+
+        $scope.lessons = [];
+        $scope.getLessonsList = function(type){
+            angular.forEach($scope.lessonTypes, function (value, key) {
+                if(value.name.localeCompare(type.name) == 0){
+                    value.object.forEach(function(valueObject){
+                        $scope.lessons.push({name : valueObject.lesson.label, object: value});
+                    });
+                }
+            });
+        };
+
+
+
     });
 });

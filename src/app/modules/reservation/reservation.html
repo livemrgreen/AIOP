@@ -2,7 +2,8 @@
     <div id="top">
         <nav class="navbar navbar-inverse navbar-static-top">
             <header class="navbar-header">
-                <a ng-click="changeLocation('')" class="navbar-brand "><img class="small" src="assets/img/logo.png" alt=""></a>
+                <a ng-click="changeLocation('')" class="navbar-brand "><img class="small" src="assets/img/logo.png"
+                                                                            alt=""></a>
                 <a class="btn-primary visible-xs " data-toggle="collapse" href="#menu" id="menu-toggle">
                     <i class="icon-bar"></i>
                     <i class="icon-bar"></i>
@@ -12,7 +13,8 @@
             <div class="topnav">
                 <div class="btn-toolbar">
                     <div class="btn-group">
-                        <a data-toggle="tooltip" data-original-title="Logout" data-placement="bottom" class="btn btn-metis-1 btn-sm" ng-click="logout()">
+                        <a data-toggle="tooltip" data-original-title="Logout" data-placement="bottom"
+                           class="btn btn-metis-1 btn-sm" ng-click="logout()">
                             <i class="fa fa-power-off"></i>
                         </a>
                     </div>
@@ -31,12 +33,14 @@
                 <i class="fa fa-user fa-3x"></i>
                 <span class="label label-danger">2</span>
             </a>
+
             <div class="media-body">
                 <h5 class="media-heading">{{firstName}} {{lastName}}</h5>
                 <ul class="list-unstyled user-info">
                     <li>&nbsp;</li>
                     <li>Today's date<br/>
-                        <small><i class="fa fa-calendar-o"></i> {{todayDate}}</small></li>
+                        <small><i class="fa fa-calendar-o"></i> {{todayDate}}</small>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -44,7 +48,8 @@
             <li class="nav-header">Menu</li>
             <li><a href="" ng-click="changeLocation('home')"><i class="fa fa-table"></i> Agenda</a></li>
             <li class="panel ">
-                <a href="" data-parent="#menu" data-toggle="collapse" class="accordion-toggle" ng-click="open()" data-target="#dashboard-nav">
+                <a href="" data-parent="#menu" data-toggle="collapse" class="accordion-toggle" ng-click="open()"
+                   data-target="#dashboard-nav">
                     <i class="fa fa-pencil-square-o"></i> Reservations
                     <span class="pull-right">
                         <i class="fa fa-angle-left"></i>
@@ -59,54 +64,79 @@
     </div>
     <div id="content">
         <div class="outer">
-            <div class="inner" >
-                <form class="form-horizontal"  novalidate name="form">
+            <div class="inner">
+                <form class="form-horizontal" novalidate name="form">
                     <h4 class="text-center">
                         Create a new reservation request
                     </h4>
+
                     <div class="form-group">
-                        <label class="control-label col-lg-4">Group:</label>
+                        <label class="control-label col-lg-4">Group: </label>
+
                         <div class="col-lg-4">
                             <select class="form-control"
                                     ng-model="group"
-                                    ng-options="group.name for group in groups"
-                                    ng-change="getLessonList(group)"></select>
+                                    ng-options="group.label for group in groups"
+                                    ng-change="getSubjectList(group)" required></select>
+                        </div>
+                    </div>
+                    <div class="form-group" ng-show="showTeachings" ng-animate=" 'animate' ">
+                        <label class="control-label col-lg-4">Subject: </label>
+
+                        <div class="col-lg-4">
+                            <select class="form-control"
+                                    ng-model="subject"
+                                    ng-options="teaching.name for teaching in teachingValues"
+                                    ng-change="getLessonTypesList(subject)" required></select>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-lg-4">Subject:</label>
+                        <label class="control-label col-lg-4">Lesson type: </label>
+
+                        <div class="col-lg-4">
+                            <select class="form-control"
+                                    ng-model="lessonType"
+                                    ng-options="type.name for type in lessonTypes"
+                                    ng-change="getLessonsList(lessonType)" required></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-4">Lesson: </label>
+
                         <div class="col-lg-4">
                             <select class="form-control"
                                     ng-model="lesson"
-                                    ng-options="teaching for teaching in teachingValues"
-                                    ng-change="getLessonTypesList(lesson)"></select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-lg-4">Lesson type:</label>
-                        <div class="col-lg-4">
-                            <select class="form-control" ng-model="lessonType"></select>
+                                    ng-options="lesson.name for lesson in lessons"
+                                    required></select>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label col-lg-4">Capacity:</label>
+                        <label class="control-label col-lg-4">Capacity: </label>
+
                         <div class="col-lg-4">
-                            <input class="form-control" ng-model="capacity"></select>
+                            <input class="form-control" ng-model="capacity" required></select>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label col-lg-4">Characteristics:</label>
-                        <div class="col-lg-4">
+                        <label class="control-label col-lg-4">Characteristics: </label>
 
+                        <div class="col-lg-4">
+                            <span ng-repeat="charateristic in charateristics">
+                                <label class="checkbox" for="{{charateristic.id}}">
+                                    <input type="checkbox" ng-model="selectedCharacteristics.ids[charateristic.id]" name="group" id="{{charateristic.id}}"/>
+                                    {{charateristic.label}}
+                                </label>
+                            </span>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-lg-4">Date:</label>
+                        <label class="control-label col-lg-4">Date: </label>
+
                         <div class="col-lg-4">
                             <div class="input-group input-append date">
-                                <input class="form-control" type="text" id="datepicker">
+                                <input class="form-control" type="text" id="datepicker" required>
                                 <span class="input-group-addon add-on">
                                     <i class="fa fa-calendar"></i>
                                 </span>
@@ -114,24 +144,27 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-lg-4">Time:</label>
+                        <label class="control-label col-lg-4">Time: </label>
+
                         <div class="col-lg-4">
                             <div class="input-group input-append date">
                                 <select class="form-control"
                                         ng-model="timeSlot"
                                         ng-options="time.concat for time in timeSlots"
-                                        ></select>
+                                        required></select>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="control-label col-lg-4"></label>
+
                         <div class="col-lg-4">
-                            <a type="button" class="btn btn-lg btn-primary btn-block" ng-click="sendReservationRequest()" ng-disabled="form.$invalid">Send request</a>
+                            <a type="button" class="btn btn-lg btn-primary btn-block"
+                               ng-click="sendReservationRequest()" ng-disabled="form.$invalid">Send request</a>
                         </div>
                     </div>
-                    </form>
+                </form>
             </div>
         </div>
     </div>
