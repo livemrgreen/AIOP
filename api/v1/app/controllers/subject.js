@@ -7,10 +7,8 @@ var async = require("async");
 module.exports.list = function (req, res, next) {
     var subject = orm.model("subject");
 
-    subject.findAll({}).success(function (subjects) {
-        async.map(subjects, handleSubject, function (error, results) {
-            res.send(200, {"subjects": results});
-        });
+    subject.findAll({"include": [orm.model("module")]}).success(function (subjects) {
+        res.send(200, {"subjects": subjects});
     });
 
     return next();
@@ -27,10 +25,7 @@ module.exports.create = function (req, res, next) {
         if (s.label && s.module_id) {
             subject.create(s)
                 .success(function (subject) {
-                    async.map([subject], handleSubject, function (error, results) {
-                        res.send(201, {"subject": results[0]});
-                    });
-
+                    res.send(201, {"subject": subject});
                 })
                 .error(function (error) {
                     res.send(400, error);
@@ -53,14 +48,12 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var subject = orm.model("subject");
 
-    subject.find({"where": {"id": req.params.id}}).success(function (subject) {
+    subject.find({"where": {"id": req.params.id}, "include": [orm.model("module")]}).success(function (subject) {
         if (!subject) {
             res.send(404, {"message": "Subject not found"});
         }
         else {
-            async.map([subject], handleSubject, function (error, results) {
-                res.send(200, {"subject": results[0]});
-            });
+            res.send(200, {"subject": subject});
         }
     });
 
@@ -86,9 +79,7 @@ module.exports.update = function (req, res, next) {
 
                     subject.save()
                         .success(function (subject) {
-                            async.map([subject], handleSubject, function (error, results) {
-                                res.send(200, {"subject": results[0]});
-                            });
+                            res.send(200, {"subject": subject});
                         })
                         .error(function (error) {
                             res.send(400, error);
@@ -125,23 +116,4 @@ module.exports.delete = function (req, res, next) {
     });
 
     return next();
-};
-
-/*
- * HELPERS
- */
-var handleSubject = function (subject, done) {
-    var tmp = subject.values;
-    delete tmp.module_id;
-
-    subject.getModule().success(function (module) {
-
-        if (module) {
-            tmp.module = module.values;
-        }
-        else {
-            tmp.module = null;
-        }
-        done(null, tmp);
-    });
 };

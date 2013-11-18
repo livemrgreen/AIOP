@@ -7,10 +7,8 @@ var async = require("async");
 module.exports.list = function (req, res, next) {
     var room = orm.model("room");
 
-    room.findAll({}).success(function (rooms) {
-        async.map(rooms, handleRoom, function (error, results) {
-            res.send(200, {"rooms": results});
-        });
+    room.findAll({"include": [orm.model("building")]}).success(function (rooms) {
+        res.send(200, {"rooms": rooms});
     });
 
     return next();
@@ -27,9 +25,7 @@ module.exports.create = function (req, res, next) {
         if (r.label && r.capacity && r.building_id) {
             room.create(r)
                 .success(function (room) {
-                    async.map([room], handleRoom, function (error, results) {
-                        res.send(201, {"room": results[0]});
-                    });
+                    res.send(201, {"room": room});
                 })
                 .error(function (error) {
                     res.send(400, error);
@@ -52,14 +48,12 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var room = orm.model("room");
 
-    room.find({"where": {"id": req.params.id}}).success(function (room) {
+    room.find({"where": {"id": req.params.id}, "include": [orm.model("building")]}).success(function (room) {
         if (!room) {
             res.send(404, {"message": "Room not found"});
         }
         else {
-            async.map([room], handleRoom, function (error, results) {
-                res.send(200, {"room": results[0]});
-            });
+            res.send(200, {"room": room});
         }
     });
 
@@ -86,9 +80,7 @@ module.exports.update = function (req, res, next) {
 
                     room.save()
                         .success(function (room) {
-                            async.map([room], handleRoom, function (error, results) {
-                                res.send(200, {"room": results[0]});
-                            });
+                            res.send(200, {"room": room});
                         })
                         .error(function (error) {
                             res.send(400, error);
@@ -125,22 +117,4 @@ module.exports.delete = function (req, res, next) {
     });
 
     return next();
-};
-
-/*
- * HELPERS
- */
-var handleRoom = function (room, done) {
-    var tmp = room.values;
-    delete tmp.building_id;
-
-    room.getBuilding().success(function (building) {
-        if (building) {
-            tmp.building = building.values;
-        }
-        else {
-            tmp.building = null;
-        }
-        done(null, tmp);
-    });
 };

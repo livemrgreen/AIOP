@@ -124,68 +124,45 @@ module.exports.delete = function (req, res, next) {
  * HELPERS
  */
 var handleTeaching = function (teaching, done) {
-    var tmp = teaching.values;
-    delete tmp.group_id;
-    delete tmp.teacher_id;
-    delete tmp.lesson_id;
+    var tmp = JSON.parse(JSON.stringify(teaching));
 
     async.parallel(
         {
             "group": function (done) {
                 teaching.getGroup().success(function (group) {
-                    if(group) {
-                        done(null, group.values);
+                    if (group) {
+                        done(null, JSON.parse(JSON.stringify(group)));
                     }
                 });
             },
 
             "teacher": function (done) {
                 teaching.getTeacher().success(function (teacher) {
-                    if(teacher) {
-                        done(null, teacher.values);
+                    if (teacher) {
+                        done(null, JSON.parse(JSON.stringify(teacher)));
                     }
                 });
             },
 
             "lesson": function (done) {
-                teaching.getLesson().success(function (lesson) {
-                    if (lesson) {
-                        async.parallel(
-                            {
-                                "subject": function (done) {
-                                    lesson.getSubject().success(function (subject) {
-                                        if (subject) {
-                                            done(null, subject.values);
-                                        }
-                                        else {
-                                            done(null);
-                                        }
-                                    });
-                                },
-                                "lesson_type": function (done) {
-                                    lesson.getType().success(function (lesson_type) {
-                                        if (lesson_type) {
-                                            done(null, lesson_type.values);
-                                        }
-                                        else {
-                                            done(null);
-                                        }
-                                    });
-                                }
-                            },
-                            function (err, results) {
-                                done(null, {"subject": results.subject, "lesson_type": results.lesson_type});
-                            }
-                        );
-                    }
-                });
+                teaching.getLesson({"include": [orm.model("subject"), {model: orm.model("lesson_type"), as: 'type'}]})
+                    .success(function (lesson) {
+                        if (lesson) {
+                            done(null, JSON.parse(JSON.stringify(lesson)));
+                        }
+                    });
             }
         },
         function (err, results) {
             tmp.group = results.group;
             tmp.teacher = results.teacher;
-            tmp.subject = results.lesson.subject;
-            tmp.lesson_type = results.lesson.lesson_type;
+            tmp.lesson = results.lesson;
+
+            delete tmp.group_id;
+            delete tmp.teacher_id;
+            delete tmp.lesson_id;
+            delete tmp.reservation;
+
             done(null, tmp)
         }
     )

@@ -73,14 +73,16 @@ module.exports.reservations = function (req, res, next) {
             res.send(404, {"message": "Teacher not found"});
         }
         else {
-            teacher.getTeachings().success(function (teachings) {
-                async.map(teachings, handleTeachingForReservations, function (error, results) {
-                    var reservations = results.filter(function (reservation) {
-                        return reservation != null
+            var reservation = orm.model("reservation");
+
+            reservation.findAll({
+                "where": {"teaching.teacher_id": teacher.id},
+                "include": [orm.model("teaching"), {"model": orm.model("time_slot"), "as": "slot"}, orm.model("room")]})
+                .success(function (reservations) {
+                    async.map(reservations, reservation_ctrl.handleReservation, function (error, results) {
+                        res.send(200, {"reservations": results});
                     });
-                    res.send(200, {"reservations": reservations});
                 });
-            });
         }
     });
 
@@ -142,20 +144,4 @@ module.exports.delete = function (req, res, next) {
     });
 
     return next();
-};
-
-/*
- * HELPERS
- */
-var handleTeachingForReservations = function (teaching, done) {
-    teaching.getReservation().success(function (reservation) {
-        if (reservation) {
-            async.map([reservation], reservation_ctrl.handleReservation, function (error, results) {
-                done(null, results[0]);
-            });
-        }
-        else {
-            done(null);
-        }
-    });
 };

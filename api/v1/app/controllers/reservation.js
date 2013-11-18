@@ -8,7 +8,7 @@ var teaching_ctrl = require("./teaching");
 module.exports.list = function (req, res, next) {
     var reservation = orm.model("reservation");
 
-    reservation.findAll({}).success(function (reservations) {
+    reservation.findAll({"include": [orm.model("teaching"), {"model": orm.model("time_slot"), "as": "slot"}, orm.model("room")]}).success(function (reservations) {
         async.map(reservations, handleReservation, function (error, results) {
             res.send(200, {"reservations": results});
         });
@@ -28,10 +28,7 @@ module.exports.create = function (req, res, next) {
         if (r.date && r.time_slot_id && r.room_id && r.teaching_id) {
             reservation.create(r)
                 .success(function (reservation) {
-                    async.map([reservation], handleReservation, function (error, results) {
-                        res.send(201, {"reservation": results[0]});
-                    });
-
+                    res.send(201, {"reservation": reservation});
                 })
                 .error(function (error) {
                     res.send(400, error);
@@ -54,16 +51,18 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var reservation = orm.model("reservation");
 
-    reservation.find({"where": {"id": req.params.id}}).success(function (reservation) {
-        if (!reservation) {
-            res.send(404, {"message": "Reservation not found"});
-        }
-        else {
-            async.map([reservation], handleReservation, function (error, results) {
-                res.send(200, {"reservation": results[0]});
-            });
-        }
-    });
+    reservation.find({
+        "where": {"id": req.params.id},
+        "include": [orm.model("teaching"), {"model": orm.model("time_slot"), "as": "slot"}, orm.model("room")]}).success(function (reservation) {
+            if (!reservation) {
+                res.send(404, {"message": "Reservation not found"});
+            }
+            else {
+                async.map([reservation], handleReservation, function (error, results) {
+                    res.send(200, {"reservation": results[0]});
+                });
+            }
+        });
 
     return next();
 };
@@ -89,9 +88,7 @@ module.exports.update = function (req, res, next) {
 
                     reservation.save()
                         .success(function (reservation) {
-                            async.map([reservation], handleReservation, function (error, results) {
-                                res.send(200, {"reservation": results[0]});
-                            });
+                            res.send(200, {"reservation": reservation});
                         })
                         .error(function (error) {
                             res.send(400, error);
@@ -134,84 +131,60 @@ module.exports.delete = function (req, res, next) {
  * HELPERS
  */
 var handleReservation = function (reservation, done) {
-    var tmp = reservation.values;
-    delete tmp.time_slot_id;
-    delete tmp.room_id;
-    delete tmp.teaching_id;
-    delete tmp.reservation_request_id;
+    var tmp = JSON.parse(JSON.stringify(reservation));
 
     async.parallel(
-        // first arg = tasks to do
         {
-            // try to reach the administrator
-            "time_slot": function (done) {
-                reservation.getSlot().success(function (time_slot) {
-                    if (time_slot) {
-                        done(null, time_slot.values);
-                    }
-                    else {
-                        done(null);
+            "teacher": function (done) {
+                reservation.teaching.getTeacher().success(function (teacher) {
+                    if (teacher) {
+                        done(null, JSON.parse(JSON.stringify(teacher)));
                     }
                 });
             },
-
-            "room": function (done) {
-                reservation.getRoom().success(function (room) {
-                    if (room) {
-                        var r = room.values;
-                        delete r.building_id;
-                        room.getBuilding().success(function (building) {
-                            if (building) {
-                                r.building = building.values;
-                                done(null, r);
-                            }
-                            else {
-                                done(null);
-                            }
-                        });
-                    }
-                    else {
-                        done(null);
+            "group": function (done) {
+                reservation.teaching.getGroup().success(function (group) {
+                    if (group) {
+                        done(null, JSON.parse(JSON.stringify(group)));
                     }
                 });
             },
-
-            "teaching": function (done) {
-                reservation.getTeaching().success(function (teaching) {
-                    if (teaching) {
-                        async.map([teaching], teaching_ctrl.handleTeaching, function (error, results) {
-                            done(null, results[0]);
-                        });
-                    }
-                    else {
-                        done(null);
-                    }
-                });
+            "lesson": function (done) {
+                reservation.teaching.getLesson({"include": [orm.model("subject"), {model: orm.model("lesson_type"), as: 'type'}]})
+                    .success(function (lesson) {
+                        if (lesson) {
+                            done(null, JSON.parse(JSON.stringify(lesson)));
+                        }
+                    });
             },
-
-            // try to reach the manager
-            "reservation_request": function (done) {
-                reservation.getRequest().success(function (reservation_request) {
-                    if (reservation_request) {
-                        done(null, reservation_request.values);
-                    }
-                    else {
-                        done(null);
+            "building": function (done) {
+                reservation.room.getBuilding().success(function (building) {
+                    if (building) {
+                        done(null, JSON.parse(JSON.stringify(building)));
                     }
                 });
             }
         },
-
-        // second arg = final func
         function (err, results) {
-            // when done, we can use the object-key
-            // to get the object-value
-            tmp.time_slot = results.time_slot;
-            tmp.room = results.room;
-            tmp.teaching = results.teaching;
-            tmp.reservation_request = results.reservation_request;
-            done(null, tmp);
-        }
-    );
+            tmp.teaching.teacher = results.teacher;
+            tmp.teaching.group = results.group;
+            tmp.teaching.lesson = results.lesson;
+            tmp.room.building = results.building;
+            tmp.time_slot = tmp.slot;
+
+            delete tmp.slot;
+            delete tmp.time_slot_id;
+            delete tmp.room_id;
+            delete tmp.teaching_id;
+            delete tmp.reservation_request_id;
+            delete tmp.teaching.teacher_id;
+            delete tmp.teaching.group_id;
+            delete tmp.teaching.lesson_id;
+            delete tmp.teaching.lesson.lesson_type_id;
+            delete tmp.teaching.lesson.subject_id;
+            delete tmp.room.building_id;
+
+            done(null, tmp)
+        });
 };
 module.exports.handleReservation = handleReservation;

@@ -1,6 +1,5 @@
 var orm = require("../../config/models");
 var async = require("async");
-var teaching_ctrl = require("./teaching");
 
 /*
  * GET /groups/
@@ -65,7 +64,7 @@ module.exports.show = function (req, res, next) {
 /*
  * GET /groups/:id/teachings
  */
-module.exports.teachings = function (req, res, next) {
+module.exports.teachings_available = function (req, res, next) {
     var group = orm.model("group");
 
     group.find({"where": {"id": req.params.id}}).success(function (group) {
@@ -73,11 +72,14 @@ module.exports.teachings = function (req, res, next) {
             res.send(404, {"message": "Group not found"});
         }
         else {
-            group.getTeachings({"where": {"reservation": null}}).success(function (teachings) {
-                async.map(teachings, teaching_ctrl.handleTeaching, function (error, results) {
-                    res.send(200, {"teachings": results});
+            group.getTeachings({
+                "where": ["reservation.id IS NULL"],
+                "include": [orm.model("group"), orm.model("teacher"), orm.model("lesson"), orm.model("reservation")]})
+                .success(function (teachings) {
+                    async.map(teachings, handleLesson, function (error, results) {
+                        res.send(200, {"teachings": results});
+                    });
                 });
-            });
         }
     });
 
@@ -141,3 +143,43 @@ module.exports.delete = function (req, res, next) {
 
     return next();
 };
+
+/*
+ *
+ */
+var handleLesson = function (teaching, done) {
+    var tmp = JSON.parse(JSON.stringify(teaching));
+
+    async.parallel(
+        {
+            "lesson_type": function (done) {
+                teaching.lesson.getType().success(function (lesson_type) {
+                    if (lesson_type) {
+                        done(null, JSON.parse(JSON.stringify(lesson_type)));
+                    }
+                });
+            },
+
+            "subject": function (done) {
+                teaching.lesson.getSubject().success(function (subject) {
+                    if (subject) {
+                        done(null, JSON.parse(JSON.stringify(subject)));
+                    }
+                });
+            }
+        },
+        function (err, results) {
+            tmp.lesson.lesson_type = results.lesson_type;
+            tmp.lesson.subject = results.subject;
+
+            delete tmp.group_id;
+            delete tmp.teacher_id;
+            delete tmp.lesson_id;
+            delete tmp.lesson.lesson_type_id;
+            delete tmp.lesson.subject_id;
+            delete tmp.reservation;
+
+            done(null, tmp)
+        }
+    )
+}

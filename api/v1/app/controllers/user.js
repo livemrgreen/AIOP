@@ -169,13 +169,7 @@ module.exports.signin = function (req, res, next) {
 var handleUser = function (user, done) {
     // get the user in a tmp var
     // to deal just with main properties
-    var tmp = user.values;
-
-    // delete sensible ones
-    delete tmp.password;
-    delete tmp.salt;
-    delete tmp.access_token;
-    delete tmp.teacher_id;
+    var tmp = JSON.parse(JSON.stringify(user));
 
     // now the teacher
     user.getTeacher().success(function (teacher) {
@@ -184,9 +178,11 @@ var handleUser = function (user, done) {
         if (teacher) {
             tmp.teacher = teacher.values;
         }
-        else {
-            tmp.teacher = null;
-        }
+
+        delete tmp.password;
+        delete tmp.salt;
+        delete tmp.access_token;
+        delete tmp.teacher_id;
         done(null, tmp);
     });
 
