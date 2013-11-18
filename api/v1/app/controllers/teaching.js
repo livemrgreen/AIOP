@@ -1,4 +1,5 @@
 var orm = require("../../config/models");
+var async = require("async");
 
 /*
  * GET /teachings/
@@ -125,42 +126,68 @@ module.exports.delete = function (req, res, next) {
 var handleTeaching = function (teaching, done) {
     var tmp = teaching.values;
     delete tmp.group_id;
+    delete tmp.teacher_id;
     delete tmp.lesson_id;
 
-    teaching.getLesson().success(function (lesson) {
-        if (lesson) {
-            async.parallel(
-                {
-                    "subject": function (done) {
-                        lesson.getSubject().success(function (subject) {
-                            if (subject) {
-                                var s = subject.values;
-                                done(null, s);
-                            }
-                            else {
-                                done(null);
-                            }
-                        });
-                    },
-                    "lesson_type": function (done) {
-                        lesson.getType().success(function (lesson_type) {
-                            if (lesson_type) {
-                                var l = lesson_type.values;
-                                done(null, l);
-                            }
-                            else {
-                                done(null);
-                            }
-                        });
+    async.parallel(
+        {
+            "group": function (done) {
+                teaching.getGroup().success(function (group) {
+                    if(group) {
+                        done(null, group.values);
                     }
-                },
-                function (err, results) {
-                    tmp.subject = results.subject;
-                    tmp.lesson_type = results.lesson_type;
-                    done(null, tmp);
-                }
-            );
+                });
+            },
+
+            "teacher": function (done) {
+                teaching.getTeacher().success(function (teacher) {
+                    if(teacher) {
+                        done(null, teacher.values);
+                    }
+                });
+            },
+
+            "lesson": function (done) {
+                teaching.getLesson().success(function (lesson) {
+                    if (lesson) {
+                        async.parallel(
+                            {
+                                "subject": function (done) {
+                                    lesson.getSubject().success(function (subject) {
+                                        if (subject) {
+                                            done(null, subject.values);
+                                        }
+                                        else {
+                                            done(null);
+                                        }
+                                    });
+                                },
+                                "lesson_type": function (done) {
+                                    lesson.getType().success(function (lesson_type) {
+                                        if (lesson_type) {
+                                            done(null, lesson_type.values);
+                                        }
+                                        else {
+                                            done(null);
+                                        }
+                                    });
+                                }
+                            },
+                            function (err, results) {
+                                done(null, {"subject": results.subject, "lesson_type": results.lesson_type});
+                            }
+                        );
+                    }
+                });
+            }
+        },
+        function (err, results) {
+            tmp.group = results.group;
+            tmp.teacher = results.teacher;
+            tmp.subject = results.lesson.subject;
+            tmp.lesson_type = results.lesson.lesson_type;
+            done(null, tmp)
         }
-    });
+    )
 };
 module.exports.handleTeaching = handleTeaching;
