@@ -1,5 +1,6 @@
 var orm = require("../../config/models");
 var async = require("async");
+var teaching_ctrl = require("./teaching");
 
 /*
  * GET /reservations/
@@ -146,8 +147,7 @@ var handleReservation = function (reservation, done) {
             "time_slot": function (done) {
                 reservation.getSlot().success(function (time_slot) {
                     if (time_slot) {
-                        var t = time_slot.values;
-                        done(null, t);
+                        done(null, time_slot.values);
                     }
                     else {
                         done(null);
@@ -179,8 +179,9 @@ var handleReservation = function (reservation, done) {
             "teaching": function (done) {
                 reservation.getTeaching().success(function (teaching) {
                     if (teaching) {
-                        var t = teaching.values;
-                        done(null, t);
+                        async.map([teaching], teaching_ctrl.handleTeaching, function (error, results) {
+                            done(null, results[0]);
+                        });
                     }
                     else {
                         done(null);
@@ -192,8 +193,7 @@ var handleReservation = function (reservation, done) {
             "reservation_request": function (done) {
                 reservation.getRequest().success(function (reservation_request) {
                     if (reservation_request) {
-                        var r = reservation_request.values;
-                        done(null, r);
+                        done(null, reservation_request.values);
                     }
                     else {
                         done(null);
