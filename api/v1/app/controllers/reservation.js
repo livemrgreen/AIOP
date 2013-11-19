@@ -171,6 +171,7 @@ var handleReservation = function (reservation, done) {
             tmp.teaching.lesson = results.lesson;
             tmp.room.building = results.building;
             tmp.time_slot = tmp.slot;
+			tmp.teaching.lesson.lesson_type = results.lesson.type;
 
             delete tmp.slot;
             delete tmp.time_slot_id;
@@ -182,6 +183,7 @@ var handleReservation = function (reservation, done) {
             delete tmp.teaching.lesson_id;
             delete tmp.teaching.lesson.lesson_type_id;
             delete tmp.teaching.lesson.subject_id;
+            delete tmp.teaching.lesson.type;
             delete tmp.room.building_id;
 
             done(null, tmp)
