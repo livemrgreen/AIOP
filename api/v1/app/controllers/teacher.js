@@ -1,6 +1,7 @@
 var orm = require("../../config/models");
 var async = require("async");
 var reservation_ctrl = require("./reservation");
+var reservation_request_ctrl = require("./reservation_request");
 
 /*
  * GET /teachers/
@@ -85,6 +86,106 @@ module.exports.reservations = function (req, res, next) {
         }
     });
 
+    return next();
+};
+
+/*
+ * GET /teachers/:id/reservation_requests
+ */
+module.exports.reservation_requests = function (req, res, next) {
+    var teacher = orm.model("teacher");
+
+    teacher.find({"where": {"id": req.params.id}}).success(function (teacher) {
+        if (!teacher) {
+            res.send(404, {"message": "Teacher not found"});
+        }
+        else {
+            // Get all the modules from the manager
+            teacher.getModules({"include": [orm.model("subject")]}).success(function (modules) {
+                if (modules) {
+                    // for all modules
+                    async.map(modules,
+                        function (module, done) {
+                            // for all subjects in this module
+                            async.map(module.subject,
+                                function (subject, done) {
+                                    subject.getLessons({"include": [orm.model("teaching")]}).success(function (lessons) {
+                                        if (lessons) {
+                                            // for all lessons in this subject
+                                            async.map(lessons,
+                                                function (lesson, done) {
+                                                    // for all reservation request related to the teaching related to the lesson
+                                                    lesson.teaching.getRequest({
+                                                        "include": [
+                                                            {"model": orm.model("time_slot"), "as": "slot"},
+                                                            orm.model("teaching")
+                                                        ]})
+                                                        .success(function (reservation_requests) {
+                                                            // if there are some reservations request
+                                                            if (reservation_requests.length == 0) done(null, null);
+                                                            else done(null, reservation_requests);
+                                                        });
+                                                },
+                                                function (error, results) {
+                                                    // we merge sub arrays of reservations request
+                                                    var tmp = [];
+                                                    done(null, results.concat.apply(tmp, results));
+                                                }
+                                            );
+                                        }
+                                    });
+                                },
+                                function (error, results) {
+                                    // we merge sub arrays of reservations request
+                                    var tmp = [];
+                                    done(null, tmp.concat.apply(tmp, results));
+                                }
+                            );
+                        },
+                        function (error, results) {
+                            // we merge sub arrays of reservations request
+                            // and we delete null entries
+                            var tmp = [];
+                            tmp = tmp.concat.apply(tmp, results).filter(function (n) {
+                                return n;
+                            });
+
+                            // for all reservation_requests
+                            async.map(tmp,
+                                function (reservation_request, done) {
+                                    // if there is an status on the request
+                                    if (!reservation_request.status) {
+                                        reservation_request.getReservation().success(function (reservation) {
+                                            // if there is a reservation
+                                            if (reservation) done(null, null);
+                                            else done(null, reservation_request);
+                                        })
+                                    }
+                                    else {
+                                        done(null, null);
+                                    }
+                                },
+                                function (error, results) {
+                                    // filter with the only the requests
+                                    tmp = results.filter(function (n) {
+                                        return n;
+                                    });
+
+                                    // hydrate all reservation_requests
+                                    async.map(tmp,
+                                        reservation_request_ctrl.handleReservationRequest,
+                                        function (error, results) {
+                                            res.send(200, {"reservation_requests": results});
+                                        }
+                                    );
+                                }
+                            );
+                        }
+                    );
+                }
+            });
+        }
+    });
     return next();
 };
 

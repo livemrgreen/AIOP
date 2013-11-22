@@ -247,6 +247,59 @@ module.exports.delete = function (req, res, next) {
     return next();
 };
 
+/*
+ * HELPERS
+ */
+var handleReservationRequest = function (reservation_request, done) {
+    var tmp = JSON.parse(JSON.stringify(reservation_request));
+
+    async.parallel(
+        {
+            "teacher": function (done) {
+                reservation_request.teaching.getTeacher().success(function (teacher) {
+                    if (teacher) {
+                        done(null, JSON.parse(JSON.stringify(teacher)));
+                    }
+                });
+            },
+            "group": function (done) {
+                reservation_request.teaching.getGroup().success(function (group) {
+                    if (group) {
+                        done(null, JSON.parse(JSON.stringify(group)));
+                    }
+                });
+            },
+            "lesson": function (done) {
+                reservation_request.teaching.getLesson({"include": [orm.model("subject"), {model: orm.model("lesson_type"), as: 'type'}]})
+                    .success(function (lesson) {
+                        if (lesson) {
+                            done(null, JSON.parse(JSON.stringify(lesson)));
+                        }
+                    });
+            }
+        },
+        function (err, results) {
+            tmp.teaching.teacher = results.teacher;
+            tmp.teaching.group = results.group;
+            tmp.teaching.lesson = results.lesson;
+            tmp.time_slot = tmp.slot;
+            tmp.teaching.lesson.lesson_type = results.lesson.type;
+
+            delete tmp.slot;
+            delete tmp.time_slot_id;
+            delete tmp.teaching_id;
+            delete tmp.teaching.teacher_id;
+            delete tmp.teaching.group_id;
+            delete tmp.teaching.lesson_id;
+            delete tmp.teaching.lesson.lesson_type_id;
+            delete tmp.teaching.lesson.subject_id;
+            delete tmp.teaching.lesson.type;
+
+            done(null, tmp)
+        });
+};
+module.exports.handleReservationRequest = handleReservationRequest;
+
 var handleCharacteristic = function (characteristic, done) {
     orm.model("characteristic").find(characteristic.id)
         .success(function (characteristic) {

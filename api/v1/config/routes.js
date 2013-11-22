@@ -77,7 +77,8 @@ module.exports = function (server, passport, auth) {
     server.get("/teachers", passport.authenticate("bearer", { session: false }), teacher.list);
     server.post("/teachers", passport.authenticate("bearer", { session: false }), auth.isAdministrator, teacher.create);
     server.get("/teachers/:id", passport.authenticate("bearer", { session: false }), teacher.show);
-    server.get("/teachers/:id/reservations", passport.authenticate("bearer", { session: false }), auth.isMeTeacher, teacher.reservations);
+    server.get("/teachers/:id/reservations", passport.authenticate("bearer", { session: false }), auth.isMyTeacher, teacher.reservations);
+    server.get("/teachers/:id/reservation_requests", passport.authenticate("bearer", { session: false }), auth.isMyTeacherModuleManager, teacher.reservation_requests);
     server.put("/teachers/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, teacher.update);
     server.del("/teachers/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, teacher.delete);
 
@@ -98,8 +99,8 @@ module.exports = function (server, passport, auth) {
     var user = require("../app/controllers/user");
     server.get("/users", passport.authenticate("bearer", { session: false }), user.list);
     server.post("/users", passport.authenticate("bearer", { session: false }), auth.isAdministrator, user.create);
-    server.get("/users/:id", passport.authenticate("bearer", { session: false }), auth.isMe, user.show);
-    server.put("/users/:id", passport.authenticate("bearer", { session: false }), auth.isMe, user.update);
+    server.get("/users/:id", passport.authenticate("bearer", { session: false }), auth.isMyUser, user.show);
+    server.put("/users/:id", passport.authenticate("bearer", { session: false }), auth.isMyUser, user.update);
     server.del("/users/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, user.delete);
     server.post("/signin", passport.authenticate("local", { session: false }), user.signin);
 };

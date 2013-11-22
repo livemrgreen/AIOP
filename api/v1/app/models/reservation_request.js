@@ -24,6 +24,9 @@ module.exports = {
                 "notNull": true,
                 "notEmpty": true
             }
+        },
+        "status": {
+            "type": Sequelize.STRING
         }
     },
 

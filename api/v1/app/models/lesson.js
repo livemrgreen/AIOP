@@ -30,7 +30,7 @@ module.exports = {
                 "foreignKeyConstraint": true
             }
         },
-        "hasMany": {
+        "hasOne": {
             "teaching": {
                 "foreignKeyConstraint": true
             }
