@@ -19,6 +19,7 @@ module.exports = function (server, passport, auth) {
     server.post("/groups", passport.authenticate("bearer", { session: false }), auth.isAdministrator, group.create);
     server.get("/groups/:id", passport.authenticate("bearer", { session: false }), group.show);
     server.get("/groups/:id/teachings_available", passport.authenticate("bearer", { session: false }), group.teachings_available);
+    server.get("/groups/:id/reservations", passport.authenticate("bearer", { session: false }), group.reservations);
     server.put("/groups/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, group.update);
     server.del("/groups/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, group.delete);
 

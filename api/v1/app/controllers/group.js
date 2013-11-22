@@ -1,5 +1,7 @@
 var orm = require("../../config/models");
 var async = require("async");
+var reservation_ctrl = require("./reservation");
+var teaching_ctrl = require("./teaching");
 
 /*
  * GET /groups/
@@ -62,7 +64,7 @@ module.exports.show = function (req, res, next) {
 };
 
 /*
- * GET /groups/:id/teachings
+ * GET /groups/:id/teachings_available
  */
 module.exports.teachings_available = function (req, res, next) {
     var group = orm.model("group");
@@ -76,10 +78,79 @@ module.exports.teachings_available = function (req, res, next) {
                 "where": ["reservation.id IS NULL"],
                 "include": [orm.model("group"), orm.model("teacher"), orm.model("lesson"), orm.model("reservation")]})
                 .success(function (teachings) {
-                    async.map(teachings, handleLesson, function (error, results) {
+                    async.map(teachings, teaching_ctrl.handleLesson, function (error, results) {
                         res.send(200, {"teachings": results});
                     });
                 });
+        }
+    });
+
+    return next();
+};
+
+/*
+ * GET /groups/:id/reservations
+ */
+module.exports.reservations = function (req, res, next) {
+    var group = orm.model("group");
+
+    group.find({"where": {"id": req.params.id}}).success(function (group) {
+        if (!group) {
+            res.send(404, {"message": "Group not found"});
+        }
+        else {
+            async.waterfall(
+                [
+                    function (done) {
+                        async.parallel(
+                            {
+                                "parent": function (done) {
+                                    group.getParent().success(function (parent) {
+                                        if (parent) {
+                                            done(null, parent.id);
+                                        }
+                                    });
+                                },
+                                "children": function (done) {
+                                    group.getChildren().success(function (children) {
+                                        if (children) {
+                                            async.map(
+                                                children,
+                                                function (child, done) {
+                                                    done(null, child.id)
+                                                },
+                                                function (error, results) {
+                                                    done(null, results);
+                                                }
+                                            );
+                                        }
+                                    });
+                                }
+                            },
+                            function (err, results) {
+                                var tmp = [];
+                                tmp.push(group.id);
+                                tmp.push(results.parent);
+                                tmp.concat(results.children);
+                                done(null, tmp);
+                            });
+                    },
+                    function (arg1, done) {
+                        var reservation = orm.model("reservation");
+                        reservation.findAll({
+                            "where": {"teaching.group_id": arg1},
+                            "include": [orm.model("teaching"), {"model": orm.model("time_slot"), "as": "slot"}, orm.model("room")]})
+                            .success(function (reservations) {
+                                async.map(reservations, reservation_ctrl.handleReservation, function (error, results) {
+                                    done(null, results);
+                                });
+                            });
+                    }
+                ],
+                function (error, results) {
+                    res.send(200, {"reservations": results});
+                }
+            );
         }
     });
 
@@ -147,39 +218,31 @@ module.exports.delete = function (req, res, next) {
 /*
  *
  */
-var handleLesson = function (teaching, done) {
-    var tmp = JSON.parse(JSON.stringify(teaching));
+/*
+ var handleTree = function (group) {
+ return handleTreeR(group, true, true, []);
+ };
 
-    async.parallel(
-        {
-            "lesson_type": function (done) {
-                teaching.lesson.getType().success(function (lesson_type) {
-                    if (lesson_type) {
-                        done(null, JSON.parse(JSON.stringify(lesson_type)));
-                    }
-                });
-            },
+ var handleTreeR = function (group, asc, desc, arr) {
+ arr.push(group.id);
 
-            "subject": function (done) {
-                teaching.lesson.getSubject().success(function (subject) {
-                    if (subject) {
-                        done(null, JSON.parse(JSON.stringify(subject)));
-                    }
-                });
-            }
-        },
-        function (err, results) {
-            tmp.lesson.lesson_type = results.lesson_type;
-            tmp.lesson.subject = results.subject;
+ if (asc) {
+ group.getParent().success(function (parent) {
+ if (parent) {
+ arr = handleTreeR(parent, true, false, arr);
+ }
+ });
+ }
 
-            delete tmp.group_id;
-            delete tmp.teacher_id;
-            delete tmp.lesson_id;
-            delete tmp.lesson.lesson_type_id;
-            delete tmp.lesson.subject_id;
-            delete tmp.reservation;
+ if (desc) {
+ group.getChildren().success(function (children) {
+ if (children) {
+ children.forEach(function (child) {
+ arr = handleTreeR(child, false, true, arr);
+ })
+ }
+ });
+ }
 
-            done(null, tmp)
-        }
-    )
-}
+ return arr;
+ };*/

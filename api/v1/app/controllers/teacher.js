@@ -74,7 +74,6 @@ module.exports.reservations = function (req, res, next) {
         }
         else {
             var reservation = orm.model("reservation");
-
             reservation.findAll({
                 "where": {"teaching.teacher_id": teacher.id},
                 "include": [orm.model("teaching"), {"model": orm.model("time_slot"), "as": "slot"}, orm.model("room")]})

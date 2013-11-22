@@ -123,48 +123,40 @@ module.exports.delete = function (req, res, next) {
 /*
  * HELPERS
  */
-var handleTeaching = function (teaching, done) {
+var handleLesson = function (teaching, done) {
     var tmp = JSON.parse(JSON.stringify(teaching));
 
     async.parallel(
         {
-            "group": function (done) {
-                teaching.getGroup().success(function (group) {
-                    if (group) {
-                        done(null, JSON.parse(JSON.stringify(group)));
+            "lesson_type": function (done) {
+                teaching.lesson.getType().success(function (lesson_type) {
+                    if (lesson_type) {
+                        done(null, JSON.parse(JSON.stringify(lesson_type)));
                     }
                 });
             },
 
-            "teacher": function (done) {
-                teaching.getTeacher().success(function (teacher) {
-                    if (teacher) {
-                        done(null, JSON.parse(JSON.stringify(teacher)));
+            "subject": function (done) {
+                teaching.lesson.getSubject().success(function (subject) {
+                    if (subject) {
+                        done(null, JSON.parse(JSON.stringify(subject)));
                     }
                 });
-            },
-
-            "lesson": function (done) {
-                teaching.getLesson({"include": [orm.model("subject"), {model: orm.model("lesson_type"), as: 'type'}]})
-                    .success(function (lesson) {
-                        if (lesson) {
-                            done(null, JSON.parse(JSON.stringify(lesson)));
-                        }
-                    });
             }
         },
         function (err, results) {
-            tmp.group = results.group;
-            tmp.teacher = results.teacher;
-            tmp.lesson = results.lesson;
+            tmp.lesson.lesson_type = results.lesson_type;
+            tmp.lesson.subject = results.subject;
 
             delete tmp.group_id;
             delete tmp.teacher_id;
             delete tmp.lesson_id;
+            delete tmp.lesson.lesson_type_id;
+            delete tmp.lesson.subject_id;
             delete tmp.reservation;
 
             done(null, tmp)
         }
     )
 };
-module.exports.handleTeaching = handleTeaching;
+module.exports.handleLesson = handleLesson;
