@@ -1,5 +1,5 @@
 var orm = require("../../config/models");
-
+var async = require("async");
 /*
  * GET /reservation_requests/
  */
@@ -21,15 +21,25 @@ module.exports.create = function (req, res, next) {
 
     if (req.body && req.body.reservation_request) {
         var r = req.body.reservation_request;
-        if (r.date && r.time_slot_id && r.teaching_id) {
-            reservation_request.create(r)
-                .success(function (reservation_request) {
-                    res.send(201, {"reservation_request": reservation_request});
+        if (r.date && r.capacity && r.time_slot_id && r.teaching_id && r.characteristics) {
+            async.map(r.characteristics, handleCharacteristic, function (err, results) {
 
-                })
-                .error(function (error) {
-                    res.send(400, error);
-                });
+                delete r.characteristics;
+                reservation_request.create(r)
+                    .success(function (reservation_request) {
+                        reservation_request.setCharacteristics(results).success(function (characteristics) {
+                            res.send(201, {"reservation_request": reservation_request});
+                        })
+                            .error(function (error) {
+                                res.send(400, error);
+                            });
+                    })
+                    .error(function (error) {
+                        res.send(400, error);
+                    });
+            });
+            var charac = JSON.parse(JSON.stringify(r.characteristics));
+
         }
         else {
             res.send(400, {"message": "Reservation_request found with missing params"});
@@ -117,4 +127,36 @@ module.exports.delete = function (req, res, next) {
     });
 
     return next();
+};
+
+var handleCharacteristic = function (charac, done) {
+    var characteristic = orm.model("characteristic");
+    characteristic.find(charac.id).success(function (charac) {
+        done(null, charac);
+    });
+};
+
+module.exports.rooms_available = function (req, res, next) {
+    var reserv_request = orm.model("reservation_request");
+    reserv_request.find({"where" : {"id" : req.params.id},
+        include :[
+            orm.model("characteristic"),
+            {model : orm.model("time_slot"), as : "slot"}
+        ]}).success(function(reservation_request){
+            var room = orm.model("room");
+            room.find(
+                {
+                    "where" : [{"capacity" : {"gte" : reserv_request.capacity },
+                        "slot.start" : reservation_request.slot.start ,
+                        "slot.end" : reservation_request.slot.end},
+                        "reservation.id IS NULL"],
+                    include : [orm.model("reservation")]
+                }).success(function(room_available){
+                    res.send(200,{room_available :room_available} );
+                });
+        });
+
+
+    return next();
+
 };
