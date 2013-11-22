@@ -55,9 +55,9 @@ module.exports = function (server, passport, auth) {
     server.get("/reservation_requests", passport.authenticate("bearer", { session: false }), reservation_request.list);
     server.post("/reservation_requests", passport.authenticate("bearer", { session: false }), reservation_request.create);
     server.get("/reservation_requests/:id", passport.authenticate("bearer", { session: false }), reservation_request.show);
+    server.get("/reservation_requests/:id/rooms_available", passport.authenticate("bearer", { session: false }), reservation_request.rooms_available);
     server.put("/reservation_requests/:id", passport.authenticate("bearer", { session: false }), reservation_request.update);
     server.del("/reservation_requests/:id", passport.authenticate("bearer", { session: false }), reservation_request.delete);
-    server.get("/reservation_requests/:id/rooms_available", passport.authenticate("bearer", { session: false }), reservation_request.rooms_available);
 
     var room = require("../app/controllers/room");
     server.get("/rooms", passport.authenticate("bearer", { session: false }), room.list);

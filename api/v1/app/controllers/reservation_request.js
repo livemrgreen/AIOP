@@ -6,9 +6,16 @@ var async = require("async");
 module.exports.list = function (req, res, next) {
     var reservation_request = orm.model("reservation_request");
 
-    reservation_request.findAll({}).success(function (reservation_requests) {
-        res.send(200, {"reservation_requests": reservation_requests});
-    });
+    reservation_request.findAll({
+        "where": {"reservation.id": null},
+        "include": [
+            {"model": orm.model("time_slot"), "as": "slot"},
+            orm.model("teaching"),
+            orm.model("reservation")
+        ]})
+        .success(function (reservation_requests) {
+            res.send(200, {"reservation_requests": reservation_requests});
+        });
 
     return next();
 };
@@ -22,14 +29,22 @@ module.exports.create = function (req, res, next) {
     if (req.body && req.body.reservation_request) {
         var r = req.body.reservation_request;
         if (r.date && r.capacity && r.time_slot_id && r.teaching_id && r.characteristics) {
+
+            // get the characteristics database objects
             async.map(r.characteristics, handleCharacteristic, function (err, results) {
 
+                // remove them from the r_r
                 delete r.characteristics;
+
+                // save just the r_r
                 reservation_request.create(r)
                     .success(function (reservation_request) {
-                        reservation_request.setCharacteristics(results).success(function (characteristics) {
-                            res.send(201, {"reservation_request": reservation_request});
-                        })
+
+                        // add some characs
+                        reservation_request.setCharacteristics(results)
+                            .success(function (characteristics) {
+                                res.send(201, {"reservation_request": reservation_request});
+                            })
                             .error(function (error) {
                                 res.send(400, error);
                             });
@@ -38,8 +53,6 @@ module.exports.create = function (req, res, next) {
                         res.send(400, error);
                     });
             });
-            var charac = JSON.parse(JSON.stringify(r.characteristics));
-
         }
         else {
             res.send(400, {"message": "Reservation_request found with missing params"});
@@ -58,15 +71,120 @@ module.exports.create = function (req, res, next) {
 module.exports.show = function (req, res, next) {
     var reservation_request = orm.model("reservation_request");
 
-    reservation_request.find({"where": {"id": req.params.id}}).success(function (reservation_request) {
-        if (!reservation_request) {
-            res.send(404, {"message": "Reservation_request not found"});
-        }
-        else {
-            res.send(200, {"reservation_request": reservation_request});
-        }
-    });
+    reservation_request.find({
+        "where": {"id": req.params.id, "reservation.id": null},
+        "include": [
+            {"model": orm.model("time_slot"), "as": "slot"},
+            orm.model("teaching"),
+            orm.model("reservation")
+        ]})
+        .success(function (reservation_request) {
+            if (!reservation_request) {
+                res.send(404, {"message": "Reservation_request not found"});
+            }
+            else {
+                res.send(200, {"reservation_request": reservation_request});
+            }
+        });
 
+    return next();
+};
+
+/*
+ * GET /reservation_requests/:id/rooms_available
+ */
+module.exports.rooms_available = function (req, res, next) {
+    var reservation_request = orm.model("reservation_request");
+    var room = orm.model("room");
+
+    reservation_request.find({
+        "where": {"id": req.params.id, "reservation.id": null},
+        "include": [orm.model("reservation"), orm.model("characteristic")]})
+        .success(function (reservation_request) {
+            if (!reservation_request) {
+                res.send(404, {"message": "Reservation_request not found"});
+            }
+            else {
+                // 1. Get all the free rooms for this date/slot
+                // 2. Remove the ones that not match the charac
+                // 3. Compute the score of each room
+                // 4. Send after sorting
+                async.waterfall(
+                    [
+                        // 1. Get all the free rooms
+                        function (done) {
+                            room.findAll({
+                                "where": [
+                                    "capacity >= ? " +
+                                        "AND (reservation.date IS NULL OR reservation.date != ?) " +
+                                        "AND (reservation.time_slot_id IS NULL OR reservation.time_slot_id != ?)",
+                                    reservation_request.capacity, reservation_request.date,
+                                    reservation_request.time_slot_id],
+                                "include": [orm.model("reservation"), orm.model("characteristic"), orm.model("building")]})
+                                .success(function (rooms) {
+                                    done(null, rooms);
+                                }
+                            );
+                        },
+
+                        // Test if found rooms match the asked charac
+                        function (arg1, done) {
+                            async.map(arg1,
+                                function (room, done) {
+                                    async.map(reservation_request.characteristic,
+                                        function (characteristic, done) {
+                                            room.hasCharacteristic(characteristic).success(function (bool) {
+                                                done(null, bool);
+                                            });
+                                        },
+                                        function (error, results) {
+                                            // if it don't match, send null
+                                            if (results.indexOf(false) != -1) done(null, null)
+                                            else done(null, room);
+                                        });
+                                },
+                                function (error, results) {
+                                    // remove the null rooms
+                                    done(null, results.filter(function (n) {
+                                        return n
+                                    }));
+                                }
+                            );
+                        },
+                        // 3. Score every room
+                        // f(given, asked) = (given - asked)/given
+                        function (arg1, done) {
+                            async.map(
+                                arg1,
+                                function (room, done) {
+                                    var tmp = JSON.parse(JSON.stringify(room));
+                                    delete tmp.reservation;
+                                    delete tmp.characteristic;
+                                    delete tmp.building_id;
+
+                                    var room_score = (room.capacity - reservation_request.capacity) / room.capacity;
+                                    var characteristic_score = (room.characteristic.length - reservation_request.characteristic.length) / room.characteristic.length;
+
+                                    if (reservation_request.characteristic.length == 0) tmp.score = 0;
+                                    else tmp.score = (1 - ((room_score + characteristic_score) / 2)) * 100;
+
+                                    done(null, tmp);
+                                },
+                                // 4. Sort the results
+                                function (error, results) {
+                                    done(null, results.sort(function (a, b) {
+                                        return b.score - a.score;
+                                    }));
+                                }
+                            );
+                        }
+                    ],
+                    function (error, results) {
+                        res.send(200, {"rooms": results});
+                    }
+                );
+            }
+        });
     return next();
 };
 
@@ -129,34 +247,9 @@ module.exports.delete = function (req, res, next) {
     return next();
 };
 
-var handleCharacteristic = function (charac, done) {
-    var characteristic = orm.model("characteristic");
-    characteristic.find(charac.id).success(function (charac) {
-        done(null, charac);
-    });
-};
-
-module.exports.rooms_available = function (req, res, next) {
-    var reserv_request = orm.model("reservation_request");
-    reserv_request.find({"where" : {"id" : req.params.id},
-        include :[
-            orm.model("characteristic"),
-            {model : orm.model("time_slot"), as : "slot"}
-        ]}).success(function(reservation_request){
-            var room = orm.model("room");
-            room.find(
-                {
-                    "where" : [{"capacity" : {"gte" : reserv_request.capacity },
-                        "slot.start" : reservation_request.slot.start ,
-                        "slot.end" : reservation_request.slot.end},
-                        "reservation.id IS NULL"],
-                    include : [orm.model("reservation")]
-                }).success(function(room_available){
-                    res.send(200,{room_available :room_available} );
-                });
+var handleCharacteristic = function (characteristic, done) {
+    orm.model("characteristic").find(characteristic.id)
+        .success(function (characteristic) {
+            done(null, characteristic);
         });
-
-
-    return next();
-
 };

@@ -99,8 +99,12 @@ module.exports.reservations = function (req, res, next) {
             res.send(404, {"message": "Group not found"});
         }
         else {
+            // 1. get the parent and the children of the group
+            // 2. create an array with all the id-group found before
+            // 3. get all the reservations of the teachings about this id
             async.waterfall(
                 [
+                    // 1. Get the parent/children in parallel
                     function (done) {
                         async.parallel(
                             {
@@ -127,6 +131,7 @@ module.exports.reservations = function (req, res, next) {
                                     });
                                 }
                             },
+                            // 2. Create an array with all the id
                             function (err, results) {
                                 var tmp = [];
                                 tmp.push(group.id);
@@ -135,6 +140,7 @@ module.exports.reservations = function (req, res, next) {
                                 done(null, tmp);
                             });
                     },
+                    // 3. For the id, get the teachings and the reservations related
                     function (arg1, done) {
                         var reservation = orm.model("reservation");
                         reservation.findAll({
