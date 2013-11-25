@@ -73,7 +73,7 @@ define([
         $scope.lessons = [];
         var teachings = [];
 
-        var apiUrl = UrlService.urlNode;
+        var apiUrl = UrlService.urlRuby;
 
         /**
          * Get all groups

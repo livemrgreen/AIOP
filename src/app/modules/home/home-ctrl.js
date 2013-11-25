@@ -212,6 +212,8 @@ define([
 
 
         $scope.getGroupCalendar = function(group) {
+            $scope.events = [];
+            $scope.myCalendar.fullCalendar('removeEvents').fullCalendar('removeEventSources');
             $http({
                 method: 'Get',
                 url: apiUrl + '/groups/' + group.id + '/reservations',
@@ -235,6 +237,8 @@ define([
                     $scope.events.push({
                         title: value.teaching.lesson.subject.label + '\n' + value.teaching.group.label + ' ' + value.room.label, start: start, end: end, allDay: false
                     });
+
+                    $scope.myCalendar.fullCalendar( 'addEventSource', $scope.events);
                 });
             })
                     .error(function(data, status, headers, config) {
@@ -247,6 +251,8 @@ define([
         };
 
         $scope.getTeacherCalendar = function(teacher) {
+            $scope.events = [];
+            $scope.myCalendar.fullCalendar('removeEvents').fullCalendar('removeEventSources');
             $http({
                 method: 'Get',
                 url: apiUrl + '/teachers/' + teacher.id + '/reservations',
@@ -270,6 +276,7 @@ define([
                     $scope.events.push({
                         title: value.teaching.lesson.subject.label + '\n' + value.teaching.group.label + ' ' + value.room.label, start: start, end: end, allDay: false
                     });
+                    $scope.myCalendar.fullCalendar( 'addEventSource', $scope.events);
                 });
             })
                     .error(function(data, status, headers, config) {
