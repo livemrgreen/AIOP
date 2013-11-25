@@ -72,7 +72,33 @@
     <div id="content">
         <div class="outer">
             <div class="inner" >
-                <div class="span8">
+
+
+                <form class="form-inline">
+                    <div class="form-group" >
+                        <label class="control-label">Group: </label>
+
+
+                            <select class="form-control"
+                                    ng-model="group"
+                                    ng-options="group.label for group in groups"
+                                    ng-change="getGroupCalendar(group)" required></select>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Teacher: </label>
+
+
+                            <select class="form-control"
+                                    ng-model="teacher"
+                                    ng-options="teacher.label for teacher in teacher"
+                                    ng-change="" required></select>
+
+                    </div>
+                </form>
+
+                <div class="span8" ng-show="showCalendar">
                     <div class="alert-success calAlert" ng-show="alertMessage != undefined && alertMessage != ''">
                         <h4>{{alertMessage}}</h4>
                     </div>
@@ -86,6 +112,7 @@
                     </div>
                     <div id="calendar" class="calendar" ui-calendar="uiConfig.calendar" ng-model="eventSources" calendar="myCalendar"></div>
                 </div>
+
             </div>
         </div>
     </div>

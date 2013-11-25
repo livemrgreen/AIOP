@@ -1,10 +1,11 @@
 define([
     'angularAMD',
     'angular-route',
-    'angular-calendar'
+    'angular-calendar',
+    'bootstraps'
 ], function (angularAMD) {
 
-    var app = angular.module("aiopApp", ['ngRoute', 'ui.calendar']);
+    var app = angular.module("aiopApp", ['ngRoute', 'ui.calendar', 'ui.bootstrap.modal']);
 
     app.config(function ($routeProvider) {
         $routeProvider.when("/", angularAMD.route({
@@ -21,6 +22,21 @@ define([
                 templateUrl: 'modules/reservation/reservation.html',
                 controller: 'ReservationController',
                 controllerUrl: 'modules/reservation/reservation-ctrl'
+            }))
+            .when("/see-reservations", angularAMD.route({
+                templateUrl: 'modules/reservation/see-reservation.html',
+                controller: 'ReservationController',
+                controllerUrl: 'modules/reservation/see-reservation-ctrl'
+            }))
+            .when("/admin-reservations", angularAMD.route({
+                templateUrl: 'modules/admin/see-reservation.html',
+                controller: 'AdminReservationController',
+                controllerUrl: 'modules/admin/see-reservation-ctrl'
+            }))
+            .when("/admin-calendar", angularAMD.route({
+                templateUrl: 'modules/admin/see-calendar.html',
+                controller: 'AdminCalendarController',
+                controllerUrl: 'modules/admin/see-calendar-ctrl'
             }))
             .otherwise({
                 redirectTo: '/'
@@ -69,6 +85,10 @@ define([
             },
             getUser : function(){
                 return $rootScope.userDetails.user;
+            },
+            isAdmin: function(){
+                return true;
+                //return $rootScope.userDetails.user.teacher.module_manager;
             }
 
 
@@ -129,6 +149,14 @@ define([
                 $location.path('/login');
             }
             else if($location.url() == '/login' && UserService.getLogged()){
+                //event.preventDefault()
+                $location.path('/');
+            }
+            else if($location.url() == '/admin-calendar' && UserService.getLogged() && !UserService.isAdmin()){
+                //event.preventDefault()
+                $location.path('/');
+            }
+            else if($location.url() == '/admin-reservation' && UserService.getLogged() && !UserService.isAdmin()){
                 //event.preventDefault()
                 $location.path('/');
             }

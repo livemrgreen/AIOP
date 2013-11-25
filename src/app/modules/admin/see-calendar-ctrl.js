@@ -7,14 +7,46 @@ define([
 ], function(app) {
     'use strict';
 
-    app.register.controller('HomeController', function($rootScope, $scope, $http, $filter, $location, LocalStorageService, UserService) {
+    app.register.controller('AdminCalendarController', function($rootScope, $scope, $http, $filter, $location, LocalStorageService, UserService) {
 
         var date = new Date();
         var d = date.getDate();
         var m = date.getMonth();
         var y = date.getFullYear();
 
+        $scope.groups = [];
+        $scope.showCalendar = false;
+        /**
+         * Get all groups
+         */
+        $http({method: 'Get', url: 'http://162.38.113.210:8080/groups', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
+            success(function (data) {
+                $scope.groups = data.groups;
+            }).
+            error(function (data, status, headers, config) {
+                // called asynchronously if an error occurs
+                // or server returns response with an error status.
+                //todo:trtaiter l'erreur
+                console.log(status);
+                console.log(data);
+            });
 
+
+        $scope.getGroupCalendar= function(group){
+            $scope.showCalendar = true;
+            console.log(group);
+            $http({method: 'Get', url: 'http://162.38.113.210:8080/groups/'+group.id+'/reservations', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
+                success(function (data) {
+                    console.log(data);
+                }).
+                error(function (data, status, headers, config) {
+                    // called asynchronously if an error occurs
+                    // or server returns response with an error status.
+                    //todo:trtaiter l'erreur
+                    console.log(status);
+                    console.log(data);
+                });
+        }
 
         /* event source that contains custom events on the scope */
         $scope.events = [
@@ -40,11 +72,11 @@ define([
                     end.setHours(parseInt(value.time_slot.end));
                     end.setMinutes(parseInt(min));
 
-                   $scope.events.push(
-                       {
-                           title: value.teaching.lesson.subject.label + '\n' +value.teaching.group.label+' '+ value.room.label, start: start, end: end, allDay: false
-                       }
-                   );
+                    $scope.events.push(
+                        {
+                            title: value.teaching.lesson.subject.label + '\n' +value.teaching.group.label+' '+ value.room.label, start: start, end: end, allDay: false
+                        }
+                    );
                 });
             }).
             error(function(data, status, headers, config) {
@@ -161,5 +193,7 @@ define([
         };
         /* event sources array*/
         $scope.eventSources = [$scope.events];
+
+
     });
 });

@@ -2,7 +2,8 @@
     <div id="top">
         <nav class="navbar navbar-inverse navbar-static-top">
             <header class="navbar-header">
-                <a href="" class="navbar-brand "><img class="small" src="assets/img/logo.png" alt=""></a>
+                <a ng-click="changeLocation('')" class="navbar-brand "><img class="small" src="assets/img/logo.png"
+                                                                            alt=""></a>
                 <a class="btn-primary visible-xs " data-toggle="collapse" href="#menu" id="menu-toggle">
                     <i class="icon-bar"></i>
                     <i class="icon-bar"></i>
@@ -12,7 +13,8 @@
             <div class="topnav">
                 <div class="btn-toolbar">
                     <div class="btn-group">
-                        <a data-toggle="tooltip" data-original-title="Logout" data-placement="bottom" class="btn btn-metis-1 btn-sm" ng-click="logout()">
+                        <a data-toggle="tooltip" data-original-title="Logout" data-placement="bottom"
+                           class="btn btn-metis-1 btn-sm" ng-click="logout()">
                             <i class="fa fa-power-off"></i>
                         </a>
                     </div>
@@ -21,7 +23,7 @@
         </nav>
         <header class="head">
             <div class="main-bar">
-                <h3><i class="fa fa-table"></i> Agenda</h3>
+                <h3><i class="fa fa-pencil-square-o"></i> Reservations</h3>
             </div>
         </header>
     </div>
@@ -31,12 +33,14 @@
                 <i class="fa fa-user fa-3x"></i>
                 <span class="label label-danger">2</span>
             </a>
+
             <div class="media-body">
                 <h5 class="media-heading">{{firstName}} {{lastName}}</h5>
                 <ul class="list-unstyled user-info">
                     <li>&nbsp;</li>
                     <li>Today's date<br/>
-                        <small><i class="fa fa-calendar-o"></i> {{todayDate}}</small></li>
+                        <small><i class="fa fa-calendar-o"></i> {{todayDate}}</small>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -71,20 +75,12 @@
     </div>
     <div id="content">
         <div class="outer">
-            <div class="inner" >
-                <div class="span8">
-                    <div class="alert-success calAlert" ng-show="alertMessage != undefined && alertMessage != ''">
-                        <h4>{{alertMessage}}</h4>
-                    </div>
-                    <div class="btn-toolbar">
-                        <p class="pull-right lead">Agenda</p>
-                        <div class="btn-group">
-                            <button class="btn btn-success" ng-click="changeView('agendaDay', myCalendar)">Day</button>
-                            <button class="btn btn-success" ng-click="changeView('agendaWeek', myCalendar)">Week</button>
-                            <button class="btn btn-success" ng-click="changeView('month', myCalendar)">Month</button>
-                        </div>
-                    </div>
-                    <div id="calendar" class="calendar" ui-calendar="uiConfig.calendar" ng-model="eventSources" calendar="myCalendar"></div>
+            <div class="inner">
+
+                <div ng-repeat="request in pendingRequests">
+                    <div class="well well-sm">Group :{{request.id}}, lesson: {{request.id}}, date: {{request.id}}, time slot: {{request.time_slot.start}} - {{request.time_slot.end}}
+                        <button class="btn btn-success" ng-disabled="isLoading" ng-click="checkRoom(request.id)"><i class="glyphicon glyphicon-refresh"></i> Check room</button>
+                        <button class="btn btn-danger" ng-disabled="isLoading" ng-click="removeRequest(request.id)"><i class="glyphicon glyphicon-remove"></i> refuse</button></div>
                 </div>
             </div>
         </div>
