@@ -4,53 +4,37 @@
  */
 define([
     'app'
-], function (app) {
+], function(app) {
     'use strict';
 
-    app.register.controller('AdminReservationController', function ($rootScope, $scope, $http, $modal, $filter, $location, LocalStorageService, UserService) {
+    app.register.controller('AdminReservationController', function($rootScope, $scope, $http, $modal, $filter, $location, LocalStorageService, UserService) {
 
         /*****************************************************************************
          *      Functions used by Metis to change view and logout
          *****************************************************************************/
-        $scope.classReservations = 'collapse';
+        $scope.classReservations = ''; //open by default
         $scope.admin = UserService.isAdmin();
-        $scope.open = function(div) {
-            if (div === 'admin'){
-                var $icon = $('#accordion-toggle-admin').children('span').children('i');
-                //open or close submenu of reservation
-                if ($scope.classReservationsAdmin === 'collapse') {
-                    //change arrow value of Reservations
-                    $icon.removeClass('fa fa-angle-left').addClass('fa fa-angle-down');
-                    $scope.classReservationsAdmin= '';
-                }
-                else {
-                    $icon.removeClass('fa fa-angle-down').addClass('fa fa-angle-left');
-                    $scope.classReservationsAdmin = 'collapse';
-                }
+        $scope.open = function() {
+            var $icon = $('#accordion-toggle').children('span').children('i');
+            //open or close submenu of reservation
+            if ($scope.classReservations === 'collapse') {
+                //change arrow value of Reservations
+                $icon.removeClass('fa fa-angle-left').addClass('fa fa-angle-down');
+                $scope.classReservations = '';
             }
-            else{
-                var $icon = $('#accordion-toggle').children('span').children('i');
-                //open or close submenu of reservation
-                if ($scope.classReservations === 'collapse') {
-                    //change arrow value of Reservations
-                    $icon.removeClass('fa fa-angle-left').addClass('fa fa-angle-down');
-                    $scope.classReservations = '';
-                }
-                else {
-                    $icon.removeClass('fa fa-angle-down').addClass('fa fa-angle-left');
-                    $scope.classReservations = 'collapse';
-                }
+            else {
+                $icon.removeClass('fa fa-angle-down').addClass('fa fa-angle-left');
+                $scope.classReservations = 'collapse';
             }
-
         };
 
 
         //define datepiker
-        $(function () {
+        $(function() {
             $("#datepicker").datepicker().datepicker({minDate: -1, maxDate: -2}).attr('readonly', 'readonly');
         });
 
-        $scope.changeLocation = function (view) {
+        $scope.changeLocation = function(view) {
             $location.path('/' + view);
         };
 
@@ -66,7 +50,7 @@ define([
             $scope.moduleManager = '';
         $scope.todayDate = $filter('date')(new Date(), 'dd/MM/y');
 
-        $scope.logout = function () {
+        $scope.logout = function() {
             LocalStorageService.clear('user');
             UserService.initialize();
             $location.path('/login');
@@ -82,23 +66,20 @@ define([
         $scope.isLoading = false;
         $scope.pendingRequests = [
             {
-                id : 1,
-                date : new Date(),
-                time_slot : {id: 1, start: "8:00:00", end: "9:30:00"},
-                teaching : {
-                    id : 3,
-                    group : {
-
+                id: 1,
+                date: new Date(),
+                time_slot: {id: 1, start: "8:00:00", end: "9:30:00"},
+                teaching: {
+                    id: 3,
+                    group: {
                     },
-                    lesson : {
-
+                    lesson: {
                     },
-
                 },
-                characteristics:[
+                characteristics: [
                     {
                         id: 1,
-                        label : 'retro'
+                        label: 'retro'
                     },
                     {
                         id: 2,
@@ -119,7 +100,7 @@ define([
          *
          * @param id
          */
-        $scope.checkRoom=  function(id){
+        $scope.checkRoom = function(id) {
             $scope.isLoading = true;
             console.log(id);
         };
@@ -128,7 +109,7 @@ define([
          * Remove the request
          * @param id request'id
          */
-        $scope.removeRequest = function(id){
+        $scope.removeRequest = function(id) {
             //http
             //remove from $scope.pendingRequest
         };

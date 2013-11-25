@@ -14,34 +14,18 @@ define([
          *****************************************************************************/
         $scope.classReservations = 'collapse';
         $scope.admin = UserService.isAdmin();
-        $scope.open = function(div) {
-            if (div == 'admin'){
-                var $icon = $('#accordion-toggle-admin').children('span').children('i');
-                //open or close submenu of reservation
-                if ($scope.classReservationsAdmin == 'collapse') {
-                    //change arrow value of Reservations
-                    $icon.removeClass('fa fa-angle-left').addClass('fa fa-angle-down');
-                    $scope.classReservationsAdmin= '';
-                }
-                else {
-                    $icon.removeClass('fa fa-angle-down').addClass('fa fa-angle-left');
-                    $scope.classReservationsAdmin = 'collapse';
-                }
+        $scope.open = function() {
+            var $icon = $('#accordion-toggle').children('span').children('i');
+            //open or close submenu of reservation
+            if ($scope.classReservations === 'collapse') {
+                //change arrow value of Reservations
+                $icon.removeClass('fa fa-angle-left').addClass('fa fa-angle-down');
+                $scope.classReservations = '';
             }
-            else{
-                var $icon = $('#accordion-toggle').children('span').children('i');
-                //open or close submenu of reservation
-                if ($scope.classReservations == 'collapse') {
-                    //change arrow value of Reservations
-                    $icon.removeClass('fa fa-angle-left').addClass('fa fa-angle-down');
-                    $scope.classReservations = '';
-                }
-                else {
-                    $icon.removeClass('fa fa-angle-down').addClass('fa fa-angle-left');
-                    $scope.classReservations = 'collapse';
-                }
+            else {
+                $icon.removeClass('fa fa-angle-down').addClass('fa fa-angle-left');
+                $scope.classReservations = 'collapse';
             }
-
         };
 
         //define datepiker
