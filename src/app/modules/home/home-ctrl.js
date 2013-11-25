@@ -14,16 +14,12 @@ define([
         var m = date.getMonth();
         var y = date.getFullYear();
 
-
-
         /* event source that contains custom events on the scope */
         $scope.events = [
         ];
 
         $http({method: 'Get', url: 'http://162.38.113.210:8080/teachers/'+UserService.getUser().teacher.id+'/reservations', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
             success(function(data) {
-                console.log('success');
-                console.log(data);
                 angular.forEach(data.reservations, function(value, key){
 
                     var min = value.time_slot.start.split(':');
@@ -46,8 +42,8 @@ define([
                        }
                    );
                 });
-            }).
-            error(function(data, status, headers, config) {
+            })
+                    .error(function(data, status, headers, config) {
                 // called asynchronously if an error occurs
                 // or server returns response with an error status.
                 console.log(status);
@@ -57,10 +53,10 @@ define([
         $scope.classReservations = 'collapse';
         $scope.admin = UserService.isAdmin();
         $scope.open = function(div) {
-            if (div == 'admin'){
+            if (div === 'admin'){
                 var $icon = $('#accordion-toggle-admin').children('span').children('i');
                 //open or close submenu of reservation
-                if ($scope.classReservationsAdmin == 'collapse') {
+                if ($scope.classReservationsAdmin === 'collapse') {
                     //change arrow value of Reservations
                     $icon.removeClass('fa fa-angle-left').addClass('fa fa-angle-down');
                     $scope.classReservationsAdmin= '';
@@ -73,7 +69,7 @@ define([
             else{
                 var $icon = $('#accordion-toggle').children('span').children('i');
                 //open or close submenu of reservation
-                if ($scope.classReservations == 'collapse') {
+                if ($scope.classReservations === 'collapse') {
                     //change arrow value of Reservations
                     $icon.removeClass('fa fa-angle-left').addClass('fa fa-angle-down');
                     $scope.classReservations = '';
@@ -83,7 +79,6 @@ define([
                     $scope.classReservations = 'collapse';
                 }
             }
-
         };
 
         $scope.changeLocation = function(view) {
@@ -106,7 +101,7 @@ define([
             LocalStorageService.clear('user');
             UserService.initialize();
             $location.path('/login');
-        }
+        };
 
         /* alert on eventClick */
         $scope.alertEventOnClick = function(date, allDay, jsEvent, view) {

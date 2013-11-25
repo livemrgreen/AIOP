@@ -5,3 +5,13 @@ td {
 h1 {
     color: #999999 !important;
 }
+
+.menu-focus {
+    background-color: #404040;
+    outline: medium none;
+    color: #FFFFFF !important;
+}
+
+.submenu-focus {
+    color: #FFFFFF !important;
+}

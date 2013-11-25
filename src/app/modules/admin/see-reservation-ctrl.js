@@ -28,7 +28,6 @@ define([
             }
         };
 
-
         //define datepiker
         $(function() {
             $("#datepicker").datepicker().datepicker({minDate: -1, maxDate: -2}).attr('readonly', 'readonly');
@@ -55,7 +54,6 @@ define([
             UserService.initialize();
             $location.path('/login');
         };
-
 
         /***********************************************************************************
          *
@@ -92,8 +90,6 @@ define([
         /**
          * Get all pending requests that the use can see and save it in $scope.pendingRequests
          */
-
-
         console.log($scope.pendingRequests);
         console.log($modal);
         /**
@@ -113,7 +109,5 @@ define([
             //http
             //remove from $scope.pendingRequest
         };
-
-
     });
 });

@@ -35,21 +35,21 @@
             <li class="nav-header">Menu</li>
             <li><a href="" ng-click="changeLocation('home')" ><i class="fa fa-table"></i> Schedule</a></li>
             <li class="panel ">
-                <a href="" data-parent="#menu" data-toggle="collapse" class="accordion-toggle" id="accordion-toggle" ng-click="open('reservation')" data-target="#dashboard-nav">
+                <a href="" data-parent="#menu" data-toggle="collapse" class="accordion-toggle menu-focus" id="accordion-toggle" ng-click="open('reservation')" data-target="#dashboard-nav">
                     <i class="fa fa-pencil-square-o"></i> Reservations
                 </a>
                 <ul class="{{classReservations}}" id="dashboard-nav">
-                    <li class="">
-                        <a href="">
+                    <li>
+                        <a class="submenu-focus" href="">
                             <i class="fa fa-angle-right"></i> New
                         </a>
                     </li>
-                    <li class="">
+                    <li>
                         <a href="" ng-click="changeLocation('history')">
                             <i class="fa fa-angle-right"></i> History
                         </a>
                     </li>
-                    <li class="">
+                    <li>
                         <a href="" ng-click="changeLocation('admin-reservation')">
                             <i class="fa fa-angle-right"></i> Manage
                         </a>
@@ -65,10 +65,8 @@
                     <h4 class="text-center">
                         Create a new reservation request
                     </h4>
-
                     <div class="form-group">
                         <label class="control-label col-lg-4">Group: </label>
-
                         <div class="col-lg-4">
                             <select class="form-control"
                                     ng-model="group"
@@ -78,7 +76,6 @@
                     </div>
                     <div class="form-group" ng-show="showTeachings" >
                         <label class="control-label col-lg-4">Subject: </label>
-
                         <div class="col-lg-4">
                             <select class="form-control"
                                     ng-model="subject"
@@ -88,7 +85,6 @@
                     </div>
                     <div class="form-group" ng-show="showLessonType">
                         <label class="control-label col-lg-4">Lesson type: </label>
-
                         <div class="col-lg-4">
                             <select class="form-control"
                                     ng-model="lessonType"
@@ -106,7 +102,6 @@
                                     required></select>
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label class="control-label col-lg-4">Capacity: </label>
 
@@ -114,7 +109,6 @@
                             <input class="form-control" ng-model="capacity" required></select>
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label class="control-label col-lg-4">Characteristics: </label>
 
@@ -151,10 +145,8 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label class="control-label col-lg-4"></label>
-
                         <div class="col-lg-4">
                             <a type="button" class="btn btn-lg btn-primary btn-block"
                                ng-click="sendReservationRequest()" ng-disabled="form.$invalid">Send request</a>
