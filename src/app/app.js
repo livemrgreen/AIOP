@@ -11,27 +11,27 @@ define([
         $routeProvider.when("/", angularAMD.route({
                 templateUrl: 'modules/home/home.html',
                 controller: 'HomeController',
-                controllerUrl: 'modules/home/home-ctrl'
+                controllerUrl: 'modules/home/home'
             }))
             .when("/login", angularAMD.route({
                 templateUrl: 'modules/login/login.html',
                 controller: 'LoginController',
-                controllerUrl: 'modules/login/login-ctrl'
+                controllerUrl: 'modules/login/login'
             }))
-            .when("/reservation", angularAMD.route({
-                templateUrl: 'modules/reservation/reservation.html',
-                controller: 'ReservationController',
-                controllerUrl: 'modules/reservation/reservation-ctrl'
+            .when("/new-reservation", angularAMD.route({
+                templateUrl: 'modules/reservations/new.html',
+                controller: 'NewReservationController',
+                controllerUrl: 'modules/reservations/new'
             }))
-            .when("/history", angularAMD.route({
-                templateUrl: 'modules/reservation/history.html',
-                controller: 'HistoryController',
-                controllerUrl: 'modules/reservation/history-ctrl'
+            .when("/history-reservations", angularAMD.route({
+                templateUrl: 'modules/reservations/history.html',
+                controller: 'HistoryReservationsController',
+                controllerUrl: 'modules/reservations/history'
             }))
-            .when("/admin-reservation", angularAMD.route({
-                templateUrl: 'modules/admin/see-reservation.html',
-                controller: 'AdminReservationController',
-                controllerUrl: 'modules/admin/see-reservation-ctrl'
+            .when("/manage-reservations", angularAMD.route({
+                templateUrl: 'modules/reservations/manage.html',
+                controller: 'ManageReservationsController',
+                controllerUrl: 'modules/reservations/manage'
             }))
             .otherwise({
                 redirectTo: '/'

@@ -7,7 +7,7 @@ define([
 ], function(app) {
     'use strict';
 
-    app.register.controller('ReservationController', function($rootScope, $scope, $http, $filter, $location, LocalStorageService, UrlService, UserService) {
+    app.register.controller('NewReservationController', function($rootScope, $scope, $http, $filter, $location, LocalStorageService, UrlService, UserService) {
 
         /*****************************************************************************
          *      Functions used by Metis to change view and logout
@@ -73,13 +73,18 @@ define([
         $scope.lessons = [];
         var teachings = [];
 
-        var apiUrl = UrlService.urlRuby;
+        var apiUrl = UrlService.urlNode;
 
         /**
          * Get all groups
          */
-        $http({method: 'Get', url: apiUrl + '/groups', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
-                success(function(data) {
+        $http({
+            method: 'Get',
+            url: apiUrl + '/groups',
+            headers: {
+                'Authorization': "Bearer " + UserService.getAccessToken() + ""
+            }})
+                .success(function(data) {
             $scope.groups = data.groups;
         })
                 .error(function(data, status, headers, config) {
@@ -93,8 +98,13 @@ define([
         /**
          * Get Characteristics for a ROOM
          */
-        $http({method: 'Get', url: apiUrl + '/characteristics', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
-                success(function(data) {
+        $http({
+            method: 'Get',
+            url: apiUrl + '/characteristics',
+            headers: {
+                'Authorization': "Bearer " + UserService.getAccessToken() + ""
+            }})
+                .success(function(data) {
             $scope.charateristics = data.characteristics;
         }).
                 error(function(data, status, headers, config) {
@@ -108,12 +118,20 @@ define([
         /**
          * Get Time_slots for a reservation
          */
-        $http({method: 'Get', url: apiUrl + '/time_slots', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
-                success(function(data) {
+        $http({
+            method: 'Get',
+            url: apiUrl + '/time_slots',
+            headers: {
+                'Authorization': "Bearer " + UserService.getAccessToken() + ""
+            }})
+                .success(function(data) {
             angular.forEach(data.time_slots, function(value) {
                 var start = value.start.split(':');
                 var end = value.end.split(':');
-                $scope.timeSlots.push({concat: start[0] + 'h' + start[1] + ' - ' + end[0] + 'h' + end[1], id: value.id});
+                $scope.timeSlots.push({
+                    concat: start[0] + 'h' + start[1] + ' - ' + end[0] + 'h' + end[1],
+                    id: value.id
+                });
             });
         }).
                 error(function(data, status, headers, config) {

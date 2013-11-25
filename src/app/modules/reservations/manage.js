@@ -4,19 +4,20 @@
  */
 define([
     'app'
-], function (app) {
+], function(app) {
     'use strict';
 
-    app.register.controller('HistoryController', function ($rootScope, $scope, $http, $modal, $filter, $location, LocalStorageService, UrlService, UserService) {
+    app.register.controller('ManageReservationsController', function($rootScope, $scope, $http, $modal, $filter, $location, LocalStorageService, UserService, UrlService) {
 
         /*****************************************************************************
          *      Functions used by Metis to change view and logout
          *****************************************************************************/
-        $scope.open = function () {
-
-            var $icon = $('.accordion-toggle').children('span').children('i');
+        $scope.classReservations = ''; //open by default
+        $scope.admin = UserService.isAdmin();
+        $scope.open = function() {
+            var $icon = $('#accordion-toggle').children('span').children('i');
             //open or close submenu of reservation
-            if ($scope.classReservations == 'collapse') {
+            if ($scope.classReservations === 'collapse') {
                 //change arrow value of Reservations
                 $icon.removeClass('fa fa-angle-left').addClass('fa fa-angle-down');
                 $scope.classReservations = '';
@@ -27,6 +28,17 @@ define([
             }
         };
 
+        //define datepiker
+        $(function() {
+            $("#datepicker").datepicker().datepicker({minDate: -1, maxDate: -2}).attr('readonly', 'readonly');
+        });
+
+        $scope.changeLocation = function(view) {
+            $location.path('/' + view);
+        };
+
+        $scope.firstName = UserService.getUser().teacher.first_name;
+        $scope.lastName = UserService.getUser().teacher.last_name;
         if (UserService.getUser().administrator)
             $scope.administrator = 'Administrator';
         else
@@ -35,26 +47,13 @@ define([
             $scope.moduleManager = 'Module Manager';
         else
             $scope.moduleManager = '';
-
-        //define datepiker
-        $(function () {
-            $("#datepicker").datepicker().datepicker({minDate: -1, maxDate: -2}).attr('readonly', 'readonly');
-        });
-
-        $scope.changeLocation = function (view) {
-            $location.path('/' + view);
-        };
-
-        $scope.firstName = UserService.getUser().teacher.first_name;
-        $scope.lastName = UserService.getUser().teacher.last_name;
         $scope.todayDate = $filter('date')(new Date(), 'dd/MM/y');
 
-        $scope.logout = function () {
+        $scope.logout = function() {
             LocalStorageService.clear('user');
             UserService.initialize();
             $location.path('/login');
         };
-
 
         /***********************************************************************************
          *
@@ -63,28 +62,26 @@ define([
          ***********************************************************************************/
         $scope.modifyArticleBaseModal = false;
         $scope.isLoading = false;
-
-        var apiUrl = UrlService.urlNode;
-
         $scope.pendingRequests = [
             {
-                id : 1,
-                date : new Date(),
-                time_slot : {id: 1, start: "8:00:00", end: "9:30:00"},
-                teaching : {
-                    id : 3,
-                    group : {
-
-                    },
-                    lesson : {
-
-                    },
-
+                id: 1,
+                date: new Date(),
+                timeSlot: {
+                    id: 1,
+                    start: "8:00:00",
+                    end: "9:30:00"
                 },
-                characteristics:[
+                teaching: {
+                    id: 3,
+                    group: {
+                    },
+                    lesson: {
+                    },
+                },
+                characteristics: [
                     {
                         id: 1,
-                        label : 'retro'
+                        label: 'retro'
                     },
                     {
                         id: 2,
@@ -97,28 +94,23 @@ define([
         /**
          * Get all pending requests that the use can see and save it in $scope.pendingRequests
          */
-
-
-        console.log($scope.pendingRequests);
-        console.log($modal);
+//        console.log($scope.pendingRequests);
+//        console.log($modal);
         /**
          *
          * @param id
          */
-        $scope.checkRoom=  function(id){
+        $scope.checkRoom = function(id) {
             $scope.isLoading = true;
-            console.log(id);
-        }
+        };
 
         /**
          * Remove the request
          * @param id request'id
          */
-        $scope.removeRequest = function(id){
+        $scope.removeRequest = function(id) {
             //http
             //remove from $scope.pendingRequest
-        }
-
-
+        };
     });
 });
