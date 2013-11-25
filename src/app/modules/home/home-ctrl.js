@@ -7,18 +7,52 @@ define([
 ], function(app) {
     'use strict';
 
-    app.register.controller('HomeController', function($rootScope, $scope, $http, $filter, $location, LocalStorageService, UserService) {
+    app.register.controller('HomeController', function($rootScope, $scope, $http, $filter, $location, LocalStorageService, UserService, UrlService) {
 
         var date = new Date();
         var d = date.getDate();
         var m = date.getMonth();
         var y = date.getFullYear();
+        var apiUrl = UrlService.urlNode;
 
         /* event source that contains custom events on the scope */
         $scope.events = [
         ];
 
-        $http({method: 'Get', url: 'http://162.38.113.210:8080/teachers/'+UserService.getUser().teacher.id+'/reservations', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
+        $scope.groups = [];
+        /**
+         * Get all groups
+         */
+        $http({method: 'Get', url: apiUrl+'/groups', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
+            success(function (data) {
+                console.log(data);
+                $scope.groups = data.groups;
+            }).
+            error(function (data, status, headers, config) {
+                // called asynchronously if an error occurs
+                // or server returns response with an error status.
+                //todo:trtaiter l'erreur
+                console.log(status);
+                console.log(data);
+            });
+
+        $scope.teachers = [];
+        /**
+         * Get all groups
+         */
+        $http({method: 'Get', url: apiUrl+'/teachers', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
+            success(function (data) {
+                $scope.teachers = data.teachers;
+            }).
+            error(function (data, status, headers, config) {
+                // called asynchronously if an error occurs
+                // or server returns response with an error status.
+                //todo:trtaiter l'erreur
+                console.log(status);
+                console.log(data);
+            });
+
+        $http({method: 'Get', url: apiUrl+'/teachers/'+UserService.getUser().teacher.id+'/reservations', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
             success(function(data) {
                 angular.forEach(data.reservations, function(value, key){
 
@@ -159,10 +193,83 @@ define([
                 defaultView: 'agendaWeek',
                 dayClick: $scope.alertEventOnClick,
                 eventDrop: $scope.alertOnDrop,
-                eventResize: $scope.alertOnResize,
+                eventResize: $scope.alertOnResize
             }
         };
         /* event sources array*/
         $scope.eventSources = [$scope.events];
+
+
+        $scope.getGroupCalendar= function(group){
+            $http({method: 'Get', url: apiUrl+'/groups/'+group.id+'/reservations', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
+                success(function (data) {
+                    console.log(data);
+                    angular.forEach(data.reservations, function(value, key){
+
+                        var min = value.time_slot.start.split(':');
+                        min = min[1];
+
+                        var start = new Date(value.date);
+                        start.setHours(parseInt(value.time_slot.start));
+                        start.setMinutes(parseInt(min));
+
+                        var end = new Date(value.date);
+                        min = value.time_slot.end.split(':');
+                        min = min [1];
+
+                        end.setHours(parseInt(value.time_slot.end));
+                        end.setMinutes(parseInt(min));
+
+                        $scope.events.push(
+                            {
+                                title: value.teaching.lesson.subject.label + '\n' +value.teaching.group.label+' '+ value.room.label, start: start, end: end, allDay: false
+                            }
+                        );
+                    });
+                }).
+                error(function (data, status, headers, config) {
+                    // called asynchronously if an error occurs
+                    // or server returns response with an error status.
+                    //todo:trtaiter l'erreur
+                    console.log(status);
+                    console.log(data);
+                });
+        };
+
+        $scope.getTeacherCalendar= function(teacher){
+            $http({method: 'Get', url: apiUrl+'/teachers/'+teacher.id+'/reservations', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
+                success(function (data) {
+                    console.log(data);
+                    angular.forEach(data.reservations, function(value, key){
+
+                        var min = value.time_slot.start.split(':');
+                        min = min[1];
+
+                        var start = new Date(value.date);
+                        start.setHours(parseInt(value.time_slot.start));
+                        start.setMinutes(parseInt(min));
+
+                        var end = new Date(value.date);
+                        min = value.time_slot.end.split(':');
+                        min = min [1];
+
+                        end.setHours(parseInt(value.time_slot.end));
+                        end.setMinutes(parseInt(min));
+
+                        $scope.events.push(
+                            {
+                                title: value.teaching.lesson.subject.label + '\n' +value.teaching.group.label+' '+ value.room.label, start: start, end: end, allDay: false
+                            }
+                        );
+                    });
+                })
+                        .error(function (data, status, headers, config) {
+                    // called asynchronously if an error occurs
+                    // or server returns response with an error status.
+                    //todo:trtaiter l'erreur
+                    console.log(status);
+                    console.log(data);
+                });
+        };
     });
 });
