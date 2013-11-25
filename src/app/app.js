@@ -23,20 +23,15 @@ define([
                 controller: 'ReservationController',
                 controllerUrl: 'modules/reservation/reservation-ctrl'
             }))
-            .when("/see-reservations", angularAMD.route({
-                templateUrl: 'modules/reservation/see-reservation.html',
-                controller: 'ReservationController',
-                controllerUrl: 'modules/reservation/see-reservation-ctrl'
+            .when("/history", angularAMD.route({
+                templateUrl: 'modules/reservation/history.html',
+                controller: 'HistoryController',
+                controllerUrl: 'modules/reservation/history-ctrl'
             }))
             .when("/admin-reservation", angularAMD.route({
                 templateUrl: 'modules/admin/see-reservation.html',
                 controller: 'AdminReservationController',
                 controllerUrl: 'modules/admin/see-reservation-ctrl'
-            }))
-            .when("/admin-calendar", angularAMD.route({
-                templateUrl: 'modules/admin/see-calendar.html',
-                controller: 'AdminCalendarController',
-                controllerUrl: 'modules/admin/see-calendar-ctrl'
             }))
             .otherwise({
                 redirectTo: '/'
@@ -120,6 +115,15 @@ define([
                 clear: function (key) {
                     localStorage.removeItem(key);
                 }
+            };
+        }
+    ]);
+
+    app.factory('UrlService', [
+        function () {
+            return {
+                urlNode : 'http://162.38.113.210:8080',
+                urlRuby : 'http://162.38.113.198:3000'
             };
         }
     ]);

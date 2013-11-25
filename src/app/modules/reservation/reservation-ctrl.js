@@ -7,7 +7,7 @@ define([
 ], function (app) {
     'use strict';
 
-    app.register.controller('ReservationController', function ($rootScope, $scope, $http, $filter, $location, LocalStorageService, UserService) {
+    app.register.controller('ReservationController', function ($rootScope, $scope, $http, $filter, $location, LocalStorageService, UrlService,UserService) {
 
         /*****************************************************************************
          *      Functions used by Metis to change view and logout
@@ -74,10 +74,12 @@ define([
         $scope.lessons = [];
         var teachings = [];
 
+        var apiUrl = UrlService.urlNode;
+
         /**
          * Get all groups
          */
-        $http({method: 'Get', url: 'http://162.38.113.210:8080/groups', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
+        $http({method: 'Get', url: apiUrl+'/groups', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
             success(function (data) {
                 $scope.groups = data.groups;
             }).
@@ -92,7 +94,7 @@ define([
         /**
          * Get Characteristics for a ROOM
          */
-        $http({method: 'Get', url: 'http://162.38.113.210:8080/characteristics', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
+        $http({method: 'Get', url: apiUrl+'/characteristics', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
             success(function (data) {
                 $scope.charateristics = data.characteristics;
             }).
@@ -107,7 +109,7 @@ define([
         /**
          * Get Time_slots for a reservation
          */
-        $http({method: 'Get', url: 'http://162.38.113.210:8080/time_slots', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
+        $http({method: 'Get', url: apiUrl+'/time_slots', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
             success(function (data) {
                 angular.forEach(data.time_slots, function (value) {
                     var start = value.start.split(':');
@@ -143,7 +145,7 @@ define([
             /**
              * Get all teachings available for a group
              */
-            $http({method: 'Get', url: 'http://162.38.113.210:8080/groups/'+ group.id+'/teachings_available', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
+            $http({method: 'Get', url: apiUrl+'/groups/'+ group.id+'/teachings_available', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
                 success(function (data) {
                     teachings = data;
                     var tmp = [];
@@ -218,15 +220,32 @@ define([
         };
 
         $scope.sendRequest = function(){
-            var request = {
 
+            var date = $('#datepicker').datepicker( "getDate").toISOString();
+            var request = {
+                reservation_request:
+                {
+                    date: date,
+                        capacity: $scope.capacity,
+                    time_slot_id:$scope.time.id,
+                    teaching_id: $scope.lesson.object.object[0].id,
+                    characteristics:[]
+                }
             };
 
 
+            angular.forEach($scope.selectedCharacteristics.ids,function(value, key){
+                if(value){
+                    request.reservation_request.characteristics.push({id: key});
+                }
+            });
 
-            $http({method: 'Post', url: 'http://162.38.113.210:8080/reservation_request', data: request, headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
+            console.log(request);
+            $http({method: 'Post', url: apiUrl+'/reservation_requests', data: request, headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
                 success(function (data) {
                     console.log(data);
+                    $location.path('/');
+
                 }).
                 error(function (data, status, headers, config) {
                     // called asynchronously if an error occurs

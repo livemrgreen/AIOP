@@ -73,7 +73,7 @@
                             <select class="form-control"
                                     ng-model="group"
                                     ng-options="group.label for group in groups"
-                                    ng-change="getSubjectList(group)" required></select>
+                                    ng-change="getSubjectList(group)" ></select>
                         </div>
                     </div>
                     <div class="form-group" ng-show="showTeachings" >
@@ -83,7 +83,7 @@
                             <select class="form-control"
                                     ng-model="subject"
                                     ng-options="teaching.name for teaching in teachingValues"
-                                    ng-change="getLessonTypesList(subject)" required></select>
+                                    ng-change="getLessonTypesList(subject)" ></select>
                         </div>
                     </div>
                     <div class="form-group" ng-show="showLessonType">
@@ -93,7 +93,7 @@
                             <select class="form-control"
                                     ng-model="lessonType"
                                     ng-options="type.name for type in lessonTypes"
-                                    ng-change="getLessonsList(lessonType)" required></select>
+                                    ng-change="getLessonsList(lessonType)" ></select>
                         </div>
                     </div>
                     <div class="form-group" ng-show="showLesson">
@@ -103,7 +103,7 @@
                             <select class="form-control"
                                     ng-model="lesson"
                                     ng-options="lesson.name for lesson in lessons"
-                                    required></select>
+                                    ></select>
                         </div>
                     </div>
 
@@ -111,7 +111,7 @@
                         <label class="control-label col-lg-4">Capacity: </label>
 
                         <div class="col-lg-4">
-                            <input class="form-control" ng-model="capacity" required></select>
+                            <input class="form-control" ng-model="capacity" ></select>
                         </div>
                     </div>
 
@@ -132,7 +132,7 @@
 
                         <div class="col-lg-4">
                             <div class="input-group input-append date">
-                                <input class="form-control" type="text" id="datepicker" required>
+                                <input class="form-control" type="text" id="datepicker" ng-model="datePick" >
                                 <span class="input-group-addon add-on">
                                     <i class="fa fa-calendar"></i>
                                 </span>
@@ -145,9 +145,9 @@
                         <div class="col-lg-4">
                             <div class="input-group input-append date">
                                 <select class="form-control"
-                                        ng-model="timeSlot"
+                                        ng-model="time"
                                         ng-options="time.concat for time in timeSlots"
-                                        required></select>
+                                        ></select>
                             </div>
                         </div>
                     </div>
@@ -157,7 +157,7 @@
 
                         <div class="col-lg-4">
                             <a type="button" class="btn btn-lg btn-primary btn-block"
-                               ng-click="sendReservationRequest()" ng-disabled="form.$invalid">Send request</a>
+                               ng-click="sendRequest()" ng-disabled="form.$invalid">Send request</a>
                         </div>
                     </div>
                 </form>
