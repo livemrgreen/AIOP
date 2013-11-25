@@ -87,12 +87,9 @@
                 </form>
 
 
-                <div class="span8">
-                    <div class="alert-success calAlert" ng-show="alertMessage != undefined && alertMessage != ''">
-                        <h4>{{alertMessage}}</h4>
-                    </div>
+                <div class="span8 top-buffer">
                     <div class="btn-toolbar">
-                        <p class="pull-right lead">Agenda</p>
+                        <p class="pull-right lead">{{calendarName}}</p>
                         <div class="btn-group">
                             <button class="btn btn-success" ng-click="changeView('agendaDay', myCalendar)">Day</button>
                             <button class="btn btn-success" ng-click="changeView('agendaWeek', myCalendar)">Week</button>

@@ -157,7 +157,6 @@ define([
                 for (var subject in tmp) {
                     $scope.teachingValues.push({name: subject, object: tmp[subject]});
                 }
-                ;
 
                 //set next field visible
                 $scope.showTeachings = true;

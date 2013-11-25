@@ -5,7 +5,6 @@ td {
 h1 {
     color: #999999 !important;
 }
-
 .menu-focus {
     background-color: #404040;
     outline: medium none;
@@ -14,4 +13,8 @@ h1 {
 
 .submenu-focus {
     color: #FFFFFF !important;
+}
+
+.top-buffer {
+    margin-top:20px;
 }

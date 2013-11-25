@@ -13,7 +13,10 @@ define([
         var d = date.getDate();
         var m = date.getMonth();
         var y = date.getFullYear();
+
+
         var apiUrl = UrlService.urlNode;
+        $scope.calendarName = '';
 
         /* event source that contains custom events on the scope */
         $scope.events = [
@@ -54,6 +57,12 @@ define([
 
         $http({method: 'Get', url: apiUrl+'/teachers/'+UserService.getUser().teacher.id+'/reservations', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
             success(function(data) {
+                console.log('success');
+                console.log(data);
+
+                $scope.calendarName = UserService.getUser().teacher.first_name+' '+UserService.getUser().teacher.last_name;
+
+
                 angular.forEach(data.reservations, function(value, key){
 
                     var min = value.time_slot.start.split(':');
@@ -204,6 +213,7 @@ define([
             $http({method: 'Get', url: apiUrl+'/groups/'+group.id+'/reservations', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
                 success(function (data) {
                     console.log(data);
+                    $scope.calendarName = $scope.group.label;
                     angular.forEach(data.reservations, function(value, key){
 
                         var min = value.time_slot.start.split(':');
@@ -240,6 +250,7 @@ define([
             $http({method: 'Get', url: apiUrl+'/teachers/'+teacher.id+'/reservations', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
                 success(function (data) {
                     console.log(data);
+                    $scope.calendarName = $scope.teacher.first_name+$scope.teacher.last_name;
                     angular.forEach(data.reservations, function(value, key){
 
                         var min = value.time_slot.start.split(':');
