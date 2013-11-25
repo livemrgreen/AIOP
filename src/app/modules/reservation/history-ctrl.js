@@ -27,6 +27,15 @@ define([
             }
         };
 
+        if (UserService.getUser().administrator)
+            $scope.administrator = 'Administrator';
+        else
+            $scope.administrator = '';
+        if (UserService.getUser().teacher.module_manager)
+            $scope.moduleManager = 'Module Manager';
+        else
+            $scope.moduleManager = '';
+
         //define datepiker
         $(function () {
             $("#datepicker").datepicker().datepicker({minDate: -1, maxDate: -2}).attr('readonly', 'readonly');

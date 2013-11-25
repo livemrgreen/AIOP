@@ -12,7 +12,9 @@ define([
         var d = date.getDate();
         var m = date.getMonth();
         var y = date.getFullYear();
+
         var apiUrl = UrlService.urlNode;
+
         $scope.calendarName = '';
 
         /* event source that contains custom events on the scope */

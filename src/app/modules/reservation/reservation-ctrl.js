@@ -142,7 +142,7 @@ define([
             /**
              * Get all teachings available for a group
              */
-            $http({method: 'Get', url: apiUrl + '/groups/' + group.id + '/teachings_available', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
+            $http({method: 'Get', url: apiUrl + '/groups/' + group.id + '/available_teachings', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
                     success(function(data) {
                 teachings = data;
                 var tmp = [];
