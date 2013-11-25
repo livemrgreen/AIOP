@@ -172,11 +172,13 @@ var handleUser = function (user, done) {
     var tmp = JSON.parse(JSON.stringify(user));
 
     // now the teacher
-    user.getTeacher().success(function (teacher) {
+    user.getTeacher({"include": [orm.model("module")]}).success(function (teacher) {
 
         // if there is a teacher
+
         if (teacher) {
-            tmp.teacher = teacher.values;
+            tmp.teacher = JSON.parse(JSON.stringify(teacher));
+            tmp.teacher.module_manager = (teacher.module.length !== 0);
         }
 
         delete tmp.password;

@@ -100,6 +100,28 @@ module.exports.reservation_requests = function (req, res, next) {
             res.send(404, {"message": "Teacher not found"});
         }
         else {
+            orm.model("reservation_request").findAll({
+                "where": {"teaching.teacher_id": teacher.id},
+                "include": [orm.model("teaching"), orm.model("reservation")]})
+                .success(function (teachings) {
+                res.send(200, teachings);
+            });
+        }
+    });
+    return next();
+};
+
+/*
+ * GET /teachers/:id/reservation_requests_available
+ */
+module.exports.reservation_requests_available = function (req, res, next) {
+    var teacher = orm.model("teacher");
+
+    teacher.find({"where": {"id": req.params.id}}).success(function (teacher) {
+        if (!teacher) {
+            res.send(404, {"message": "Teacher not found"});
+        }
+        else {
             // Get all the modules from the manager
             teacher.getModules({"include": [orm.model("subject")]}).success(function (modules) {
                 if (modules) {

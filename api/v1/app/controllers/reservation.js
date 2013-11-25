@@ -1,6 +1,5 @@
 var orm = require("../../config/models");
 var async = require("async");
-var teaching_ctrl = require("./teaching");
 
 /*
  * GET /reservations/

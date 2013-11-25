@@ -7,7 +7,7 @@ module.exports.list = function (req, res, next) {
     var reservation_request = orm.model("reservation_request");
 
     reservation_request.findAll({
-        "where": {"reservation.id": null},
+        "where": {"reservation.id": null, "status": null},
         "include": [
             {"model": orm.model("time_slot"), "as": "slot"},
             orm.model("teaching"),

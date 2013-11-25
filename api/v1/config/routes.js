@@ -44,14 +44,14 @@ module.exports = function (server, passport, auth) {
     server.put("/modules/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, module.update);
     server.del("/modules/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, module.delete);
 
-    var reservation = require("../app/controllers/reservation");
+    var reservation = require("../app/controllers/reservation"); // TODO Permissions
     server.get("/reservations", passport.authenticate("bearer", { session: false }), reservation.list);
     server.post("/reservations", passport.authenticate("bearer", { session: false }), reservation.create);
     server.get("/reservations/:id", passport.authenticate("bearer", { session: false }), reservation.show);
     server.put("/reservations/:id", passport.authenticate("bearer", { session: false }), reservation.update);
     server.del("/reservations/:id", passport.authenticate("bearer", { session: false }), reservation.delete);
 
-    var reservation_request = require("../app/controllers/reservation_request");
+    var reservation_request = require("../app/controllers/reservation_request"); // TODO Permissions
     server.get("/reservation_requests", passport.authenticate("bearer", { session: false }), reservation_request.list);
     server.post("/reservation_requests", passport.authenticate("bearer", { session: false }), reservation_request.create);
     server.get("/reservation_requests/:id", passport.authenticate("bearer", { session: false }), reservation_request.show);
@@ -78,7 +78,8 @@ module.exports = function (server, passport, auth) {
     server.post("/teachers", passport.authenticate("bearer", { session: false }), auth.isAdministrator, teacher.create);
     server.get("/teachers/:id", passport.authenticate("bearer", { session: false }), teacher.show);
     server.get("/teachers/:id/reservations", passport.authenticate("bearer", { session: false }), auth.isMyTeacher, teacher.reservations);
-    server.get("/teachers/:id/reservation_requests", passport.authenticate("bearer", { session: false }), auth.isMyTeacherModuleManager, teacher.reservation_requests);
+    server.get("/teachers/:id/reservation_requests", passport.authenticate("bearer", { session: false }), auth.isMyTeacher, teacher.reservation_requests);
+    server.get("/teachers/:id/reservation_requests_available", passport.authenticate("bearer", { session: false }), auth.isMyTeacherModuleManager, teacher.reservation_requests_available);
     server.put("/teachers/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, teacher.update);
     server.del("/teachers/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, teacher.delete);
 
