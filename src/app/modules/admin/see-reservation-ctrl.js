@@ -15,10 +15,10 @@ define([
         $scope.classReservations = 'collapse';
         $scope.admin = UserService.isAdmin();
         $scope.open = function(div) {
-            if (div == 'admin'){
+            if (div === 'admin'){
                 var $icon = $('#accordion-toggle-admin').children('span').children('i');
                 //open or close submenu of reservation
-                if ($scope.classReservationsAdmin == 'collapse') {
+                if ($scope.classReservationsAdmin === 'collapse') {
                     //change arrow value of Reservations
                     $icon.removeClass('fa fa-angle-left').addClass('fa fa-angle-down');
                     $scope.classReservationsAdmin= '';
@@ -31,7 +31,7 @@ define([
             else{
                 var $icon = $('#accordion-toggle').children('span').children('i');
                 //open or close submenu of reservation
-                if ($scope.classReservations == 'collapse') {
+                if ($scope.classReservations === 'collapse') {
                     //change arrow value of Reservations
                     $icon.removeClass('fa fa-angle-left').addClass('fa fa-angle-down');
                     $scope.classReservations = '';
@@ -56,6 +56,14 @@ define([
 
         $scope.firstName = UserService.getUser().teacher.first_name;
         $scope.lastName = UserService.getUser().teacher.last_name;
+        if (UserService.getUser().administrator)
+            $scope.administrator = 'Administrator';
+        else
+            $scope.administrator = '';
+        if (UserService.getUser().teacher.module_manager)
+            $scope.moduleManager = 'Module Manager';
+        else
+            $scope.moduleManager = '';
         $scope.todayDate = $filter('date')(new Date(), 'dd/MM/y');
 
         $scope.logout = function () {
@@ -114,7 +122,7 @@ define([
         $scope.checkRoom=  function(id){
             $scope.isLoading = true;
             console.log(id);
-        }
+        };
 
         /**
          * Remove the request
@@ -123,7 +131,7 @@ define([
         $scope.removeRequest = function(id){
             //http
             //remove from $scope.pendingRequest
-        }
+        };
 
 
     });

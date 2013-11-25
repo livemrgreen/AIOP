@@ -2,19 +2,12 @@
     <div id="top">
         <nav class="navbar navbar-inverse navbar-static-top">
             <header class="navbar-header">
-                <a ng-click="changeLocation('')" class="navbar-brand "><img class="small" src="assets/img/logo.png"
-                                                                            alt=""></a>
-                <a class="btn-primary visible-xs " data-toggle="collapse" href="#menu" id="menu-toggle">
-                    <i class="icon-bar"></i>
-                    <i class="icon-bar"></i>
-                    <i class="icon-bar"></i>
-                </a>
+                <a href="" class="navbar-brand "><i class="fa fa-calendar"></i> Schedule Manager</a>
             </header>
             <div class="topnav">
                 <div class="btn-toolbar">
                     <div class="btn-group">
-                        <a data-toggle="tooltip" data-original-title="Logout" data-placement="bottom"
-                           class="btn btn-metis-1 btn-sm" ng-click="logout()">
+                        <a data-toggle="tooltip" data-original-title="Logout" data-placement="bottom" class="btn btn-metis-1 btn-sm" ng-click="logout()">
                             <i class="fa fa-power-off"></i>
                         </a>
                     </div>
@@ -29,18 +22,12 @@
     </div>
     <div id="left">
         <div class="media user-media">
-            <a href="#" class="quick-btn pull-right">
-                <i class="fa fa-user fa-3x"></i>
-                <span class="label label-danger">2</span>
-            </a>
-
             <div class="media-body">
-                <h5 class="media-heading">{{firstName}} {{lastName}}</h5>
                 <ul class="list-unstyled user-info">
-                    <li>&nbsp;</li>
-                    <li>Today's date<br/>
-                        <small><i class="fa fa-calendar-o"></i> {{todayDate}}</small>
-                    </li>
+                    <h5 class="media-heading">{{firstName}} {{lastName}}</h5>
+                    <li><small>{{administrator}}</small></li>
+                    <li><small>{{moduleManager}}</small></li>
+                    <li><small><i class="fa fa-calendar-o"></i> {{todayDate}}</small></li>
                 </ul>
             </div>
         </div>
@@ -50,25 +37,23 @@
             <li class="panel ">
                 <a href="" data-parent="#menu" data-toggle="collapse" class="accordion-toggle" id="accordion-toggle" ng-click="open('reservation')" data-target="#dashboard-nav">
                     <i class="fa fa-pencil-square-o"></i> Reservations
-                    <span class="pull-right">
-                        <i class="fa fa-angle-left"></i>
-                    </span>
                 </a>
                 <ul class="{{classReservations}}" id="dashboard-nav">
-                    <li class=""><a href="" ng-click="changeLocation('reservation')">New request</a></li>
-                    <li class=""><a href="">Pending requests</a></li>
-                </ul>
-            </li>
-            <li class="panel " ng-show="admin">
-                <a href="" data-parent="#menu" data-toggle="collapse" class="accordion-toggle" id="accordion-toggle-admin" ng-click="open('admin')" data-target="#dashboard-nav">
-                    <i class="fa fa-pencil-square-o"></i> Administration
-                    <span class="pull-right">
-                        <i class="fa fa-angle-left"></i>
-                    </span>
-                </a>
-                <ul class="{{classReservationsAdmin}}" id="dashboard-nav">
-                    <li class=""><a href="" ng-click="changeLocation('admin-calendar')">Other schedules</a></li>
-                    <li class=""><a href="" ng-click="changeLocation('admin-reservation')">Pending requests</a></li>
+                    <li class="">
+                        <a href="">
+                            <i class="fa fa-angle-right"></i> New
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="" ng-click="changeLocation('history')">
+                            <i class="fa fa-angle-right"></i> History
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="" ng-click="changeLocation('admin-reservation')">
+                            <i class="fa fa-angle-right"></i> Manage
+                        </a>
+                    </li>
                 </ul>
             </li>
         </ul>

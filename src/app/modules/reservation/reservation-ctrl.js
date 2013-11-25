@@ -55,6 +55,14 @@ define([
 
         $scope.firstName = UserService.getUser().teacher.first_name;
         $scope.lastName = UserService.getUser().teacher.last_name;
+        if (UserService.getUser().administrator)
+            $scope.administrator = 'Administrator';
+        else
+            $scope.administrator = '';
+        if (UserService.getUser().teacher.module_manager)
+            $scope.moduleManager = 'Module Manager';
+        else
+            $scope.moduleManager = '';
         $scope.todayDate = $filter('date')(new Date(), 'dd/MM/y');
 
         $scope.logout = function () {
