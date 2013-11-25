@@ -112,9 +112,9 @@ module.exports.reservation_requests = function (req, res, next) {
 };
 
 /*
- * GET /teachers/:id/reservation_requests_available
+ * GET /teachers/:id/available_reservation_requests
  */
-module.exports.reservation_requests_available = function (req, res, next) {
+module.exports.available_reservation_requests = function (req, res, next) {
     var teacher = orm.model("teacher");
 
     teacher.find({"where": {"id": req.params.id}}).success(function (teacher) {

@@ -91,9 +91,9 @@ module.exports.show = function (req, res, next) {
 };
 
 /*
- * GET /reservation_requests/:id/rooms_available
+ * GET /reservation_requests/:id/available_rooms
  */
-module.exports.rooms_available = function (req, res, next) {
+module.exports.available_rooms = function (req, res, next) {
     var reservation_request = orm.model("reservation_request");
     var room = orm.model("room");
 

@@ -64,9 +64,9 @@ module.exports.show = function (req, res, next) {
 };
 
 /*
- * GET /groups/:id/teachings_available
+ * GET /groups/:id/available_teachings
  */
-module.exports.teachings_available = function (req, res, next) {
+module.exports.available_teachings = function (req, res, next) {
     var group = orm.model("group");
 
     group.find({"where": {"id": req.params.id}}).success(function (group) {
