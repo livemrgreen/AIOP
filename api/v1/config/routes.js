@@ -55,7 +55,7 @@ module.exports = function (server, passport, auth) {
     server.get("/reservation_requests", passport.authenticate("bearer", { session: false }), reservation_request.list);
     server.post("/reservation_requests", passport.authenticate("bearer", { session: false }), reservation_request.create);
     server.get("/reservation_requests/:id", passport.authenticate("bearer", { session: false }), reservation_request.show);
-    server.get("/reservation_requests/:id/_available_rooms", passport.authenticate("bearer", { session: false }), reservation_request.available_rooms);
+    server.get("/reservation_requests/:id/available_rooms", passport.authenticate("bearer", { session: false }), reservation_request.available_rooms);
     server.put("/reservation_requests/:id", passport.authenticate("bearer", { session: false }), reservation_request.update);
     server.del("/reservation_requests/:id", passport.authenticate("bearer", { session: false }), reservation_request.delete);
 
