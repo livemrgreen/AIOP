@@ -28,7 +28,7 @@ define([
                 controller: 'ReservationController',
                 controllerUrl: 'modules/reservation/see-reservation-ctrl'
             }))
-            .when("/admin-reservations", angularAMD.route({
+            .when("/admin-reservation", angularAMD.route({
                 templateUrl: 'modules/admin/see-reservation.html',
                 controller: 'AdminReservationController',
                 controllerUrl: 'modules/admin/see-reservation-ctrl'

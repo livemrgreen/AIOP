@@ -7,7 +7,7 @@ define([
 ], function (app) {
     'use strict';
 
-    app.register.controller('ReservationController', function ($rootScope, $scope, $http, $modal, $filter, $location, LocalStorageService, UserService) {
+    app.register.controller('AdminReservationController', function ($rootScope, $scope, $http, $modal, $filter, $location, LocalStorageService, UserService) {
 
         /*****************************************************************************
          *      Functions used by Metis to change view and logout
