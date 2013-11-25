@@ -24,7 +24,7 @@ module.exports.create = function (req, res, next) {
 
     if (req.body && req.body.reservation) {
         var r = req.body.reservation;
-        if (r.date && r.time_slot_id && r.room_id && r.teaching_id) {
+        if (r.date && r.time_slot_id && r.room_id && r.teaching_id && r.reservation_request_id) {
             reservation.create(r)
                 .success(function (reservation) {
                     res.send(201, {"reservation": reservation});
