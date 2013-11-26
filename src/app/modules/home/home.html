@@ -49,7 +49,7 @@
                             <i class="fa fa-angle-right"></i> History
                         </a>
                     </li>
-                    <li class="">
+                    <li class="" ng-show="moduleManager">
                         <a href="" ng-click="changeLocation('manage-reservations')">
                             <i class="fa fa-angle-right"></i> Manage
                         </a>
@@ -62,7 +62,7 @@
         <div class="outer">
             <div class="inner" >
 
-                <form class="form-inline" ng-show="admin">
+                <form class="form-inline" ng-show="moduleManager">
                     <div class="form-group" >
                         <label class="control-label">Group: </label>
 

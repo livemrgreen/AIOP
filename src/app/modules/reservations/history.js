@@ -12,6 +12,8 @@ define([
         /*****************************************************************************
          *      Functions used by Metis to change view and logout
          *****************************************************************************/
+        $scope.moduleManager = UserService.isModuleManager();
+
         $scope.open = function () {
 
             var $icon = $('.accordion-toggle').children('span').children('i');
@@ -66,32 +68,63 @@ define([
 
         var apiUrl = UrlService.urlNode;
 
-        $scope.pendingRequests = [
-            {
-                id : 1,
-                date : new Date(),
-                time_slot : {id: 1, start: "8:00:00", end: "9:30:00"},
-                teaching : {
-                    id : 3,
-                    group : {
+        $scope.pendingRequests = [];
 
-                    },
-                    lesson : {
+        /**
+         * Get all request
+         */
+        $http({
+            method: 'Get',
+            url: apiUrl + '/teachers/'+UserService.getUser().teacher.id+'/reservation_requests',
+            headers: {
+                'Authorization': "Bearer " + UserService.getAccessToken() + ""
+            }})
+            .success(function(data) {
+                angular.forEach(data.reservation_requests, function(value){
 
-                    },
-
-                },
-                characteristics:[
-                    {
-                        id: 1,
-                        label : 'retro'
-                    },
-                    {
-                        id: 2,
-                        label: 'tp'
+                    console.log(value.id)
+                    console.log(value.status);
+                    if (value.status){
+                        if(value.status == '-1'){
+                            console.log("-1 OK");
+                            value.status = 'No rooms available';
+                            value.style = 'danger';
+                        }
+                        else {
+                            console.log("-2 OK");
+                            value.status = 'Refused';
+                            value.style = 'danger';
+                        }
                     }
-                ]
-            }
-        ];
+                    else{
+                        console.log(value.reservation);
+                        if (value.reservation){
+                            console.log("Res OK");
+                            value.style = 'success';
+                            value.status = 'Accepted';
+                        }
+                        else{
+                            console.log("ResN Ok");
+                            value.style = 'info';
+                            value.status = 'Pending';
+                        }
+                    }
+
+                    value.date = value.date.split('T')[0];
+                    value.time_slot.start = value.time_slot.start.split(':');
+                    value.time_slot.start = value.time_slot.start[0]+'h'+ value.time_slot.start[1];
+
+                    value.time_slot.end = value.time_slot.end.split(':');
+                    value.time_slot.end = value.time_slot.end[0]+'h'+ value.time_slot.end[1];
+                    $scope.pendingRequests.push(value);
+                });
+            })
+            .error(function(data, status, headers, config) {
+                // called asynchronously if an error occurs
+                // or server returns response with an error status.
+                //todo:trtaiter l'erreur
+                console.log(status);
+                console.log(data);
+            });
     });
 });

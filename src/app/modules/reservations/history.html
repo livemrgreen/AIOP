@@ -35,21 +35,21 @@
             <li class="nav-header">Menu</li>
             <li><a href="" ng-click="changeLocation('home')" ><i class="fa fa-table"></i> Schedule</a></li>
             <li class="panel ">
-                <a href="" data-parent="#menu" data-toggle="collapse" class="accordion-toggle" id="accordion-toggle" ng-click="open('reservation')" data-target="#dashboard-nav">
+                <a href="" data-parent="#menu" data-toggle="collapse" class="accordion-toggle menu-focus" id="accordion-toggle" ng-click="open('reservation')" data-target="#dashboard-nav">
                     <i class="fa fa-pencil-square-o"></i> Reservations
                 </a>
                 <ul class="{{classReservations}}" id="dashboard-nav">
-                    <li class="">
+                    <li>
                         <a href="" ng-click="changeLocation('new-reservation')">
                             <i class="fa fa-angle-right"></i> New
                         </a>
                     </li>
-                    <li class="">
-                        <a href="" >
+                    <li>
+                        <a class="submenu-focus" href="">
                             <i class="fa fa-angle-right"></i> History
                         </a>
                     </li>
-                    <li class="">
+                    <li ng-show="moduleManager">
                         <a href="" ng-click="changeLocation('manage-reservations')">
                             <i class="fa fa-angle-right"></i> Manage
                         </a>
@@ -74,23 +74,18 @@
                                             <th class="sorting" role="columnheader" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 150px;" aria-label="Platform(s): activate to sort column ascending">Group</th>
                                             <th class="sorting" role="columnheader" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 80px;" aria-label="Engine version: activate to sort column ascending">Date</th>
                                             <th class="sorting" role="columnheader" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 110px;" aria-label="CSS grade: activate to sort column ascending">Time Slot</th>
-                                            <th class="sorting" role="columnheader" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 161px;" aria-label="CSS grade: activate to sort column ascending">Actions</th>
+                                            <th class="sorting" role="columnheader" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 161px;" aria-label="CSS grade: activate to sort column ascending">Status</th>
                                         </tr>
                                         </thead>
                                         <tbody aria-live="polite" aria-relevant="all">
                                         <tr class="odd" ng-repeat="request in pendingRequests">
-                                            <td class="center">Anne-Laure de Lauzun</td>
-                                            <td>Analyse financière</td>
-                                            <td>IG4 Groupe 1</td>
-                                            <td>20/11/12</td>
+                                            <td class="center">{{request.teaching.teacher.first_name}} {{request.teaching.teacher.last_name}}</td>
+                                            <td>{{request.teaching.lesson.subject.label}} {{request.teaching.lesson.lesson_type.label}} {{request.teaching.lesson.label}}</td>
+                                            <td>{{request.teaching.group.label}}</td>
+                                            <td>{{request.date}}</td>
                                             <td>{{request.time_slot.start}} - {{request.time_slot.end}}</td>
                                             <td>
-                                                <button class="btn btn-success" ng-disabled="isLoading" ng-click="checkRoom(request.id)">
-                                                    <i class="glyphicon glyphicon-refresh"></i> Check
-                                                </button>
-                                                <button class="btn btn-danger" ng-disabled="isLoading" ng-click="removeRequest(request.id)">
-                                                    <i class="glyphicon glyphicon-remove"></i> Refuse
-                                                </button>
+                                                <span class="label label-{{request.style}}"> {{request.status}}</span>
                                             </td>
                                         </tr>
                                         </tbody>

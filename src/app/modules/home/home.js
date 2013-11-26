@@ -14,6 +14,7 @@ define([
         var y = date.getFullYear();
 
         var apiUrl = UrlService.urlNode;
+        $scope.moduleManager = UserService.isModuleManager();
 
         $scope.calendarName = '';
 
@@ -96,7 +97,6 @@ define([
         });
 
         $scope.classReservations = 'collapse';
-        $scope.admin = UserService.isAdmin();
         $scope.open = function(div) {
             if (div === 'admin') {
                 var $icon = $('#accordion-toggle-admin').children('span').children('i');
@@ -260,7 +260,7 @@ define([
                     'Authorization': "Bearer " + UserService.getAccessToken() + ""
                 }})
                     .success(function(data) {
-                $scope.calendarName = $scope.teacher.first_name + $scope.teacher.last_name;
+                $scope.calendarName = $scope.teacher.first_name +' '+ $scope.teacher.last_name;
                 angular.forEach(data.reservations, function(value, key) {
                     var min = value.time_slot.start.split(':');
                     min = min[1];

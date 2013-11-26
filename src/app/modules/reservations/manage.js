@@ -13,7 +13,7 @@ define([
          *      Functions used by Metis to change view and logout
          *****************************************************************************/
         $scope.classReservations = ''; //open by default
-        $scope.admin = UserService.isAdmin();
+        $scope.moduleManager = UserService.isModuleManager();
         $scope.open = function() {
             var $icon = $('#accordion-toggle').children('span').children('i');
             //open or close submenu of reservation

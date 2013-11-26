@@ -81,9 +81,8 @@ define([
             getUser : function(){
                 return $rootScope.userDetails.user;
             },
-            isAdmin: function(){
-                return true;
-                //return $rootScope.userDetails.user.teacher.module_manager;
+            isModuleManager: function(){
+                return $rootScope.userDetails.user.teacher.module_manager;
             }
 
 
@@ -156,11 +155,7 @@ define([
                 //event.preventDefault()
                 $location.path('/');
             }
-            else if($location.url() == '/admin-calendar' && UserService.getLogged() && !UserService.isAdmin()){
-                //event.preventDefault()
-                $location.path('/');
-            }
-            else if($location.url() == '/admin-reservation' && UserService.getLogged() && !UserService.isAdmin()){
+            else if($location.url() == '/manage-reservations' && UserService.getLogged() && !UserService.isModuleManager()){
                 //event.preventDefault()
                 $location.path('/');
             }
