@@ -5,8 +5,8 @@ define([
     'bootstrap'
 ], function(angularAMD) {
 
-    var app = angular.module("aiopApp", ['ngRoute', 'ui.calendar', 'ui.bootstrap.modal']);
-
+    var app = angular.module("aiopApp", ['ngRoute', 'ui.calendar']);
+    
     app.config(function($routeProvider) {
         $routeProvider.when("/", angularAMD.route({
             templateUrl: 'modules/home/home.html',
@@ -112,8 +112,9 @@ define([
     app.factory('UrlService', [
         function() {
             return {
-                urlNode: 'http://162.38.113.210:8080',
-                urlRuby: 'http://162.38.113.210:3000'
+                selectedAPI: 'http://162.38.113.210:8080'
+//                urlNode: 'http://162.38.113.210:8080'
+//                urlRuby: 'http://162.38.113.210:3000'
             };
         }
     ]);

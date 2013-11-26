@@ -7,9 +7,9 @@ define([
 ], function(app) {
     'use strict';
 
-    app.register.controller('HistoryReservationsController', function($rootScope, $scope, $http, $modal, $filter, $location, LocalStorageService, UrlService, UserService) {
+    app.register.controller('HistoryReservationsController', function($scope, $http, $filter, $location, LocalStorageService, UrlService, UserService) {
 
-        var apiUrl = UrlService.urlNode;
+        var apiUrl = UrlService.selectedAPI;
 
         /*****************************************************************************
          *      Functions used by Metis to change view and logout

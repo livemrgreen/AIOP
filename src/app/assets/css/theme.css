@@ -8,13 +8,29 @@ h1 {
 .menu-focus {
     background-color: #404040;
     outline: medium none;
-    color: #FFFFFF !important;
 }
 
+.menu-focus,
 .submenu-focus {
     color: #FFFFFF !important;
 }
 
 .top-buffer {
     margin-top:20px;
+}
+
+.tab-pane {
+    padding-top: 10px !important;
+}
+
+#div-tabs-agenda {
+    width: 200px;
+    position: absolute;
+    top: 11px;
+    right: 170px;
+    z-index: 1;
+}
+
+#div-calendar {
+    position:relative;
 }

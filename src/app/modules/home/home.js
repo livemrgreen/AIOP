@@ -8,9 +8,9 @@ define([
     'use strict';
 
     app.register.controller('HomeController', function($scope, $http, $filter, $location, LocalStorageService, UserService, UrlService) {
-        
-        var apiUrl = UrlService.urlNode;
-        
+
+        var apiUrl = UrlService.selectedAPI;
+
         $scope.moduleManager = UserService.isModuleManager();
 
         $scope.calendarName = '';
@@ -20,6 +20,23 @@ define([
         ];
 
         $scope.groups = [];
+
+        $scope.groupList = true;
+        $scope.activeNavGroups = 'active';
+        $scope.activeNavTeachers = '';
+
+        $scope.showGroupList = function() {
+            $scope.groupList = true;
+            $scope.activeNavGroups = 'active';
+            $scope.activeNavTeachers = '';
+            $scope.group = null;
+        };
+        $scope.showTeacherList = function() {
+            $scope.groupList = false;
+            $scope.activeNavGroups = '';
+            $scope.activeNavTeachers = 'active';
+            $scope.teacher = null;
+        };
         /**
          * Get all groups
          */

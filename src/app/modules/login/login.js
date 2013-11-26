@@ -9,7 +9,7 @@ define([
 
     app.register.controller('LoginController', function($rootScope, UrlService, $scope, $http, $location, LocalStorageService, UserService) {
 
-        var apiUrl = UrlService.urlNode;
+        var apiUrl = UrlService.selectedAPI;
 
         $scope.error = false;
         /**

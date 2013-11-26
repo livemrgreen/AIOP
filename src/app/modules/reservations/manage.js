@@ -9,7 +9,7 @@ define([
 
     app.register.controller('ManageReservationsController', function($scope, $http, $filter, $location, UrlService, LocalStorageService, UserService) {
 
-        var apiUrl = UrlService.urlNode;
+        var apiUrl = UrlService.selectedAPI;
         
         /*****************************************************************************
          *      Functions used by Metis to change view and logout
