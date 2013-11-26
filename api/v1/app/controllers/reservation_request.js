@@ -33,7 +33,7 @@ module.exports.create = function (req, res, next) {
 
     if (req.body && req.body.reservation_request) {
         var r = req.body.reservation_request;
-        if (r.date && r.capacity && r.time_slot_id && r.teaching_id && r.characteristics) {
+        if (r.date && r.capacity && r.status && r.time_slot_id && r.teaching_id && r.characteristics) {
 
             // get the characteristics database objects
             async.map(r.characteristics, handleCharacteristic, function (err, results) {
@@ -201,13 +201,15 @@ module.exports.update = function (req, res, next) {
 
     if (req.body && req.body.reservation_request) {
         var r = req.body.reservation_request;
-        if (r.date && r.time_slot_id && r.teaching_id) {
+        if (r.date && r.capacity && r.status && r.time_slot_id && r.teaching_id) {
             reservation_request.find({"where": {"id": req.params.id}}).success(function (reservation_request) {
                 if (!reservation_request) {
                     res.send(404, {"message": "Reservation_request not found"});
                 }
                 else {
                     reservation_request.date = r.date;
+                    reservation_request.capacity = r.capacity;
+                    reservation_request.status = r.status;
                     reservation_request.time_slot_id = r.time_slot_id;
                     reservation_request.teaching_id = r.teaching_id;
 
