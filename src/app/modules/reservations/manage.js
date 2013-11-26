@@ -7,7 +7,7 @@ define([
 ], function(app) {
     'use strict';
 
-    app.register.controller('ManageReservationsController', function($rootScope, $scope, $http, $modal, $filter, $location, LocalStorageService, UserService, UrlService) {
+    app.register.controller('ManageReservationsController', function($scope, $http, $filter, $location, UrlService, LocalStorageService, UserService) {
 
         /*****************************************************************************
          *      Functions used by Metis to change view and logout
@@ -60,57 +60,38 @@ define([
          *          Function for displayed reservations
          *
          ***********************************************************************************/
-        $scope.modifyArticleBaseModal = false;
-        $scope.isLoading = false;
-        $scope.pendingRequests = [
-            {
-                id: 1,
-                date: new Date(),
-                timeSlot: {
-                    id: 1,
-                    start: "8:00:00",
-                    end: "9:30:00"
-                },
-                teaching: {
-                    id: 3,
-                    group: {
-                    },
-                    lesson: {
-                    },
-                },
-                characteristics: [
-                    {
-                        id: 1,
-                        label: 'retro'
-                    },
-                    {
-                        id: 2,
-                        label: 'tp'
-                    }
-                ]
-            }
-        ];
+
+        $scope.pendingRequests = [];
 
         /**
-         * Get all pending requests that the use can see and save it in $scope.pendingRequests
+         * Get all request
          */
-//        console.log($scope.pendingRequests);
-//        console.log($modal);
-        /**
-         *
-         * @param id
-         */
-        $scope.checkRoom = function(id) {
-            $scope.isLoading = true;
-        };
 
-        /**
-         * Remove the request
-         * @param id request'id
-         */
-        $scope.removeRequest = function(id) {
-            //http
-            //remove from $scope.pendingRequest
-        };
+        var apiUrl = UrlService.urlNode;
+
+        $http({
+            method: 'Get',
+            url: apiUrl + '/teachers/' + UserService.getUser().teacher.id + '/available_reservation_requests',
+            headers: {
+                'Authorization': "Bearer " + UserService.getAccessToken() + ""
+            }})
+                .success(function(data) {
+            angular.forEach(data.reservation_requests, function(value) {
+                value.date = value.date.split('T')[0];
+                value.time_slot.start = value.time_slot.start.split(':');
+                value.time_slot.start = value.time_slot.start[0] + 'h' + value.time_slot.start[1];
+
+                value.time_slot.end = value.time_slot.end.split(':');
+                value.time_slot.end = value.time_slot.end[0] + 'h' + value.time_slot.end[1];
+                $scope.pendingRequests.push(value);
+            });
+        })
+                .error(function(data, status, headers, config) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+            //todo:trtaiter l'erreur
+            console.log(status);
+            console.log(data);
+        });
     });
 });
