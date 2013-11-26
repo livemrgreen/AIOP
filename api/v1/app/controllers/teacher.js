@@ -104,7 +104,10 @@ module.exports.reservation_requests = function (req, res, next) {
                 "where": {"teaching.teacher_id": teacher.id},
                 "include": [orm.model("teaching"), orm.model("reservation"), {"model": orm.model("time_slot"), "as": "slot"}]})
                 .success(function (reservation_requests) {
-                res.send(200, {"reservation_requests": reservation_requests});
+                    async.map(reservation_requests, reservation_request_ctrl.handleReservationRequest, function (error, results) {
+                        res.send(200, {"reservation_requests": results
+                        });
+                    });
             });
         }
     });
