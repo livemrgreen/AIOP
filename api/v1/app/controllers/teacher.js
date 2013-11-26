@@ -102,7 +102,7 @@ module.exports.reservation_requests = function (req, res, next) {
         else {
             orm.model("reservation_request").findAll({
                 "where": {"teaching.teacher_id": teacher.id},
-                "include": [orm.model("teaching"), orm.model("reservation"), orm.model("time_slot")]})
+                "include": [orm.model("teaching"), orm.model("reservation"), {"model": orm.model("time_slot"), "as": "slot"}]})
                 .success(function (reservation_requests) {
                 res.send(200, {"reservation_requests": reservation_requests});
             });
