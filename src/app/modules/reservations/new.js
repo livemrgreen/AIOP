@@ -160,8 +160,13 @@ define([
             /**
              * Get all teachings available for a group
              */
-            $http({method: 'Get', url: apiUrl + '/groups/' + group.id + '/available_teachings', headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
-                    success(function(data) {
+            $http({
+                method: 'Get',
+                url: apiUrl + '/groups/' + group.id + '/available_teachings',
+                headers: {
+                    'Authorization': "Bearer " + UserService.getAccessToken() + ""
+                }})
+                    .success(function(data) {
                 teachings = data;
                 var tmp = [];
                 angular.forEach(data.teachings, function(value, key) {
@@ -242,11 +247,11 @@ define([
                             capacity: $scope.capacity,
                             time_slot_id: $scope.time.id,
                             teaching_id: $scope.lesson.object.object[0].id,
-                            characteristics: []
+                            characteristics: [],
+                            status: null
                         }
             };
-
-
+            
             angular.forEach($scope.selectedCharacteristics.ids, function(value, key) {
                 if (value) {
                     request.reservation_request.characteristics.push({id: key});
@@ -254,8 +259,14 @@ define([
             });
 
             console.log(request);
-            $http({method: 'Post', url: apiUrl + '/reservation_requests', data: request, headers: {'Authorization': "Bearer " + UserService.getAccessToken() + ""}}).
-                    success(function(data) {
+            $http({
+                method: 'Post',
+                url: apiUrl + '/reservation_requests',
+                data: request,
+                headers: {
+                    'Authorization': "Bearer " + UserService.getAccessToken() + ""
+                }})
+                    .success(function(data) {
                 console.log(data);
                 $location.path('/');
 

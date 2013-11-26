@@ -83,11 +83,24 @@
                                             <td>{{request.teaching.group.label}}</td>
                                             <td>{{request.date}}</td>
                                             <td>{{request.time_slot.start}} - {{request.time_slot.end}}</td>
-                                            <td>
-                                                <button class="btn btn-primary">
+                                            <td ng-hide="selectedIndex == $index">
+                                                <button class="btn btn-primary" ng-disabled="isManaging" ng-click="checkRoomAvailability(request, $index)">
                                                     <i class="glyphicon glyphicon-refresh"></i> Check
                                                 </button>
-                                                <button class="btn btn-danger">
+                                                <button class="btn btn-danger" ng-disabled="isManaging" ng-click="refuseRequestMM(request, $index)">
+                                                    <i class="glyphicon glyphicon-remove"></i> Refuse
+                                                </button>
+                                            </td>
+                                            <td ng-show="selectedIndex == $index && algoOK">
+                                                <button class="btn btn-success" ng-click="validateRequest(request, $index)">
+                                                    <i class="glyphicon glyphicon-ok"></i> Validate
+                                                </button>
+                                                <button class="btn btn-danger" ng-click="refuseRequestMM(request, $index)">
+                                                    <i class="glyphicon glyphicon-remove"></i> Refuse
+                                                </button>
+                                            </td>
+                                            <td ng-show="selectedIndex == $index && !algoOK">
+                                                <button class="btn btn-danger" ng-click="refuseRequestAlgo(request, $index)">
                                                     <i class="glyphicon glyphicon-remove"></i> Refuse
                                                 </button>
                                             </td>

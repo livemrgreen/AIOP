@@ -93,5 +93,127 @@ define([
             console.log(status);
             console.log(data);
         });
+
+        $scope.validateRequest = function(req, index) {
+            
+            var reservation = {
+                reservation: {
+                    date: req.date,
+                    room_id: $scope.roomId,
+                    time_slot_id: req.time_slot.id,
+                    teaching_id: req.teaching.id,
+                    reservation_request_id: req.id
+                }
+            };
+            
+            $http({
+                method: 'Post',
+                url: apiUrl + '/reservations',
+                data: reservation,
+                headers: {
+                    'Authorization': "Bearer " + UserService.getAccessToken() + ""
+                }})
+                    .success(function() {
+                $scope.pendingRequests.splice(index, 1);
+                $scope.isManaging = false;
+            })
+                    .error(function(data, status, headers, config) {
+                // called asynchronously if an error occurs
+                // or server returns response with an error status.
+                //todo:traiter l'erreur
+                console.log(status);
+                console.log(data);
+            });
+        };
+
+        $scope.refuseRequestMM = function(req, index) {
+            var request = {
+                reservation_request: {
+                    date: req.date,
+                    capacity: req.capacity,
+                    time_slot_id: req.time_slot.id,
+                    teaching_id: req.teaching.id,
+                    status: '-2'
+                }
+            };
+            $http({
+                method: 'Put',
+                url: apiUrl + '/reservation_requests/' + req.id,
+                data: request,
+                headers: {
+                    'Authorization': "Bearer " + UserService.getAccessToken() + ""
+                }})
+                    .success(function() {
+                $scope.pendingRequests.splice(index, 1);
+            })
+                    .error(function(data, status, headers, config) {
+                // called asynchronously if an error occurs
+                // or server returns response with an error status.
+                //todo:traiter l'erreur
+                console.log(status);
+                console.log(data);
+            });
+        };
+
+        $scope.refuseRequestAlgo = function(req, index) {
+            var request = {
+                reservation_request: {
+                    date: req.date,
+                    capacity: req.capacity,
+                    time_slot_id: req.time_slot.id,
+                    teaching_id: req.teaching.id,
+                    status: '-1'
+                }
+            };
+            $http({
+                method: 'Put',
+                url: apiUrl + '/reservation_requests/' + req.id,
+                data: request,
+                headers: {
+                    'Authorization': "Bearer " + UserService.getAccessToken() + ""
+                }})
+                    .success(function() {
+                $scope.pendingRequests.splice(index, 1);
+            })
+                    .error(function(data, status, headers, config) {
+                // called asynchronously if an error occurs
+                // or server returns response with an error status.
+                //todo:traiter l'erreur
+                console.log(status);
+                console.log(data);
+            });
+        };
+
+        $scope.algoOK = false;
+        $scope.isManaging = false;
+
+        $scope.checkRoomAvailability = function(request, index) {
+            $scope.selectedIndex = index;
+            $scope.isManaging = true;
+
+            $http({
+                method: 'Get',
+                url: apiUrl + '/reservation_requests/' + request.id + '/available_rooms',
+                headers: {
+                    'Authorization': "Bearer " + UserService.getAccessToken() + ""
+                }})
+                    .success(function(data) {
+                if (data.rooms.length !== 0) {
+                    $scope.algoOK = true;
+                    $scope.roomId = data.rooms[0].id;
+                }
+                else {
+                    $scope.algoOK = false;
+                    $scope.roomId = null;
+                }
+            })
+                    .error(function(data, status, headers, config) {
+                // called asynchronously if an error occurs
+                // or server returns response with an error status.
+                //todo:traiter l'erreur
+                console.log(status);
+                console.log(data);
+            });
+        };
     });
 });
