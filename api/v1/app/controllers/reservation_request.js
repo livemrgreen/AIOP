@@ -14,7 +14,12 @@ module.exports.list = function (req, res, next) {
             orm.model("reservation")
         ]})
         .success(function (reservation_requests) {
-            res.send(200, {"reservation_requests": reservation_requests});
+			async.map(reservation_requests,
+				handleReservationRequest,
+				function(error, results) {
+					res.send(200, {"reservation_requests": results});
+				}
+			);
         });
 
     return next();
