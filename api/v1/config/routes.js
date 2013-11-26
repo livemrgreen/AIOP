@@ -77,7 +77,7 @@ module.exports = function (server, passport, auth) {
     server.get("/teachers", passport.authenticate("bearer", { session: false }), teacher.list);
     server.post("/teachers", passport.authenticate("bearer", { session: false }), auth.isAdministrator, teacher.create);
     server.get("/teachers/:id", passport.authenticate("bearer", { session: false }), teacher.show);
-    server.get("/teachers/:id/reservations", passport.authenticate("bearer", { session: false }), auth.isMyTeacher, teacher.reservations);
+    server.get("/teachers/:id/reservations", passport.authenticate("bearer", { session: false }), teacher.reservations);
     server.get("/teachers/:id/reservation_requests", passport.authenticate("bearer", { session: false }), auth.isMyTeacher, teacher.reservation_requests);
     server.get("/teachers/:id/available_reservation_requests", passport.authenticate("bearer", { session: false }), auth.isMyTeacherModuleManager, teacher.available_reservation_requests);
     server.put("/teachers/:id", passport.authenticate("bearer", { session: false }), auth.isAdministrator, teacher.update);
