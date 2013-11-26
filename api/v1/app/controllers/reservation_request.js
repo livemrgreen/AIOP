@@ -14,12 +14,12 @@ module.exports.list = function (req, res, next) {
             orm.model("reservation")
         ]})
         .success(function (reservation_requests) {
-			async.map(reservation_requests,
-				handleReservationRequest,
-				function(error, results) {
-					res.send(200, {"reservation_requests": results});
-				}
-			);
+            async.map(reservation_requests,
+                handleReservationRequest,
+                function (error, results) {
+                    res.send(200, {"reservation_requests": results});
+                }
+            );
         });
 
     return next();
@@ -33,7 +33,7 @@ module.exports.create = function (req, res, next) {
 
     if (req.body && req.body.reservation_request) {
         var r = req.body.reservation_request;
-        if (r.date && r.capacity && r.status && r.time_slot_id && r.teaching_id && r.characteristics) {
+        if (r.date && r.capacity && (typeof r.status !== "undefined") && r.time_slot_id && r.teaching_id && r.characteristics) {
 
             // get the characteristics database objects
             async.map(r.characteristics, handleCharacteristic, function (err, results) {
