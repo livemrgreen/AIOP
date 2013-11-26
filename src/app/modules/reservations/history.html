@@ -61,38 +61,32 @@
     <div id="content">
         <div class="outer">
             <div class="inner">
-                <div class="row ui-sortable">
-                    <div class="col-lg-12">
-                        <div class="box">
-                            <div class="body" id="collapse4">
-                                <div role="grid" class="dataTables_wrapper form-inline" id="dataTable_wrapper">
-                                    <table class="table table-bordered table-condensed table-hover table-striped dataTable" id="dataTable">
-                                        <thead>
-                                        <tr role="row">
-                                            <th class="sorting_asc" role="columnheader" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 200px;" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">Teacher</th>
-                                            <th class="sorting" role="columnheader" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 200px;" aria-label="Browser: activate to sort column ascending">Lesson</th>
-                                            <th class="sorting" role="columnheader" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 150px;" aria-label="Platform(s): activate to sort column ascending">Group</th>
-                                            <th class="sorting" role="columnheader" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 80px;" aria-label="Engine version: activate to sort column ascending">Date</th>
-                                            <th class="sorting" role="columnheader" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 110px;" aria-label="CSS grade: activate to sort column ascending">Time Slot</th>
-                                            <th class="sorting" role="columnheader" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 161px;" aria-label="CSS grade: activate to sort column ascending">Status</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody aria-live="polite" aria-relevant="all">
-                                        <tr class="odd" ng-repeat="request in pendingRequests">
-                                            <td class="center">{{request.teaching.teacher.first_name}} {{request.teaching.teacher.last_name}}</td>
-                                            <td>{{request.teaching.lesson.subject.label}} {{request.teaching.lesson.lesson_type.label}} {{request.teaching.lesson.label}}</td>
-                                            <td>{{request.teaching.group.label}}</td>
-                                            <td>{{request.date}}</td>
-                                            <td>{{request.time_slot.start}} - {{request.time_slot.end}}</td>
-                                            <td>
-                                                <span class="label label-{{request.style}}"> {{request.status}}</span>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+                <div class="box">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-condensed">
+                            <thead>
+                                <tr role="row">
+                                    <th style="min-width: 140px;" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">Teacher</th>
+                                    <th style="min-width: 140px;" aria-label="Browser: activate to sort column ascending">Lesson</th>
+                                    <th style="min-width: 100px;" aria-label="Platform(s): activate to sort column ascending">Group</th>
+                                    <th style="min-width: 25px;" aria-label="Engine version: activate to sort column ascending">Date</th>
+                                    <th style="min-width: 100px;" aria-label="CSS grade: activate to sort column ascending">Time Slot</th>
+                                    <th style="min-width: 120px;" aria-label="CSS grade: activate to sort column ascending">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody aria-live="polite" aria-relevant="all">
+                                <tr class="odd" ng-repeat="request in pendingRequests">
+                                    <td class="center">{{request.teaching.teacher.first_name}} {{request.teaching.teacher.last_name}}</td>
+                                    <td>{{request.teaching.lesson.subject.label}} {{request.teaching.lesson.lesson_type.label}} {{request.teaching.lesson.label}}</td>
+                                    <td>{{request.teaching.group.label}}</td>
+                                    <td>{{request.date}}</td>
+                                    <td>{{request.time_slot.start}} - {{request.time_slot.end}}</td>
+                                    <td>
+                                        <span class="label label-{{request.style}}"> {{request.status}}</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

@@ -113,7 +113,7 @@ define([
         function() {
             return {
                 urlNode: 'http://162.38.113.210:8080',
-                urlRuby: 'http://162.38.113.198:3000'
+                urlRuby: 'http://162.38.113.210:3000'
             };
         }
     ]);

@@ -7,7 +7,9 @@ define([
 ], function(app) {
     'use strict';
 
-    app.register.controller('LoginController', function($rootScope, $scope, $http, $location, LocalStorageService, UserService) {
+    app.register.controller('LoginController', function($rootScope, UrlService, $scope, $http, $location, LocalStorageService, UserService) {
+
+        var apiUrl = UrlService.urlNode;
 
         $scope.error = false;
         /**
@@ -16,10 +18,17 @@ define([
         $scope.loginFuncion = function() {
 
             // Create a User for sign in request
-            var user = {'username': $scope.user, 'password': $scope.pass};
+            var user = {
+                'username': $scope.user,
+                'password': $scope.pass
+            };
 
             // call /signin on the server with the user
-            $http({method: 'Post', url: 'http://162.38.113.210:8080/signin', data: user})
+            $http({
+                method: 'Post',
+                url: apiUrl + '/signin',
+                data: user
+            })
                     .success(function(data) {
                 //Set user information
                 UserService.setLogged();

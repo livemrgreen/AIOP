@@ -9,6 +9,8 @@ define([
 
     app.register.controller('NewReservationController', function($rootScope, $scope, $http, $filter, $location, LocalStorageService, UrlService, UserService) {
 
+        var apiUrl = UrlService.urlNode;
+        
         /*****************************************************************************
          *      Functions used by Metis to change view and logout
          *****************************************************************************/
@@ -73,11 +75,6 @@ define([
         $scope.lessons = [];
         var teachings = [];
 
-        var apiUrl = UrlService.urlNode;
-
-        /**
-         * Get all groups
-         */
         $http({
             method: 'Get',
             url: apiUrl + '/groups',

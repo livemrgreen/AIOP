@@ -9,11 +9,14 @@ define([
 
     app.register.controller('ManageReservationsController', function($scope, $http, $filter, $location, UrlService, LocalStorageService, UserService) {
 
+        var apiUrl = UrlService.urlNode;
+        
         /*****************************************************************************
          *      Functions used by Metis to change view and logout
          *****************************************************************************/
         $scope.classReservations = ''; //open by default
         $scope.moduleManager = UserService.isModuleManager();
+
         $scope.open = function() {
             var $icon = $('#accordion-toggle').children('span').children('i');
             //open or close submenu of reservation
@@ -63,12 +66,6 @@ define([
 
         $scope.pendingRequests = [];
 
-        /**
-         * Get all request
-         */
-
-        var apiUrl = UrlService.urlNode;
-
         $http({
             method: 'Get',
             url: apiUrl + '/teachers/' + UserService.getUser().teacher.id + '/available_reservation_requests',
@@ -93,96 +90,6 @@ define([
             console.log(status);
             console.log(data);
         });
-
-        $scope.validateRequest = function(req, index) {
-            
-            var reservation = {
-                reservation: {
-                    date: req.date,
-                    room_id: $scope.roomId,
-                    time_slot_id: req.time_slot.id,
-                    teaching_id: req.teaching.id,
-                    reservation_request_id: req.id
-                }
-            };
-            
-            $http({
-                method: 'Post',
-                url: apiUrl + '/reservations',
-                data: reservation,
-                headers: {
-                    'Authorization': "Bearer " + UserService.getAccessToken() + ""
-                }})
-                    .success(function() {
-                $scope.pendingRequests.splice(index, 1);
-                $scope.isManaging = false;
-            })
-                    .error(function(data, status, headers, config) {
-                // called asynchronously if an error occurs
-                // or server returns response with an error status.
-                //todo:traiter l'erreur
-                console.log(status);
-                console.log(data);
-            });
-        };
-
-        $scope.refuseRequestMM = function(req, index) {
-            var request = {
-                reservation_request: {
-                    date: req.date,
-                    capacity: req.capacity,
-                    time_slot_id: req.time_slot.id,
-                    teaching_id: req.teaching.id,
-                    status: '-2'
-                }
-            };
-            $http({
-                method: 'Put',
-                url: apiUrl + '/reservation_requests/' + req.id,
-                data: request,
-                headers: {
-                    'Authorization': "Bearer " + UserService.getAccessToken() + ""
-                }})
-                    .success(function() {
-                $scope.pendingRequests.splice(index, 1);
-            })
-                    .error(function(data, status, headers, config) {
-                // called asynchronously if an error occurs
-                // or server returns response with an error status.
-                //todo:traiter l'erreur
-                console.log(status);
-                console.log(data);
-            });
-        };
-
-        $scope.refuseRequestAlgo = function(req, index) {
-            var request = {
-                reservation_request: {
-                    date: req.date,
-                    capacity: req.capacity,
-                    time_slot_id: req.time_slot.id,
-                    teaching_id: req.teaching.id,
-                    status: '-1'
-                }
-            };
-            $http({
-                method: 'Put',
-                url: apiUrl + '/reservation_requests/' + req.id,
-                data: request,
-                headers: {
-                    'Authorization': "Bearer " + UserService.getAccessToken() + ""
-                }})
-                    .success(function() {
-                $scope.pendingRequests.splice(index, 1);
-            })
-                    .error(function(data, status, headers, config) {
-                // called asynchronously if an error occurs
-                // or server returns response with an error status.
-                //todo:traiter l'erreur
-                console.log(status);
-                console.log(data);
-            });
-        };
 
         $scope.algoOK = false;
         $scope.isManaging = false;
@@ -213,6 +120,107 @@ define([
                 //todo:traiter l'erreur
                 console.log(status);
                 console.log(data);
+            });
+        };
+
+        $scope.validateRequest = function(req, index) {
+
+            var reservation = {
+                reservation: {
+                    date: req.date,
+                    room_id: $scope.roomId,
+                    time_slot_id: req.time_slot.id,
+                    teaching_id: req.teaching.id,
+                    reservation_request_id: req.id
+                }
+            };
+
+            $http({
+                method: 'Post',
+                url: apiUrl + '/reservations',
+                data: reservation,
+                headers: {
+                    'Authorization': "Bearer " + UserService.getAccessToken() + ""
+                }})
+                    .success(function() {
+                $scope.pendingRequests.splice(index, 1);
+                $scope.isManaging = false;
+                $scope.selectedIndex = null;
+            })
+                    .error(function(data, status, headers, config) {
+                // called asynchronously if an error occurs
+                // or server returns response with an error status.
+                //todo:traiter l'erreur
+                console.log(status);
+                console.log(data);
+                $scope.isManaging = false;
+                $scope.selectedIndex = null;
+            });
+        };
+
+        $scope.refuseRequestMM = function(req, index) {
+            var request = {
+                reservation_request: {
+                    date: req.date,
+                    capacity: req.capacity,
+                    time_slot_id: req.time_slot.id,
+                    teaching_id: req.teaching.id,
+                    status: '-2'
+                }
+            };
+            $http({
+                method: 'Put',
+                url: apiUrl + '/reservation_requests/' + req.id,
+                data: request,
+                headers: {
+                    'Authorization': "Bearer " + UserService.getAccessToken() + ""
+                }})
+                    .success(function() {
+                $scope.pendingRequests.splice(index, 1);
+                $scope.isManaging = false;
+                $scope.selectedIndex = null;
+            })
+                    .error(function(data, status, headers, config) {
+                // called asynchronously if an error occurs
+                // or server returns response with an error status.
+                //todo:traiter l'erreur
+                console.log(status);
+                console.log(data);
+                $scope.isManaging = false;
+                $scope.selectedIndex = null;
+            });
+        };
+
+        $scope.refuseRequestAlgo = function(req, index) {
+            var request = {
+                reservation_request: {
+                    date: req.date,
+                    capacity: req.capacity,
+                    time_slot_id: req.time_slot.id,
+                    teaching_id: req.teaching.id,
+                    status: '-1'
+                }
+            };
+            $http({
+                method: 'Put',
+                url: apiUrl + '/reservation_requests/' + req.id,
+                data: request,
+                headers: {
+                    'Authorization': "Bearer " + UserService.getAccessToken() + ""
+                }})
+                    .success(function() {
+                $scope.pendingRequests.splice(index, 1);
+                $scope.isManaging = false;
+                $scope.selectedIndex = null;
+            })
+                    .error(function(data, status, headers, config) {
+                // called asynchronously if an error occurs
+                // or server returns response with an error status.
+                //todo:traiter l'erreur
+                console.log(status);
+                console.log(data);
+                $scope.isManaging = false;
+                $scope.selectedIndex = null;
             });
         };
     });

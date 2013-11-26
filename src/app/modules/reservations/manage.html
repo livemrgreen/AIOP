@@ -61,54 +61,50 @@
     <div id="content">
         <div class="outer">
             <div class="inner">
-                <div class="row ui-sortable">
-                    <div class="col-lg-12">
-                        <div class="box">
-                            <div class="body" id="collapse4">
-                                <table class="table table-condensed table-bordered">
-                                    <thead>
-                                        <tr role="row">
-                                            <th style="min-width: 140px;">Teacher</th>
-                                            <th style="min-width: 140px;">Lesson</th>
-                                            <th style="min-width: 100px;">Group</th>
-                                            <th style="min-width: 25px;">Date</th>
-                                            <th style="min-width: 100px;">Time Slot</th>
-                                            <th style="min-width: 188px;">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr ng-repeat="request in pendingRequests">
-                                            <td>{{request.teaching.teacher.first_name}} {{request.teaching.teacher.last_name}}</td>
-                                            <td>{{request.teaching.lesson.subject.label}} {{request.teaching.lesson.lesson_type.label}} {{request.teaching.lesson.label}}</td>
-                                            <td>{{request.teaching.group.label}}</td>
-                                            <td>{{request.date}}</td>
-                                            <td>{{request.time_slot.start}} - {{request.time_slot.end}}</td>
-                                            <td ng-hide="selectedIndex == $index">
-                                                <button class="btn btn-primary" ng-disabled="isManaging" ng-click="checkRoomAvailability(request, $index)">
-                                                    <i class="glyphicon glyphicon-refresh"></i> Check
-                                                </button>
-                                                <button class="btn btn-danger" ng-disabled="isManaging" ng-click="refuseRequestMM(request, $index)">
-                                                    <i class="glyphicon glyphicon-remove"></i> Refuse
-                                                </button>
-                                            </td>
-                                            <td ng-show="selectedIndex == $index && algoOK">
-                                                <button class="btn btn-success" ng-click="validateRequest(request, $index)">
-                                                    <i class="glyphicon glyphicon-ok"></i> Validate
-                                                </button>
-                                                <button class="btn btn-danger" ng-click="refuseRequestMM(request, $index)">
-                                                    <i class="glyphicon glyphicon-remove"></i> Refuse
-                                                </button>
-                                            </td>
-                                            <td ng-show="selectedIndex == $index && !algoOK">
-                                                <button class="btn btn-danger" ng-click="refuseRequestAlgo(request, $index)">
-                                                    <i class="glyphicon glyphicon-remove"></i> Refuse
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                <div class="box">
+                    <div class="table-responsive">
+                        <table class="table table-condensed table-bordered">
+                            <thead>
+                                <tr role="row">
+                                    <th style="min-width: 140px;">Teacher</th>
+                                    <th style="min-width: 140px;">Lesson</th>
+                                    <th style="min-width: 100px;">Group</th>
+                                    <th style="min-width: 25px;">Date</th>
+                                    <th style="min-width: 100px;">Time Slot</th>
+                                    <th style="min-width: 188px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="request in pendingRequests">
+                                    <td>{{request.teaching.teacher.first_name}} {{request.teaching.teacher.last_name}}</td>
+                                    <td>{{request.teaching.lesson.subject.label}} {{request.teaching.lesson.lesson_type.label}} {{request.teaching.lesson.label}}</td>
+                                    <td>{{request.teaching.group.label}}</td>
+                                    <td>{{request.date}}</td>
+                                    <td>{{request.time_slot.start}} - {{request.time_slot.end}}</td>
+                                    <td ng-hide="selectedIndex == $index">
+                                        <button class="btn btn-primary" ng-disabled="isManaging" ng-click="checkRoomAvailability(request, $index)">
+                                            <i class="glyphicon glyphicon-refresh"></i> Check
+                                        </button>
+                                        <button class="btn btn-danger" ng-disabled="isManaging" ng-click="refuseRequestMM(request, $index)">
+                                            <i class="glyphicon glyphicon-remove"></i> Refuse
+                                        </button>
+                                    </td>
+                                    <td ng-show="selectedIndex == $index && algoOK">
+                                        <button class="btn btn-success" ng-click="validateRequest(request, $index)">
+                                            <i class="glyphicon glyphicon-ok"></i> Validate
+                                        </button>
+                                        <button class="btn btn-danger" ng-click="refuseRequestMM(request, $index)">
+                                            <i class="glyphicon glyphicon-remove"></i> Refuse
+                                        </button>
+                                    </td>
+                                    <td ng-show="selectedIndex == $index && !algoOK">
+                                        <button class="btn btn-danger" ng-click="refuseRequestAlgo(request, $index)">
+                                            <i class="glyphicon glyphicon-remove"></i> Refuse
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

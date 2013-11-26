@@ -7,13 +7,10 @@ define([
 ], function(app) {
     'use strict';
 
-    app.register.controller('HomeController', function($rootScope, $scope, $http, $filter, $location, LocalStorageService, UserService, UrlService) {
-        var date = new Date();
-        var d = date.getDate();
-        var m = date.getMonth();
-        var y = date.getFullYear();
-
+    app.register.controller('HomeController', function($scope, $http, $filter, $location, LocalStorageService, UserService, UrlService) {
+        
         var apiUrl = UrlService.urlNode;
+        
         $scope.moduleManager = UserService.isModuleManager();
 
         $scope.calendarName = '';
@@ -238,7 +235,7 @@ define([
                         title: value.teaching.lesson.subject.label + '\n' + value.teaching.group.label + ' ' + value.room.label, start: start, end: end, allDay: false
                     });
 
-                    $scope.myCalendar.fullCalendar( 'addEventSource', $scope.events);
+                    $scope.myCalendar.fullCalendar('addEventSource', $scope.events);
                 });
             })
                     .error(function(data, status, headers, config) {
@@ -260,7 +257,7 @@ define([
                     'Authorization': "Bearer " + UserService.getAccessToken() + ""
                 }})
                     .success(function(data) {
-                $scope.calendarName = $scope.teacher.first_name +' '+ $scope.teacher.last_name;
+                $scope.calendarName = $scope.teacher.first_name + ' ' + $scope.teacher.last_name;
                 angular.forEach(data.reservations, function(value, key) {
                     var min = value.time_slot.start.split(':');
                     min = min[1];
@@ -276,7 +273,7 @@ define([
                     $scope.events.push({
                         title: value.teaching.lesson.subject.label + '\n' + value.teaching.group.label + ' ' + value.room.label, start: start, end: end, allDay: false
                     });
-                    $scope.myCalendar.fullCalendar( 'addEventSource', $scope.events);
+                    $scope.myCalendar.fullCalendar('addEventSource', $scope.events);
                 });
             })
                     .error(function(data, status, headers, config) {
