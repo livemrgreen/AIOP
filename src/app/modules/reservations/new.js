@@ -235,8 +235,9 @@ define([
         };
 
         $scope.sendRequest = function() {
-
-            var date = $('#datepicker').datepicker("getDate").toISOString();
+            var date = new Date($('#datepicker').datepicker("getDate"));
+            date.setHours(3);
+            date = date.toISOString();
             var request = {
                 reservation_request:
                         {
