@@ -7,3 +7,8 @@ node_modules
 # AngularJS
 .tmp
 bower_components
+nbproject
+
+# Bower
+src/app/bower_components
+src/app/bower_components/*
