@@ -3,3 +3,12 @@ node_modules
 
 # IDE
 .idea
+
+# AngularJS
+.tmp
+bower_components
+nbproject
+
+# Bower
+src/app/bower_components
+src/app/bower_components/*

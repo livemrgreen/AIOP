@@ -1,0 +1,162 @@
+<div id="wrap">
+    <div id="top">
+        <nav class="navbar navbar-inverse navbar-static-top">
+            <header class="navbar-header">
+                <a href="" class="navbar-brand "><i class="fa fa-calendar"></i> Schedule Manager</a>
+            </header>
+            <div class="topnav">
+                <div class="btn-toolbar">
+                    <div class="btn-group">
+                        <a data-toggle="tooltip" data-original-title="Logout" data-placement="bottom" class="btn btn-metis-1 btn-sm" ng-click="logout()">
+                            <i class="fa fa-power-off"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <header class="head">
+            <div class="main-bar">
+                <h3><i class="fa fa-pencil-square-o"></i> Reservations</h3>
+            </div>
+        </header>
+    </div>
+    <div id="left">
+        <div class="media user-media">
+            <div class="media-body">
+                <ul class="list-unstyled user-info">
+                    <h5 class="media-heading">{{firstName}} {{lastName}}</h5>
+                    <li><small>{{administrator}}</small></li>
+                    <li><small>{{moduleManager}}</small></li>
+                    <li><small><i class="fa fa-calendar-o"></i> {{todayDate}}</small></li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu" class="collapse">
+            <li class="nav-header">Menu</li>
+            <li><a href="" ng-click="changeLocation('home')" ><i class="fa fa-table"></i> Schedule</a></li>
+            <li class="panel ">
+                <a href="" data-parent="#menu" data-toggle="collapse" class="accordion-toggle menu-focus" id="accordion-toggle" ng-click="open('reservation')" data-target="#dashboard-nav">
+                    <i class="fa fa-pencil-square-o"></i> Reservations
+                </a>
+                <ul class="{{classReservations}}" id="dashboard-nav">
+                    <li>
+                        <a class="submenu-focus" href="">
+                            <i class="fa fa-angle-right"></i> New
+                        </a>
+                    </li>
+                    <li>
+                        <a href="" ng-click="changeLocation('history-reservations')">
+                            <i class="fa fa-angle-right"></i> History
+                        </a>
+                    </li>
+                    <li ng-show="moduleManager">
+                        <a href="" ng-click="changeLocation('manage-reservations')">
+                            <i class="fa fa-angle-right"></i> Manage
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div id="content">
+        <div class="outer">
+            <div class="inner">
+                <form class="form-horizontal" novalidate name="form">
+                    <h4 class="text-center">
+                        Create a new reservation request
+                    </h4>
+                    <div class="form-group">
+                        <label class="control-label col-lg-4">Group: </label>
+                        <div class="col-lg-4">
+                            <select class="form-control"
+                                    ng-model="group"
+                                    ng-options="group.label for group in groups"
+                                    ng-change="getSubjectList(group)" ></select>
+                        </div>
+                    </div>
+                    <div class="form-group" ng-show="showTeachings" >
+                        <label class="control-label col-lg-4">Subject: </label>
+                        <div class="col-lg-4">
+                            <select class="form-control"
+                                    ng-model="subject"
+                                    ng-options="teaching.name for teaching in teachingValues"
+                                    ng-change="getLessonTypesList(subject)" ></select>
+                        </div>
+                    </div>
+                    <div class="form-group" ng-show="showLessonType">
+                        <label class="control-label col-lg-4">Lesson type: </label>
+                        <div class="col-lg-4">
+                            <select class="form-control"
+                                    ng-model="lessonType"
+                                    ng-options="type.name for type in lessonTypes"
+                                    ng-change="getLessonsList(lessonType)" ></select>
+                        </div>
+                    </div>
+                    <div class="form-group" ng-show="showLesson">
+                        <label class="control-label col-lg-4">Lesson: </label>
+
+                        <div class="col-lg-4">
+                            <select class="form-control"
+                                    ng-model="lesson"
+                                    ng-options="lesson.name for lesson in lessons"
+                                    ></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-4">Capacity: </label>
+
+                        <div class="col-lg-4">
+                            <input class="form-control" ng-model="capacity" ></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-4">Characteristics: </label>
+
+                        <div class="col-lg-4">
+                            <span ng-repeat="charateristic in charateristics">
+                                <label class="checkbox" for="{{charateristic.id}}">
+                                    <input type="checkbox" ng-model="selectedCharacteristics.ids[charateristic.id]" name="chara" id="{{charateristic.id}}"/>
+                                    {{charateristic.label}}
+                                </label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-4">Date: </label>
+
+                        <div class="col-lg-4">
+                            <div class="input-group input-append date">
+                                <input class="form-control" type="text" id="datepicker" ng-model="datePick" >
+                                <span class="input-group-addon add-on">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-4">Time: </label>
+
+                        <div class="col-lg-4">
+                            <div class="input-group input-append date">
+                                <select class="form-control"
+                                        ng-model="time"
+                                        ng-options="time.concat for time in timeSlots"
+                                        ></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-4"></label>
+                        <div class="col-lg-4">
+                            <a type="button" class="btn btn-lg btn-primary btn-block"
+                               ng-click="sendRequest()" ng-disabled="form.$invalid">Send request</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="footer">
+    <p>2013 &copy; Schedule Manager</p>
+</div>

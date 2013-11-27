@@ -1,33 +1,68 @@
-/**
- * Generic require login routing middleware
- */
-exports.requiresLogin = function(req, res, next) {
-    if (!req.isAuthenticated()) {
-        return res.send(401, 'User is not authorized');
-    }
-    next();
-};
+var models = require("./models");
+var user = models.model("user");
 
-/**
- * User authorizations routing middleware
- */
-exports.user = {
-    hasAuthorization: function(req, res, next) {
-        if (req.profile.id != req.user.id) {
-            return res.send(401, 'User is not authorized');
-        }
-        next();
-    }
-};
+module.exports = {
 
-/**
- * Article authorizations routing middleware
- */
-exports.article = {
-    hasAuthorization: function(req, res, next) {
-        if (req.article.user.id != req.user.id) {
-            return res.send(401, 'User is not authorized');
+    "isAdministrator": function (req, res, next) {
+        if (req.user.administrator) {
+            return next();
         }
-        next();
+        else {
+            res.setHeader("WWW-Authenticate", "Bearer realm=\"Users\", error=\"invalid_administrator\", error_description=\"Administrator not found\"");
+            res.send(401);
+        }
+    },
+
+    "isMyTeacherModuleManager": function (req, res, next) {
+        req.user.getTeacher().success(function (teacher) {
+            if (teacher) {
+                if (teacher.id == req.params.id) {
+                    teacher.getModules().success(function (modules) {
+                        if (modules.length) {
+                            return next();
+                        }
+                        else {
+                            res.setHeader("WWW-Authenticate", "Bearer realm=\"Users\", error=\"invalid_manager\", error_description=\"Manager not found\"");
+                            res.send(401);
+                        }
+                    });
+                }
+                else {
+                    res.setHeader("WWW-Authenticate", "Bearer realm=\"Users\", error=\"invalid_teacher\", error_description=\"Teachers differents\"");
+                    res.send(401);
+                }
+            }
+            else {
+                res.setHeader("WWW-Authenticate", "Bearer realm=\"Users\", error=\"invalid_teacher\", error_description=\"Teacher not found\"");
+                res.send(401);
+            }
+        });
+    },
+
+    "isMyUser": function (req, res, next) {
+        if (req.params.id != req.user.id) {
+            res.setHeader("WWW-Authenticate", "Bearer realm=\"Users\", error=\"invalid_user\", error_description=\"Users differents\"");
+            res.send(401);
+        }
+        return next();
+    },
+
+    "isMyTeacher": function (req, res, next) {
+        req.user.getTeacher().success(function (teacher) {
+            if (teacher) {
+                if (teacher.id == req.params.id) {
+                    return next();
+                }
+                else {
+                    res.setHeader("WWW-Authenticate", "Bearer realm=\"Users\", error=\"invalid_teacher\", error_description=\"Teachers differents\"");
+                    res.send(401);
+                }
+            }
+            else {
+                res.setHeader("WWW-Authenticate", "Bearer realm=\"Users\", error=\"invalid_teacher\", error_description=\"Teacher not found\"");
+                res.send(401);
+            }
+        });
     }
-};
+}
+;

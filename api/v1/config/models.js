@@ -1,9 +1,9 @@
-var filesystem = require('fs');
+var filesystem = require("fs");
 var models = {};
 var relationships = {};
 
 var singleton = function singleton() {
-    var Sequelize = require('sequelize');
+    var Sequelize = require("sequelize");
     var sequelize = null;
 
     this.setup = function (database, username, password, obj) {
@@ -34,28 +34,32 @@ var singleton = function singleton() {
     }
 
     function init() {
-        filesystem.readdirSync('./app/models').forEach(function (name) {
-            var object = require('../app/models/' + name);
-            var options = object.options || {}
-            var modelName = name.replace(/\.js$/i, '');
+        filesystem.readdirSync("./app/models").forEach(function (name) {
+            var object = require("../app/models/" + name);
+            var config = object.configuration || {};
+            var modelName = name.replace(/\.js$/i, "");
 
-            models[modelName] = sequelize.define(modelName, object.model, options);
-            if ('relations' in object) {
+            models[modelName] = sequelize.define(modelName, object.model, config);
+
+            if ("relations" in object) {
                 relationships[modelName] = object.relations;
             }
         });
 
-        for (var name in relationships) {
-            var relation = relationships[name];
-            for (var relName in relation) {
-                var related = relation[relName];
-                models[name][relName](models[related]);
+        for (var model in relationships) {
+            var relations = relationships[model];
+            for (var relation in relations) {
+                var related = relations[relation];
+                for (var rel_model in related) {
+                    var rel_opt = related[rel_model];
+                    models[model][relation](models[rel_model], rel_opt);
+                }
             }
         }
     }
 
     if (singleton.caller != singleton.getInstance) {
-        throw new Error('This object cannot be instanciated');
+        throw new Error("This object cannot be instanciated");
     }
 }
 
