@@ -113,6 +113,9 @@ module.exports.reservations = function (req, res, next) {
                                         if (parent) {
                                             done(null, parent.id);
                                         }
+                                        else {
+                                            done(null, null)
+                                        }
                                     });
                                 },
                                 "children": function (done) {
@@ -128,6 +131,9 @@ module.exports.reservations = function (req, res, next) {
                                                 }
                                             );
                                         }
+                                        else {
+                                            done(null, null)
+                                        }
                                     });
                                 }
                             },
@@ -137,7 +143,9 @@ module.exports.reservations = function (req, res, next) {
                                 tmp.push(group.id);
                                 tmp.push(results.parent);
                                 tmp.concat(results.children);
-                                done(null, tmp);
+                                done(null, tmp.filter(function (n) {
+                                    return n;
+                                }));
                             });
                     },
                     // 3. For the id, get the teachings and the reservations related
