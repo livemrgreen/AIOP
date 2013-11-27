@@ -1,0 +1,35 @@
+rails g resource Teacher first_name:string last_name:string
+
+rails g resource User username:string access_token:string isAdmin:boolean teacher_id:integer
+
+rails g resource Building label:string
+
+rails g resource Characteristic label:string
+
+rails g resource TimeSlot start:string end:string
+
+rails g resource Group label:string parent_id:integer
+
+rails g resource LessonType label:string
+
+rails g resource Mod label:string teacher_id:integer
+
+rails g resource Subject label:string module_id:integer
+
+rails g resource Lesson label:string lesson_type_id:integer subject_id:integer
+
+rails g resource Teaching group_id:integer lesson_id:integer teacher_id:integer
+
+rails g resource ReservationRequest date:datetime teaching_id:integer
+
+rails g resource Room label:string capacity:integer building_id:integer
+
+rails g resource Reservation date:datetime time_slot_id:integer room_id:integer teaching_id:integer
+
+rails g controller signin
+
+rails g migration add_password_digest
+
+rails g migration add_characteristics_rooms_table
+
+rails g migration add_characteristics_reservation_requests_table

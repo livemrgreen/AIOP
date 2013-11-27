@@ -1,3 +1,7 @@
-# Rails folder
+# Welcome to URM on rails!
 
-Contains everything related to Ruby On Rails
+#### Dependecies:
+
+* factory_girl_rails
+* faker
+* active_model_serializers
